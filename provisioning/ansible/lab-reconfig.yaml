@@ -1,0 +1,12 @@
+- name: Reconfigure lab
+  hosts: lab
+  remote_user: root
+  roles:
+    - common
+    - lab-copy-installer
+    - lab-copy-dockers
+    - lab-set-permissions
+
+  tasks:
+    - name: Run student-lab to reconfig
+      ansible.builtin.command: /usr/local/bin/student-lab reconfig

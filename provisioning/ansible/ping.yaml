@@ -1,0 +1,6 @@
+---
+- hosts: lab
+  remote_user: root
+  tasks:
+    - name: Ping hosts
+      ping:

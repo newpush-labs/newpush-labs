@@ -1,0 +1,11 @@
+- name: Copy student-lab installer
+  ansible.builtin.copy:
+    src: "../../installer/student-lab-installer.sh"
+    dest: /usr/local/bin/student-lab
+    mode: "0755"
+
+- name: Create symlink for student-lab installer
+  ansible.builtin.file:
+    src: /usr/local/bin/student-lab
+    dest: /usr/local/bin/lab
+    state: link

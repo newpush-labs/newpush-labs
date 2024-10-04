@@ -1,0 +1,39 @@
+- name: Setup lab
+  hosts: lab
+  remote_user: root
+  roles:
+    - common
+    - lab-install-docker
+    - lab-copy-installer
+    - lab-copy-dockers
+    - lab-set-permissions
+
+  tasks:
+    - name: Check and configure dpkg packages
+      ansible.builtin.command: dpkg --configure -a
+      environment:
+        DEBIAN_FRONTEND: noninteractive
+      register: dpkg_result
+      changed_when: dpkg_result.stdout != "" or dpkg_result.stderr != ""
+      failed_when: false
+
+    - name: Ensure sysctl vm.max_map_count is set
+      ansible.posix.sysctl:
+        name: vm.max_map_count
+        value: '262144'
+        state: present
+        reload: true
+
+    - name: Generate wazuh certs
+      ansible.builtin.command: docker compose -f generate-indexer-certs.yml run --rm generator
+      args:
+        chdir: /opt/student-lab/services
+        creates: /opt/student-lab/services/wazuh/wazuh_indexer_ssl_certs/wazuh.indexer.pem
+
+    - name: Run student-lab to update the stack
+      ansible.builtin.command: /usr/local/bin/student-lab update
+      args:
+        creates: /opt/student-lab/services/.env
+
+    - name: Run student-lab to update the stack
+      ansible.builtin.command: /usr/local/bin/student-lab reconfig

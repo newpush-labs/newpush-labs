@@ -1,0 +1,95 @@
+volumes:
+  postgres-data:
+    driver: local
+  kestra-data:
+    driver: local
+
+services:
+  postgres:
+    image: postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: kestra
+      POSTGRES_USER: kestra
+      POSTGRES_PASSWORD: k3str4
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+    networks:
+      - web
+
+  kestra:
+    image: kestra/kestra:latest
+    container_name: kestra
+    pull_policy: always
+    # Note that this setup with a root user is intended for development purpose.
+    # Our base image runs without root, but the Docker Compose implementation needs root to access the Docker socket
+    # To run Kestra in a rootless mode in production, see: https://kestra.io/docs/installation/podman-compose
+    user: "root"
+    command: server standalone
+    volumes:
+      - kestra-data:/app/storage
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp/kestra-wd:/tmp/kestra-wd
+    environment:
+      KESTRA_CONFIGURATION: |
+        datasources:
+          postgres:
+            url: jdbc:postgresql://postgres:5432/kestra
+            driverClassName: org.postgresql.Driver
+            username: kestra
+            password: k3str4
+        kestra:
+          server:
+            basic-auth:
+              enabled: false
+              username: "admin@kestra.io" # it must be a valid email address
+              password: kestra
+          repository:
+            type: postgres
+          storage:
+            type: local
+            local:
+              base-path: "/app/storage"
+          queue:
+            type: postgres
+          tasks:
+            tmp-dir:
+              path: /tmp/kestra-wd/tmp
+          url: http://localhost:8080/
+    # ports:
+    #   - "8080:8080"
+    #   - "8081:8081"
+    labels:
+      - "com.centurylinklabs.watchtower.enable"
+      - "traefik.enable=true"
+      - "traefik.http.routers.kestra.rule=Host(`kestra.${DOMAIN}`)"
+      - "traefik.http.routers.kestra.entrypoints=https"
+      - "traefik.http.services.kestra.loadbalancer.server.port=8080"
+      - "traefik.http.routers.kestra.service=kestra"
+      - "traefik.http.routers.kestra.tls=true"
+      - "traefik.http.routers.kestra.tls.certresolver=default"
+      - "traefik.http.routers.kestra.middlewares=traefik-forward-auth"
+      - "mafl.enable=true"
+      - "mafl.title=kestra"
+      - "mafl.description=Kestra is an open-source orchestrator designed to run complex, multi-step workflows in a scalable and reliable manner."
+      - "mafl.tag=development"
+      - "mafl.group=Development"
+      - "mafl.link=https://kestra.${DOMAIN}"
+      - "mafl.icon.name=simple-icons:testrail"
+      - "mafl.icon.wrap=true"
+      - "mafl.icon.color=#F37626"
+      - "mafl.status.enabled=true"
+      - "mafl.status.interval=60"
+    depends_on:
+      postgres:
+        condition: service_started
+    networks:
+      - web
+
+networks:
+  web:
+    external: True

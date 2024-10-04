@@ -1,0 +1,74 @@
+# THIS IS NOT GOING TO WORK FOR A WHILE SINCE THE FRONTEND HAS TO BE REBUILT WITH THE CORRECT ENV VARS
+# AND THE DOCKER-COMPOSE FILE NEEDS TO BE UPDATED
+
+services:
+  perplexica-backend:
+    image: itzcrazykns1337/perplexica-backend:main
+    container_name: perplexica-backend
+    environment:
+      - SEARXNG_API_URL=http://searxng:8080
+    # ports:
+    #   - 3001:3001
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.perplexica-api.rule=Host(`perplexica.${DOMAIN}`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.perplexica-api.entrypoints=https"
+      - "traefik.http.services.perplexica-api.loadbalancer.server.port=3001"
+      - "traefik.http.routers.perplexica-api.service=perplexica-api"
+      - "traefik.http.routers.perplexica-api.tls=true"
+      - "traefik.http.routers.perplexica-api.tls.certresolver=default"
+    volumes:
+      - backend-dbstore:/home/perplexica/data
+      - ./perplexica/config.toml:/home/perplexica/config.toml:rw
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    networks:
+      - web
+    restart: unless-stopped
+  
+
+  perplexica-frontend:
+    image: itzcrazykns1337/perplexica-frontend:main
+    container_name: perplexica-frontend
+    # build:
+    #     context: .
+    #     dockerfile: app.dockerfile
+    #     args:
+    #       - NEXT_PUBLIC_API_URL=http://127.0.0.1:3001/api
+    #       - NEXT_PUBLIC_WS_URL=ws://127.0.0.1:3001
+    depends_on:
+      - perplexica-backend
+    # ports:
+    #   - 3000:3000
+    networks:
+      - web
+    restart: unless-stopped
+    labels:
+      - "mafl.enable=true"
+      - "mafl.title=Perplexica"
+      - "mafl.group=Artificial Intelligence"
+      - "mafl.description=Private, privacy-respecting, anonymous, and decentralized search engine."
+      - "mafl.link=https://perplexica.${DOMAIN}/"
+      - "mafl.icon.name=logos:perplexity-icon"
+      - "mafl.icon.wrap=true"
+      - "mafl.icon.color=#ffffff"
+      - "mafl.status.enabled=true"
+      - "mafl.status.interval=60"
+      - "traefik.enable=true"
+      - "traefik.http.routers.perplexica.rule=Host(`perplexica.${DOMAIN}`)"
+      - "traefik.http.routers.perplexica.entrypoints=https"
+      - "traefik.http.services.perplexica.loadbalancer.server.port=3000"
+      - "traefik.http.routers.perplexica.service=perplexica"
+      - "traefik.http.routers.perplexica.tls=true"
+      - "traefik.http.routers.perplexica.tls.certresolver=default"
+      - "traefik.http.routers.perplexica.middlewares=traefik-forward-auth" 
+
+
+
+      
+networks:
+  web:
+    external: true
+
+volumes:
+  backend-dbstore:

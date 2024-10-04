@@ -1,0 +1,33 @@
+version: "3.3"
+
+services:
+  portainer:
+    image: portainer/portainer-ce
+    env_file:
+      - .env
+    container_name: portainer
+    restart: unless-stopped
+    command: ["--logo", "https://storage.googleapis.com/static_newpush/np_labs_logo.png", 
+              "--templates", "https://raw.githubusercontent.com/hdkiller/portainer-templates/refs/heads/traefik/templates_with_labels.json", 
+              "--admin-password", '$$2y$$05$$ED1XWB3MYv3ACwItDZjTuee6S3Flwj.ckwoUstuISY1Wuu.Buiqje']
+    labels:
+      - "com.centurylinklabs.watchtower.enable"
+      - "traefik.enable=true"
+      - "traefik.http.routers.portainer.rule=Host(`portainer.${DOMAIN}`)"
+      - "traefik.http.routers.portainer.entrypoints=https"
+      - "traefik.http.services.portainer.loadbalancer.server.port=9000"
+      - "traefik.http.routers.portainer.service=portainer"
+      - "traefik.http.routers.portainer.tls=true"
+      - "traefik.http.routers.portainer.tls.certresolver=default"
+    ports:
+      - "8000:8000"
+      # - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./portainer:/data
+    networks:
+      - web
+
+networks:
+  web:
+    external: True

@@ -1,0 +1,50 @@
+version: "3.3"
+services:
+  bytebase:
+    image: elestio/bytebase:latest
+    init: true
+    container_name: bytebase
+    restart: unless-stopped
+    # ports:
+    #   - "5678:5678"
+    volumes:
+      - ./bytebase/data:/var/opt/bytebase
+    command: ["--data", "/var/opt/bytebase","--external-url","https://bytebase.${DOMAIN}", "--port", "5678"]
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.bytebase.rule=Host(`bytebase.${DOMAIN}`)"
+      - "traefik.http.routers.bytebase.entrypoints=https"
+      - "traefik.http.services.bytebase.loadbalancer.server.port=5678"
+      - "traefik.http.routers.bytebase.service=bytebase"
+      - "traefik.http.routers.bytebase.tls=true"
+      - "traefik.http.routers.bytebase.tls.certresolver=default"
+      - "traefik.http.routers.bytebase.middlewares=traefik-forward-auth"
+      - "mafl.enable=true"
+      - "mafl.title=Bytebase"
+      - "mafl.description=Database Management"
+      - "mafl.tag=docker"
+      - "mafl.group=Data Operations"
+      - "mafl.link=https://bytebase.${DOMAIN}"
+      - "mafl.icon.url=https://raw.githubusercontent.com/bytebase/bytebase/deef47edcd36338e6e16993db2f8f3dbc334337f/frontend/src/assets/logo-icon.svg"
+      - "mafl.icon.wrap=true"
+      - "mafl.icon.color=#007acc"
+      - "mafl.status.enabled=true"
+      - "mafl.status.interval=60"
+
+    networks:
+      - web
+
+  # employee-prod:
+  #   image: bytebase/sample-database:mysql-employee-small
+  #   ports:
+  #     -  172.17.0.1:3406:3306
+
+  # employee-test:
+  #   image: bytebase/sample-database:mysql-employee-small
+  #   ports:
+  #     -  172.17.0.1:3407:3306
+
+networks:
+  web:
+    external: True

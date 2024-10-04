@@ -1,0 +1,49 @@
+services:
+  traefik-forward-auth:
+    image: lracz/traefik-forward-auth:latest
+    container_name: traefik-forward-auth
+    restart: unless-stopped
+    user: "1000:1000"
+    # ports:
+      # - "4181:4181"
+    environment:
+      - DEFAULT_PROVIDER=generic-oauth
+      - PROVIDERS_GENERIC_OAUTH_CLIENT_ID={{ generic_oauth_client_id }}
+      - PROVIDERS_GENERIC_OAUTH_CLIENT_SECRET={{ generic_oauth_client_secret }}
+      - PROVIDERS_GENERIC_OAUTH_AUTH_URL=https://auth.${DOMAIN}/login/oauth/authorize
+      - PROVIDERS_GENERIC_OAUTH_TOKEN_URL=https://auth.${DOMAIN}/api/login/oauth/access_token
+      - PROVIDERS_GENERIC_OAUTH_USER_URL=https://auth.${DOMAIN}/api/userinfo
+      - PROVIDERS_GENERIC_OAUTH_SKIP_VERIFY_TLS=true
+      - SECRET=something-random
+      - INSECURE_COOKIE=true # Example assumes no https, do not use in production
+    labels:
+      - "traefik.http.middlewares.traefik-forward-auth.forwardauth.address=http://traefik-forward-auth:4181"
+      - "traefik.http.middlewares.traefik-forward-auth.forwardauth.authResponseHeaders=X-Forwarded-User"
+      - "traefik.http.middlewares.traefik-forward-auth.forwardauth.tls.insecureSkipVerify=true"
+      - "traefik.http.services.traefik-forward-auth.loadbalancer.server.port=4181"
+    networks:
+      - web
+
+  casdoor:
+    image: casbin/casdoor:${CASDOOR_VERSION:-latest}
+    container_name: casdoor
+    restart: unless-stopped
+    user: "1000:1000"
+    ports:
+      - "8980:8000"
+    volumes:
+      - ./casdoor/:/conf/
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.casdoor.rule=Host(`auth.${DOMAIN}`)"
+      - "traefik.http.routers.casdoor.entrypoints=https"
+      - "traefik.http.services.casdoor.loadbalancer.server.port=8000"
+      - "traefik.http.routers.casdoor.service=casdoor"
+      - "traefik.http.routers.casdoor.tls=true"
+      - "traefik.http.routers.casdoor.tls.certresolver=default"
+    networks:
+      - web
+
+networks:
+  web:
+    external: True

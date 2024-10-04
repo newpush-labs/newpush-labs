@@ -1,0 +1,81 @@
+global:
+  checkNewVersion: true
+  sendAnonymousUsage: false
+serversTransport:
+  insecureSkipVerify: true
+entryPoints:
+  http:
+    address: :80
+  https:
+    address: :443
+    # http:
+    #   middlewares:
+    #     - crowdsec@file
+    #     - torblock@file
+
+middlewares:
+  traefik-forward-auth:
+    forwardAuth:
+      address: http://traefik-forward-auth:4181
+      tls:
+        insecureSkipVerify: true
+providers:
+  providersThrottleDuration: 2s
+  docker:
+    watch: true
+    network: web
+    endpoint: unix:///var/run/docker.sock
+    exposedByDefault: true
+  file:
+    directory: /etc/traefik/conf.d/
+    watch: true
+    
+api:
+  insecure: true
+  dashboard: true
+metrics:
+  prometheus:
+    addEntryPointsLabels: true
+    addRoutersLabels: true
+    addServicesLabels: true
+
+accessLog:
+  filePath: "/var/log/traefik/access.log"
+  format: json
+  fields:
+    defaultMode: keep
+    names:
+      StartUTC: drop
+
+log:
+  level: INFO
+  filePath: "/var/log/traefik/traefik.log"
+  format: json
+
+certificatesResolvers:
+  default:
+    acme:
+      email: lracz@newpush.com
+      # storage: /etc/traefik/google-acme-certs.json
+      # httpChallenge: 
+      #   entryPoint: http
+      # caServer: https://dv.acme-v02.api.pki.goog/directory
+      # eab:
+      #   hmacEncoded: ...
+      #   kid: ...
+      storage: /etc/traefik/acme-zerossl-certs.json
+      httpChallenge: 
+        entryPoint: http
+      caServer: https://acme.zerossl.com/v2/DV90
+      eab:
+        hmacEncoded: {{ acme_zerossl_hmac_encoded }}
+        kid: {{ acme_zerossl_kid }}
+
+# experimental:
+#   plugins:
+#     bouncer:
+#       moduleName: "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin"
+#       version: "v1.3.1"
+#     torblock:
+#       moduleName: github.com/jpxd/torblock
+#       version: v0.1.1

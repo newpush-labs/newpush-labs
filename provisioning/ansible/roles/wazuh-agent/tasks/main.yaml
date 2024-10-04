@@ -1,0 +1,42 @@
+- name: Check if Wazuh agent is installed
+  command: dpkg -l wazuh-agent
+  register: wazuh_agent_installed
+  ignore_errors: yes
+
+- name: Download Wazuh agent
+  get_url:
+    url: https://packages.wazuh.com/4.x/apt/pool/main/w/wazuh-agent/wazuh-agent_4.8.2-1_amd64.deb
+    dest: /tmp/wazuh-agent_4.8.2-1_amd64.deb
+  when: wazuh_agent_installed.rc != 0
+
+- name: Install Wazuh agent
+  command: dpkg -i /tmp/wazuh-agent_4.8.2-1_amd64.deb
+  environment:
+    WAZUH_MANAGER: '127.0.0.1'
+    WAZUH_AGENT_GROUP: 'default'
+    WAZUH_AGENT_NAME: 'lab'
+  when: wazuh_agent_installed.rc != 0
+
+- name: Reload systemd daemon
+  systemd:
+    daemon_reload: yes
+  when: wazuh_agent_installed.rc != 0
+
+- name: Enable Wazuh agent
+  systemd:
+    name: wazuh-agent
+    enabled: yes
+  when: wazuh_agent_installed.rc != 0
+
+- name: Start Wazuh agent
+  systemd:
+    name: wazuh-agent
+    state: started
+
+- name: Check Wazuh agent status
+  command: systemctl status wazuh-agent
+  register: wazuh_status
+
+- name: Print Wazuh agent status
+  debug:
+    var: wazuh_status.stdout

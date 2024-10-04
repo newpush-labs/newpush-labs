@@ -1,0 +1,45 @@
+version: "3.3"
+
+services:
+  mafl:
+    image:   hywax/mafl
+    env_file:
+      - .env
+    container_name: mafl
+    restart: unless-stopped
+    labels:
+      - "com.centurylinklabs.watchtower.enable"
+      - "traefik.enable=true"
+      - "traefik.http.routers.mafl.rule=Host(`www.${DOMAIN}`)"
+      - "traefik.http.routers.mafl.entrypoints=https"
+      - "traefik.http.services.mafl.loadbalancer.server.port=3000"
+      - "traefik.http.routers.mafl.service=mafl"
+      - "traefik.http.routers.mafl.tls=true"
+      - "traefik.http.routers.mafl.tls.certresolver=default"
+      - "traefik.http.routers.mafl.middlewares=traefik-forward-auth"
+      # - "traefik.http.middlewares.myauth.basicauth.users=admin:$$apr1$$KpWYLDjd$$cQQ6TGVc33/IgmSQ/xgnZ/"
+      # - "traefik.http.routers.mafl.middlewares=myauth"
+
+    # ports:
+    # - "3580:3000"
+    volumes:
+      - ./mafl/config.yml:/app/data/config.yml
+    networks:
+      - web
+  mafl-service-discovery:
+    image: lracz/mafl-service-discovery
+    container_name: mafl-service-discovery
+    env_file:
+      - .env
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./mafl/base.yml:/app/config/base.yml
+      - ./mafl/config.yml:/app/config/config.yml
+    labels:
+      - "com.centurylinklabs.watchtower.enable"
+      - "traefik.enable=true"
+      
+networks:
+  web:
+    external: True

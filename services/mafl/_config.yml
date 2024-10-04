@@ -1,0 +1,87 @@
+title: NewPush ADHK - Student Lab
+services:
+  Home:
+    - title: WhoAmI
+      description: Who Am I
+      link: 'https://whoami.DOMAIN'
+      icon:
+        name: devicon:jekyll 
+        wrap: true
+        color: '#3dbcf3'
+      status:
+        enabled: true
+        interval: 60
+    - type: ip-api
+      link: 'https://www.ipaddress.com/what-is-my-ip-address/'
+      options:
+        flagIcon: false
+      icon:
+        name: oui:token-ip
+
+  Cloud:
+    - title: Traefik
+      description: Cloud edge router
+      link: 'https://traefik.DOMAIN'
+      icon:
+        name: devicon:traefikproxy
+        wrap: true
+    - title: Casdoor
+      description: Casdoor
+      link: 'https://auth.DOMAIN'
+      icon:
+        name: devicon:oauth
+        wrap: true
+
+  Docker:
+    - title: Portainer
+      description: Docker container management
+      link: 'https://portainer.DOMAIN'
+      icon:
+        name: devicon:portainer
+        wrap: true
+
+    - title: Dozzle
+      description: Docker logs
+      link: 'https://logs.DOMAIN'
+      icon:
+        name: simple-icons:drizzle
+        color: '#C5F74F'
+        wrap: true
+
+  Security:
+    - title: OpenVAS
+      description: OpenVAS Security Management
+      link: 'https://openvas.DOMAIN'
+      icon:
+        name: simple-icons:amazoncloudwatch
+        color: '#3dbcf3'
+        wrap: true
+    - title: Wazuh
+      description: Wazuh Security Management
+      link: 'https://wazuh.DOMAIN'
+      icon:
+        name: simple-icons:elasticstack
+        color: '#3dbcf3'
+        wrap: true
+  
+  Development:
+    - title: coder
+      description: coder
+      link: 'https://coder.DOMAIN'
+      icon:
+        name: simple-icons:coder
+        wrap: true
+    # - title: jupyter
+    #   description: jupyter
+    #   link: 'https://jupyter.DOMAIN'
+    #   icon:
+    #     name: simple-icons:jupyter
+    #     wrap: true
+ 
+  Monitoring:
+    - title: Grafana
+      description: Grafana
+      link: 'https://grafana.DOMAIN'
+      icon:
+        name: devicon:grafana
+        wrap: true

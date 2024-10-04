@@ -1,0 +1,17 @@
+version: "3.3"
+
+services:
+  watchtower:
+    image: containrrr/watchtower
+    restart: unless-stopped
+    container_name: watchtower
+    env_file:
+      - .env
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/localtime:/etc/localtime:ro
+    environment: 
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_REMOVE_VOLUMES=true
+      - WATCHTOWER_LABEL_ENABLE=true
+      - WATCHTOWER_SCHEDULE="0 0 0 * * *"

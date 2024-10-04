@@ -1,0 +1,18 @@
+- name: Update lab
+  hosts: lab
+  remote_user: root
+  roles:
+    - common
+    - lab-copy-installer
+    - lab-copy-dockers
+    - lab-install-docker
+    - lab-set-permissions
+  tasks:
+    - name: Run student-lab to reconfig
+      ansible.builtin.command: /usr/local/bin/student-lab reconfig
+
+    - name: Run student-lab to stop student-lab
+      ansible.builtin.command: /usr/local/bin/student-lab stop student-lab
+
+    - name: Run student-lab to start student-lab
+      ansible.builtin.command: /usr/local/bin/student-lab start student-lab

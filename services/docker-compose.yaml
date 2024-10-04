@@ -1,0 +1,73 @@
+services:
+  traefik:
+    extends:
+      file: docker-compose.traefik.yaml
+      service: traefik
+  casdoor:
+    extends:
+      file: docker-compose.casdoor.yaml
+      service: casdoor
+  traefik-forward-auth:
+    extends:
+      file: docker-compose.casdoor.yaml
+      service: traefik-forward-auth
+  # whoami:
+  #   extends:
+  #     file: docker-compose.whoami.yaml
+  #     service: whoami
+  mafl:
+    extends:
+      file: docker-compose.mafl.yaml
+      service: mafl
+  mafl-service-discovery:
+    extends:
+      file: docker-compose.mafl.yaml
+      service: mafl-service-discovery
+  dozzle:
+    extends:
+      file: docker-compose.dozzle.yaml
+      service: dozzle
+  grafana:
+    extends:
+      file: docker-compose.grafana.yaml
+      service: grafana
+  prometheus:
+    extends:
+      file: docker-compose.grafana.yaml
+      service: prometheus
+  loki:
+    extends:
+      file: docker-compose.grafana.yaml
+      service: loki
+  promtail:
+    extends:
+      file: docker-compose.grafana.yaml
+      service: promtail
+  node-exporter:
+    extends:
+      file: docker-compose.grafana.yaml
+      service: node-exporter
+  cadvisor:
+    extends:
+      file: docker-compose.grafana.yaml
+      service: cadvisor
+  sshwifty:
+    extends:
+      file: docker-compose.sshwifty.yaml
+      service: sshwifty
+  dockge:
+    extends:
+      file: docker-compose.dockge.yaml
+      service: dockge
+  portainer:
+    extends:
+      file: docker-compose.portainer.yaml
+      service: portainer
+  watchtower:
+    extends:
+      file: docker-compose.watchtower.yaml
+      service: watchtower
+
+networks:
+  web:
+    external: True

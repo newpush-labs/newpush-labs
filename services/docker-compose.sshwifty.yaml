@@ -1,0 +1,40 @@
+services:
+  sshwifty:
+    image: niruix/sshwifty:latest
+    container_name: sshwifty
+    env_file:
+      - /opt/student-lab/services/.env
+    volumes:
+      - ./sshwifty/sshwifty.conf.json:/home/sshwifty/.config/sshwifty.conf.json
+      - ./sshwifty/id_rsa:/home/sshwifty/.ssh/id_rsa:ro
+    labels:
+      - "com.centurylinklabs.watchtower.enable"
+      - "traefik.enable=true"
+      - "traefik.http.routers.webssh.rule=Host(`sshwifty.${DOMAIN}`)"
+      - "traefik.http.routers.webssh.entrypoints=https"
+      - "traefik.http.services.webssh.loadbalancer.server.port=8182"
+      - "traefik.http.routers.webssh.service=webssh"
+      - "traefik.http.routers.webssh.tls=true"
+      - "traefik.http.routers.webssh.tls.certresolver=default"
+      - "traefik.http.routers.webssh.middlewares=traefik-forward-auth"
+      - "mafl.enable=true"
+      - "mafl.title=Sshwifty"
+      - "mafl.description=Web based SSH client"
+      - "mafl.tag=docker"
+      - "mafl.group=Cloud"
+      - "mafl.link=https://sshwifty.${DOMAIN}"
+      - "mafl.icon.name=bi:terminal"
+      - "mafl.icon.wrap=true"
+      - "mafl.icon.color=#007acc"
+      - "mafl.status.enabled=true"
+      - "mafl.status.interval=60"
+    # ports:
+    #   - 8182:8182
+    restart: unless-stopped
+    networks:
+      - web
+    
+
+networks:
+  web:
+    external: True

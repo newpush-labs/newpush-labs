@@ -1,0 +1,135 @@
+version: "3.3"
+
+services:
+  grafana:
+    image: grafana/grafana-oss:latest
+    env_file:
+      - .env
+    environment:
+      - GF_SECURITY_ADMIN_USER=grafana_admin
+      - GF_SECURITY_ADMIN_PASSWORD=hacker
+      - GF_DEFAULT_INSTANCE_NAME=lab
+      - GF_SERVER_ROOT_URL=https://grafana.${DOMAIN}
+      - GF_AUTH_GENERIC_OAUTH_NAME=NewPush Labs
+      - GF_AUTH_GENERIC_OAUTH_ICON=signin
+      - GF_AUTH_GENERIC_OAUTH_ENABLED=true
+      - GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP=true
+      # - GF_AUTH_GENERIC_OAUTH_AUTO_ASSIGN_ORG_ROLE=Admins
+      - GF_AUTH_GENERIC_OAUTH_CLIENT_ID={{ generic_oauth_client_id }}
+      - GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET={{ generic_oauth_client_secret }}
+      - GF_AUTH_GENERIC_OAUTH_AUTH_URL=https://auth.${DOMAIN}/login/oauth/authorize
+      - GF_AUTH_GENERIC_OAUTH_TOKEN_URL=https://auth.${DOMAIN}/api/login/oauth/access_token
+      - GF_AUTH_GENERIC_OAUTH_API_URL=https://auth.${DOMAIN}/api/userinfo
+      - GF_AUTH_GENERIC_OAUTH_SIGNOUT_REDIRECT_URL=https://www.${DOMAIN}/ 
+      - GF_AUTH_GENERIC_OAUTH_TLS_SKIP_VERIFY_INSECURE=true
+      - GF_AUTH_GENERIC_OAUTH_SCOPES=user:email
+      # - GF_AUTH_GENERIC_OAUTH_AUTO_LOGIN=true
+      - GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH=contains(roles[*].name, 'admin') && 'Admin' || contains(roles[*].name, 'editor') && 'Editor' || 'Viewer'
+      - GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_STRICT=true
+      - GF_AUTH_GENERIC_OAUTH_ALLOW_ASSIGN_GRAFANA_ADMIN=true
+    container_name: grafana
+    restart: unless-stopped
+    user: "0"
+    labels:
+      - "com.centurylinklabs.watchtower.enable"
+      - "traefik.enable=true"
+      - "traefik.http.routers.grafana.rule=Host(`grafana.${DOMAIN}`)"
+      - "traefik.http.routers.grafana.entrypoints=https"
+      - "traefik.http.services.grafana.loadbalancer.server.port=3000"
+      - "traefik.http.routers.grafana.service=grafana"
+      - "traefik.http.routers.grafana.tls=true"
+      - "traefik.http.routers.grafana.tls.certresolver=default"
+    # ports:
+    #  - '3000:3000'
+    volumes:
+      - ./grafana:/var/lib/grafana
+      - ./grafana/provisioning:/usr/share/grafana/conf/provisioning
+    networks:
+      - web
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor
+    container_name: cadvisor
+    privileged: true
+    volumes:
+      - /:/rootfs:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /sys/fs/cgroup:/cgroup:ro
+      - /dev/disk/:/dev/disk:ro
+    # ports:
+    #   - "8080:8080"
+    command:
+      - '-housekeeping_interval=30s'
+      - '-docker_only=true'
+      - '-store_container_labels=false'
+    restart: unless-stopped
+    devices:
+      - /dev/kmsg:/dev/kmsg
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - web
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+    # ports:
+    #   - "9100:9100"
+    networks:
+      - web 
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    user: "1000:100"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    # ports:
+    #   - "9090:9090"
+    networks:
+      - web
+
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    # ports:
+    #   - "3100:3100"
+    volumes:
+      - ./loki/local-config.yaml:/etc/loki/local-config.yaml
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - web
+
+  promtail:
+    image: grafana/promtail:latest
+    container_name: promtail
+    volumes:
+      - /var/log:/var/log
+      - ./traefik/logs:/var/log/traefik
+      - ./promtail:/etc/promtail
+    command: -config.file=/etc/promtail/config.yml
+    networks:
+      - web
+# volumes:
+#   prometheus-data:
+
+networks:
+  web:
+    external: True

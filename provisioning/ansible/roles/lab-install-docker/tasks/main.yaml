@@ -1,0 +1,45 @@
+- name: Install Docker GPG key
+  ansible.builtin.apt_key:
+    url: https://download.docker.com/linux/debian/gpg
+    state: present
+
+- name: Add Docker repository
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable"
+    state: present
+    filename: docker
+    update_cache: true
+
+- name: Install Docker packages
+  ansible.builtin.apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+    state: present
+
+- name: Check if Docker network 'web' exists
+  ansible.builtin.command: docker network ls --filter name=^web$ --format "{{ '{{' }} .Name {{ '}}' }}"
+  register: docker_network_web
+  changed_when: false
+
+- name: Create Docker network
+  ansible.builtin.command: docker network create web
+  when: docker_network_web.stdout == ""
+
+# - name: Install Google Cloud SDK
+#   aansible.builtin.pt_key:
+#     url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+#     state: present
+
+# - name: Add Google Cloud SDK repository
+#   ansible.builtin.apt_repository:
+#     repo: "deb https://packages.cloud.google.com/apt cloud-sdk main"
+#     state: present
+
+# - name: Install Google Cloud SDK packages
+#   ansible.builtin.apt:
+#     name: google-cloud-sdk
+#     state: present

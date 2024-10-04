@@ -1,0 +1,12 @@
+---
+ansible_python_interpreter: /usr/bin/python3
+
+acme_zerossl_hmac_encoded: 
+acme_zerossl_kid: 
+
+openai_api_key: 
+anthropic_api_key: 
+groq_api_key: 
+
+
+     

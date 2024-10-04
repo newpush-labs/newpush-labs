@@ -1,0 +1,278 @@
+services:
+    # flowise:
+    #     image: flowiseai/flowise
+    #     restart: always
+    #     environment:
+    #         - PORT=${PORT}
+    #         - CORS_ORIGINS=${CORS_ORIGINS}
+    #         - IFRAME_ORIGINS=${IFRAME_ORIGINS}
+    #         - FLOWISE_USERNAME=${FLOWISE_USERNAME}
+    #         - FLOWISE_PASSWORD=${FLOWISE_PASSWORD}
+    #         - FLOWISE_FILE_SIZE_LIMIT=${FLOWISE_FILE_SIZE_LIMIT}
+    #         - DEBUG=${DEBUG}
+    #         - DATABASE_PATH=${DATABASE_PATH}
+    #         - DATABASE_TYPE=${DATABASE_TYPE}
+    #         - DATABASE_PORT=${DATABASE_PORT}
+    #         - DATABASE_HOST=${DATABASE_HOST}
+    #         - DATABASE_NAME=${DATABASE_NAME}
+    #         - DATABASE_USER=${DATABASE_USER}
+    #         - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+    #         - DATABASE_SSL=${DATABASE_SSL}
+    #         - DATABASE_SSL_KEY_BASE64=${DATABASE_SSL_KEY_BASE64}
+    #         - APIKEY_PATH=${APIKEY_PATH}
+    #         - SECRETKEY_PATH=${SECRETKEY_PATH}
+    #         - FLOWISE_SECRETKEY_OVERWRITE=${FLOWISE_SECRETKEY_OVERWRITE}
+    #         - LOG_LEVEL=${LOG_LEVEL}
+    #         - LOG_PATH=${LOG_PATH}
+    #         - BLOB_STORAGE_PATH=${BLOB_STORAGE_PATH}
+    #         - DISABLE_FLOWISE_TELEMETRY=${DISABLE_FLOWISE_TELEMETRY}
+    #         - MODEL_LIST_CONFIG_JSON=${MODEL_LIST_CONFIG_JSON}
+    #     ports:
+    #         - '${PORT}:${PORT}'
+    #     volumes:
+    #         - ~/.flowise:/root/.flowise
+    #     entrypoint: /bin/sh -c "sleep 3; flowise start"
+  
+  langfuse-server:
+    image: langfuse/langfuse:2
+    depends_on:
+      langfuse-db:
+        condition: service_healthy
+    # ports:
+      # - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@langfuse-db:5432/postgres
+      - NEXTAUTH_SECRET=mysecret
+      - SALT=mysalt
+      - ENCRYPTION_KEY=0000000000000000000000000000000000000000000000000000000000000000 # generate via `openssl rand -hex 32`
+      - NEXTAUTH_URL=http://localhost:3000
+      - TELEMETRY_ENABLED=${TELEMETRY_ENABLED:-true}
+      - LANGFUSE_ENABLE_EXPERIMENTAL_FEATURES=${LANGFUSE_ENABLE_EXPERIMENTAL_FEATURES:-false}
+      - LANGFUSE_INIT_ORG_ID=${LANGFUSE_INIT_ORG_ID:-}
+      - LANGFUSE_INIT_ORG_NAME=${LANGFUSE_INIT_ORG_NAME:-}
+      - LANGFUSE_INIT_PROJECT_ID=${LANGFUSE_INIT_PROJECT_ID:-}
+      - LANGFUSE_INIT_PROJECT_NAME=${LANGFUSE_INIT_PROJECT_NAME:-}
+      - LANGFUSE_INIT_PROJECT_PUBLIC_KEY=${LANGFUSE_INIT_PROJECT_PUBLIC_KEY:-}
+      - LANGFUSE_INIT_PROJECT_SECRET_KEY=${LANGFUSE_INIT_PROJECT_SECRET_KEY:-}
+      - LANGFUSE_INIT_USER_EMAIL=${LANGFUSE_INIT_USER_EMAIL:-}
+      - LANGFUSE_INIT_USER_NAME=${LANGFUSE_INIT_USER_NAME:-}
+      - LANGFUSE_INIT_USER_PASSWORD=${LANGFUSE_INIT_USER_PASSWORD:-}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.langfuse-server.rule=Host(`langfuse.${DOMAIN}`)"
+      - "traefik.http.routers.langfuse-server.entrypoints=https"
+      - "traefik.http.routers.langfuse-server.tls=true"
+      - "traefik.http.routers.langfuse-server.tls.certresolver=default"
+      - "traefik.http.routers.langfuse-server.middlewares=traefik-forward-auth"
+      - "traefik.http.services.langfuse-server.loadbalancer.server.port=3000"
+      - "mafl.enable=true"
+      - "mafl.title=Langfuse"
+      - "mafl.group=Artificial Intelligence"
+      - "mafl.description=Langfuse"
+      - "mafl.link=https://langfuse.${DOMAIN}"
+      - "mafl.icon.name=mdi:fuse"
+      - "mafl.icon.wrap=true"
+      - "mafl.icon.color=#ffffff"
+      - "mafl.status.enabled=true"
+      - "mafl.status.interval=60"
+    networks:
+      - web
+      
+  langfuse-db:
+    image: postgres
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - database_data:/var/lib/postgresql/data
+
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    volumes:
+      - ./open-webui:/app/backend/data
+    # ports:
+    #   - ${OPEN_WEBUI_PORT-3000}:8080
+    environment:
+      - WEBUI_SECRET_KEY=
+      - ENABLE_OAUTH_SIGNUP=true
+      - DEFAULT_USER_ROLE=admin
+      - OAUTH_MERGE_ACCOUNTS_BY_EMAIL=true
+      - OAUTH_USERNAME_CLAIM=name
+      - OAUTH_EMAIL_CLAIM=email
+      - OAUTH_PICTURE_CLAIM=picture
+      - OAUTH_CLIENT_ID=5e7c01af6d262109e111
+      - OAUTH_CLIENT_SECRET=4d6ca43445dfa085c8b716aa8e20835dbe7532e7
+      - OAUTH_SCOPES=openid email profile
+      - OAUTH_PROVIDER_NAME=SSO
+      - OPENID_PROVIDER_URL=https://auth.${DOMAIN}/.well-known/openid-configuration
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.open-webui.rule=Host(`open-webui.${DOMAIN}`)"
+      - "traefik.http.routers.open-webui.entrypoints=https"
+      - "traefik.http.routers.open-webui.tls=true"
+      - "traefik.http.routers.open-webui.tls.certresolver=default"
+      - "traefik.http.routers.open-webui.middlewares=traefik-forward-auth"
+      - "traefik.http.services.open-webui.loadbalancer.server.port=8080"
+      - "mafl.enable=true"
+      - "mafl.title=Open WebUI"
+      - "mafl.group=Artificial Intelligence"
+      - "mafl.description=Web Interface for various LLM"
+      - "mafl.link=https://open-webui.${DOMAIN}"
+      - "mafl.icon.url=https://docs.openwebui.com/img/logo.png"
+      - "mafl.icon.wrap=true"
+      - "mafl.icon.color=#ffffff"
+      - "mafl.status.enabled=true"
+      - "mafl.status.interval=60"
+    networks:
+      - web
+      
+  pipelines:
+    image: ghcr.io/open-webui/pipelines:main
+    container_name: pipelines
+    volumes:
+      - ./pipelines:/app/pipelines
+    # ports:
+    #   - "9099:9099"
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    restart: unless-stopped
+    networks:
+      - web
+
+
+  litellm:
+    image: ghcr.io/berriai/litellm:main-stable
+    container_name: litellm
+    #########################################
+    ## Uncomment these lines to start proxy with a config.yaml file ##
+    # volumes:
+    #  - ./config.yaml:/app/config.yaml <<- this is missing in the docker-compose file currently
+    # The below two are my suggestion
+    # command:
+    #  - "--config=/app/config.yaml"
+    ##############################################
+    #########################################
+    depends_on:
+      - litellm-postgres
+    # ports:
+      # - "4000:4000" # Map the container port to the host, change the host port if necessary
+    environment:
+        DATABASE_URL: "postgresql://llmproxy:dbpassword9090@litellm-postgres:5432/litellm"
+        STORE_MODEL_IN_DB: "True" # allows adding models to proxy via UI
+        LITELLM_MASTER_KEY: "sk-master-key-newpush-lab-20240513" # Your master key for the proxy server. Can use this to send /chat/completion requests etc
+        LITELLM_SALT_KEY: "sk-salt-key-newpush-lab-20240513" # Can NOT CHANGE THIS ONCE SET - It is used to encrypt/decrypt credentials stored in DB. If value of 'LITELLM_SALT_KEY' changes your models cannot be retrieved from DB
+        UI_USERNAME: "admin"
+        UI_PASSWORD: "hacker"
+        LANGFUSE_PUBLIC_KEY: "pk_kk"
+        LANGFUSE_SECRET_KEY: "sk_ss"
+        # Optional, defaults to https://cloud.langfuse.com
+        LANGFUSE_HOST: "https://langfuse.${DOMAIN}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.litellm.rule=Host(`litellm.${DOMAIN}`)"
+      - "traefik.http.routers.litellm.entrypoints=https"
+      - "traefik.http.routers.litellm.tls=true"
+      - "traefik.http.routers.litellm.tls.certresolver=default"
+      - "traefik.http.routers.litellm.middlewares=traefik-forward-auth"
+      - "traefik.http.services.litellm.loadbalancer.server.port=4000"
+      - "mafl.enable=true"
+      - "mafl.title=LiteLLM"
+      - "mafl.group=Artificial Intelligence"
+      - "mafl.description=Lloadbalancing, fallbacks and spend tracking across 100+ LLMs."
+      - "mafl.link=https://litellm.${DOMAIN}/ui"
+      - "mafl.icon.name=streamline-emojis:bullet-train"
+      - "mafl.icon.wrap=true"
+      - "mafl.icon.color=#ffffff"
+      - "mafl.status.enabled=true"
+      - "mafl.status.interval=60"
+    # env_file:
+    #   - .env # Load local .env file
+    networks:
+      - web
+
+  litellm-postgres:
+    image: postgres
+    container_name: litellm-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: litellm
+      POSTGRES_USER: llmproxy
+      POSTGRES_PASSWORD: dbpassword9090
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d litellm -U llmproxy"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+    networks:
+      - web
+
+  langflow:
+    image: langflowai/langflow:latest # or another version tag on https://hub.docker.com/r/langflowai/langflow 
+    container_name: langflow
+    pull_policy: always               # set to 'always' when using 'latest' image
+    # ports:
+    #   - "7860:7860"
+    depends_on:
+      - langflow-postgres
+    environment:
+      - LANGFLOW_DATABASE_URL=postgresql://langflow:langflow@langflow-postgres:5432/langflow
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.langflow.rule=Host(`langflow.${DOMAIN}`)"
+      - "traefik.http.routers.langflow.entrypoints=https"
+      - "traefik.http.routers.langflow.tls=true"
+      - "traefik.http.routers.langflow.tls.certresolver=default"
+      - "traefik.http.routers.langflow.middlewares=traefik-forward-auth"
+      - "traefik.http.services.langflow.loadbalancer.server.port=7860"
+      - "mafl.enable=true"
+      - "mafl.title=Langflow"
+      - "mafl.group=Artificial Intelligence"
+      - "mafl.description=Langflow"
+      - "mafl.link=https://langflow.${DOMAIN}"
+      - "mafl.icon.url=https://avatars.githubusercontent.com/u/85702467"
+      - "mafl.icon.wrap=true"
+      - "mafl.icon.color=#ffffff"
+      - "mafl.status.enabled=true"
+      - "mafl.status.interval=60"
+    volumes:
+      - langflow-data:/app/langflow
+    networks:
+      - web
+
+  langflow-postgres:
+    image: postgres:16
+    container_name: langflow-postgres
+    environment:
+      POSTGRES_USER: langflow
+      POSTGRES_PASSWORD: langflow
+      POSTGRES_DB: langflow
+    # ports:
+    #   - "5432:5432"
+    volumes:
+      - langflow-postgres:/var/lib/postgresql/data
+    networks:
+      - web
+
+volumes:
+  langflow-postgres:
+  langflow-data:
+  database_data:
+    driver: local
+
+networks:
+  web:
+    external: True

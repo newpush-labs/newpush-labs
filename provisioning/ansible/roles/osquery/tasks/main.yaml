@@ -1,0 +1,39 @@
+- name: Create directory for apt keyrings
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: 0755
+    owner: root
+    group: root
+
+- name: Download osquery GPG key
+  ansible.builtin.get_url:
+    url: https://pkg.osquery.io/deb/pubkey.gpg
+    dest: /etc/apt/keyrings/osquery.asc
+  become: yes
+
+- name: Add osquery repository
+  apt_repository:
+    repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/osquery.asc] https://pkg.osquery.io/deb deb main"
+    state: present
+
+- name: Install osquery
+  apt:
+    name: osquery
+    state: present
+    update_cache: yes
+
+- name: Copy osquery example configuration
+  command: cp /opt/osquery/share/osquery/osquery.example.conf /etc/osquery/osquery.conf
+  args:
+    creates: /etc/osquery/osquery.conf
+
+- name: Enable osqueryd service
+  systemd:
+    name: osqueryd
+    enabled: yes
+
+- name: Start osqueryd service
+  systemd:
+    name: osqueryd
+    state: started

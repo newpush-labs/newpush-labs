@@ -1,0 +1,34 @@
+version: "3.3"
+
+services:
+  whoami:
+    restart: unless-stopped
+    image: "containous/whoami:latest"
+    env_file:
+      - .env
+    container_name: "whoami"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=Host(`whoami.${DOMAIN}`)"
+      - "traefik.http.routers.whoami.entrypoints=https"
+      - "traefik.http.routers.whoami.tls=true"
+      - "traefik.http.routers.whoami.tls.certresolver=default"
+      - "traefik.http.routers.whoami.middlewares=traefik-forward-auth"
+      - "mafl.enable=true"
+      - "mafl.title=WhoAmI"
+      - "mafl.group=Home"
+      - "mafl.description=Show your request headers"
+      - "mafl.link=https://whoami.${DOMAIN}"
+      - "mafl.icon.name=devicon:jekyll"
+      - "mafl.icon.wrap=true"
+      - "mafl.icon.color=#3dbcf3"
+      - "mafl.status.enabled=true"
+      - "mafl.status.interval=60"
+    logging:
+      driver: ${DOCKER_LOG_DRIVER:-json-file}
+    networks:
+      - web
+      
+networks:
+  web:
+    external: True

@@ -1,0 +1,12 @@
+# Default variables for the common role
+common_packages:
+  - vim
+  - curl
+  - wget
+  - git
+  - apt-transport-https
+  - ca-certificates
+  - gnupg
+  - curl
+  - rsync
+  - software-properties-common

@@ -1,0 +1,19 @@
+region = "eu-west-1"
+instance-type = "t2.micro"
+aws-access-key = "example"
+aws-secret-key = "example"
+ssh-username = "admin"
+
+proxmox_host         = "pve-cluster:8006"
+proxmox_node         = "example-node"
+proxmox_api_user     = "packer@pve"
+proxmox_api_password = "example"
+
+iso_url             = "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-12.5.0-amd64-netinst.iso"
+iso_checksum        = "file:https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/SHA256SUMS"
+iso_storage_pool    = "pve-template"
+
+cloudinit_storage_pool  = "local"
+disk_storage_pool   = "local"
+network_bridge      = "vmbr0"
+network_vlan        = "3"

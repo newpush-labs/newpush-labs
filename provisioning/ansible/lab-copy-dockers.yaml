@@ -1,0 +1,13 @@
+- name: Copy Docker images to hosts
+  hosts: lab
+  remote_user: root
+  roles:
+    # - common
+    - lab-copy-installer
+    - lab-copy-dockers
+    - lab-set-permissions
+  # tasks:
+  #   - name: Synchronize dockerfiles from local directory
+  #     ansible.posix.synchronize:
+  #       src: ../../services
+  #       dest: /opt/student-lab/

@@ -1,0 +1,6 @@
+
+- name: Restart osqueryd
+  service:
+    name: osqueryd
+    state: restarted
+  become: true

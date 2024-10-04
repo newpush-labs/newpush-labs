@@ -1,0 +1,6 @@
+
+- name: Restart osqueryd
+  service:
+    name: wazuh-agent
+    state: restarted
+  become: true

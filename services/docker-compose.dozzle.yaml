@@ -1,0 +1,36 @@
+services:
+  dozzle:
+    image: amir20/dozzle:latest
+    container_name: dozzle
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - "com.centurylinklabs.watchtower.enable"
+      - "traefik.enable=true"
+      - "traefik.http.routers.dozzle.rule=Host(`logs.${DOMAIN}`)"
+      - "traefik.http.routers.dozzle.entrypoints=https"
+      - "traefik.http.services.dozzle.loadbalancer.server.port=8080"
+      - "traefik.http.routers.dozzle.service=dozzle"
+      - "traefik.http.routers.dozzle.tls=true"
+      - "traefik.http.routers.dozzle.tls.certresolver=default"
+      - "traefik.http.routers.dozzle.middlewares=traefik-forward-auth"
+      - "mafl.enable=true"
+      - "mafl.title=Dozzle"
+      - "mafl.description=A lightweight, open-source, and secure log viewer for Docker."
+      - "mafl.tag=docker"
+      - "mafl.group=Docker"
+      - "mafl.link=https://logs.${DOMAIN}"
+      - "mafl.icon.name=simple-icons:drizzle"
+      - "mafl.icon.wrap=true"
+      - "mafl.icon.color=#007acc"
+      - "mafl.status.enabled=true"
+      - "mafl.status.interval=60"
+    # expose:
+    #   - 8080
+    restart: unless-stopped
+    networks:
+      - web
+
+networks:
+  web:
+    external: True
