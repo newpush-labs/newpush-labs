@@ -9,3 +9,9 @@
     src: /usr/local/bin/student-lab
     dest: /usr/local/bin/lab
     state: link
+
+- name: Copy casdoor utils
+  ansible.builtin.copy:
+    src: "../../utils/casdoor"
+    dest: /opt/student-lab/utils/
+    mode: "0755"
