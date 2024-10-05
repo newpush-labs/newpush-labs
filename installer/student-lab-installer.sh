@@ -164,8 +164,6 @@ function update_env() {
   echo "LAB_IP=$LAB_IP" >> .env
   echo "LAB_SSH_KEY=$LAB_SSH_KEY" >> .env
 
-  # sed -i "s/DOMAIN/$DOMAIN/g" /opt/student-lab/services/mafl/base.yml
-  # sed -i "s/DOMAIN/$DOMAIN/g" /opt/student-lab/services/mafl/config.yml
   cat .env 
   
   echo "Update complete."
@@ -174,10 +172,6 @@ function update_env() {
 function restart_mafl() {
     cd /opt/student-lab/services
     if [ -e ".env" ]; then
-      # DOMAIN=$(grep -oP 'DOMAIN=\K[^ ]+' .env)
-      # sed -i "s/DOMAIN/$DOMAIN/g" /opt/student-lab/services/mafl/config.yml
-      # echo "MAFL config updated to $DOMAIN."
-
       if docker ps --filter "name=mafl" --filter "status=running" | grep -q mafl; then
         echo "MAFL docker is running. Restarting..."
         docker restart mafl
