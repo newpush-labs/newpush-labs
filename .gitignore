@@ -4,7 +4,7 @@ provisioning/terraform/.terraform
 provisioning/terraform/.ssh/*
 provisioning/terraform/terraform.tfstate*
 ssh-keys/*
-.aider*
+.aider*ˆ
 
 np-internal-prod.json
 

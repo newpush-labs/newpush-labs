@@ -7,7 +7,7 @@ Follow this instructions to get the keys:
 
 https://cloud.google.com/certificate-manager/docs/public-ca-tutorial#request-key-hmac
 
-And change the hmac and keyid in /opt/student-lab/traefik/trafik.yml
+And change the hmac and keyid in traefik/trafik.yml
 
 ```
 
