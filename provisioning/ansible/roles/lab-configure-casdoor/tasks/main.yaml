@@ -1,17 +1,17 @@
 - name: Check if casdoor.db exists
   ansible.builtin.stat:
-    path: /opt/student-lab/services/casdoor/casdoor.db
+    path: "{{ lab_dir }}/services/casdoor/casdoor.db"
   register: casdoor_db_stat
 
 - name: Rotate Casdoor secrets if casdoor.db does not exist
-  ansible.builtin.command: python3 /opt/student-lab/utils/casdoor/casdoor-rotate-secrets.py --db /opt/student-lab/services/casdoor/casdoor.db --rotate
+  ansible.builtin.command: python3 {{ lab_dir }}/utils/casdoor/casdoor-rotate-secrets.py --db {{ lab_dir }}/services/casdoor/casdoor.db --rotate
   register: rotate_secrets_output
   when: not casdoor_db_stat.stat.exists
 
-- name: Copy template database to /opt/student-lab/services/casdoor/casdoor.db if casdoor.db does not exist
+- name: Copy template database to {{ lab_dir }}/services/casdoor/casdoor.db if casdoor.db does not exist
   ansible.builtin.copy:
-    src: /opt/student-lab/services/casdoor/casdoor.db_orig
-    dest: /opt/student-lab/services/casdoor/casdoor.db
+    src: "{{ lab_dir }}/services/casdoor/casdoor.db_orig"
+    dest: "{{ lab_dir }}/services/casdoor/casdoor.db"
   when: not casdoor_db_stat.stat.exists
 
 - name: Capture the client secret from the output

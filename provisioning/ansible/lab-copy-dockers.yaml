@@ -3,7 +3,7 @@
   remote_user: root
   pre_tasks:
     - name: Get client secret from casdoor
-      ansible.builtin.command: python3 /opt/student-lab/utils/casdoor/casdoor-rotate-secrets.py --db /opt/student-lab/services/casdoor/casdoor.db
+      ansible.builtin.command: python3 {{ lab_dir }}/utils/casdoor/casdoor-rotate-secrets.py --db {{ lab_dir }}/services/casdoor/casdoor.db
       register: cmd_casdoor_rotate_secrets
       changed_when: false
       failed_when: false

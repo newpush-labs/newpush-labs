@@ -1,30 +1,30 @@
 - name: Synchronize dockerfiles from local directory
   ansible.posix.synchronize:
     src: ../../services
-    dest: /opt/student-lab/
+    dest: "{{ lab_dir }}/"
 
 - name: Render the Jinja2 template for Traefik
   ansible.builtin.template:
     src: ../../services/traefik/traefik.yml.j2
-    dest: /opt/student-lab/services/traefik/traefik.yml
+    dest: "{{ lab_dir }}/services/traefik/traefik.yml"
     mode: '0644'
 
 - name: Render the Jinja2 template for Perplexica
   ansible.builtin.template:
     src: ../../services/dockge/stacks/lab-llm-perplexica/perplexica/config.toml.j2
-    dest: /opt/student-lab/services/dockge/stacks/lab-llm-perplexica/perplexica/config.toml
+    dest: "{{ lab_dir }}/services/dockge/stacks/lab-llm-perplexica/perplexica/config.toml"
     mode: '0644'
 
 - name: Render the Jinja2 template for Grafana
   ansible.builtin.template:
     src: ../../services/docker-compose.grafana.yaml.j2
-    dest: /opt/student-lab/services/docker-compose.grafana.yaml
+    dest: "{{ lab_dir }}/services/docker-compose.grafana.yaml"
     mode: '0644'
 
 - name: Render the Jinja2 template for Casdoor
   ansible.builtin.template:
     src: ../../services/docker-compose.casdoor.yaml.j2
-    dest: /opt/student-lab/services/docker-compose.casdoor.yaml
+    dest: "{{ lab_dir }}/services/docker-compose.casdoor.yaml"
     mode: '0644'
 
 - name: Cleanup the Jinja2 templates
@@ -32,7 +32,7 @@
     path: "{{ item }}"
     state: absent
   loop:
-    - /opt/student-lab/services/traefik/traefik.yml.j2
-    - /opt/student-lab/services/dockge/stacks/lab-llm-perplexica/perplexica/config.toml.j2
-    - /opt/student-lab/services/docker-compose.grafana.yaml.j2
-    - /opt/student-lab/services/docker-compose.casdoor.yaml.j2
+    - "{{ lab_dir }}/services/traefik/traefik.yml.j2"
+    - "{{ lab_dir }}/services/dockge/stacks/lab-llm-perplexica/perplexica/config.toml.j2"
+    - "{{ lab_dir }}/services/docker-compose.grafana.yaml.j2"
+    - "{{ lab_dir }}/services/docker-compose.casdoor.yaml.j2"

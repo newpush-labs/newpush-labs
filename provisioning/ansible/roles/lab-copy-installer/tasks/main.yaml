@@ -13,5 +13,5 @@
 - name: Copy casdoor utils
   ansible.builtin.copy:
     src: "../../utils/casdoor"
-    dest: /opt/student-lab/utils/
+    dest: "{{ lab_dir }}/utils/"
     mode: "0755"

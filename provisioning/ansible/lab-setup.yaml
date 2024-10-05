@@ -27,13 +27,13 @@
     - name: Generate wazuh certs
       ansible.builtin.command: docker compose -f generate-indexer-certs.yml run --rm generator
       args:
-        chdir: /opt/student-lab/services
-        creates: /opt/student-lab/services/wazuh/wazuh_indexer_ssl_certs/wazuh.indexer.pem
+        chdir: "{{ lab_dir }}/services"
+        creates: "{{ lab_dir }}/services/wazuh/wazuh_indexer_ssl_certs/wazuh.indexer.pem"
 
     - name: Run student-lab to update the stack
       ansible.builtin.command: /usr/local/bin/student-lab update
       args:
-        creates: /opt/student-lab/services/.env
+        creates: "{{ lab_dir }}/services/.env"
 
     - name: Run student-lab to update the stack
       ansible.builtin.command: /usr/local/bin/student-lab reconfig

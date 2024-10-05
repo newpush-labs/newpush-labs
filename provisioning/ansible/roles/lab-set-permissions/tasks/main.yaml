@@ -1,6 +1,6 @@
 - name: Create directory for student lab dockerfiles
   ansible.builtin.file:
-    path: /opt/student-lab
+    path: "{{ lab_dir }}"
     state: directory
     mode: "0755"
 
@@ -19,18 +19,16 @@
 
 - name: Set Ownership on Casdoor DB
   ansible.builtin.file:
-    path: /opt/student-lab/services/casdoor
+    path: "{{ lab_dir }}/services/casdoor"
     owner: 1000
     group: 1000
-    # mode: 0775
     mode: "0777"
     recurse: true
 
 - name: Set Ownership on prometheus directory
   ansible.builtin.file:
-    path: /opt/student-lab/services/prometheus
+    path: "{{ lab_dir }}/services/prometheus"
     owner: 1000
     group: 100
-    # mode: 0775
     mode: "0777"
     recurse: true
