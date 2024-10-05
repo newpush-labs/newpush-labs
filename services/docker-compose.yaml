@@ -11,10 +11,6 @@ services:
     extends:
       file: docker-compose.casdoor.yaml
       service: traefik-forward-auth
-  # whoami:
-  #   extends:
-  #     file: docker-compose.whoami.yaml
-  #     service: whoami
   mafl:
     extends:
       file: docker-compose.mafl.yaml
