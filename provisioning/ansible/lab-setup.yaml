@@ -30,10 +30,10 @@
         chdir: "{{ lab_dir }}/services"
         creates: "{{ lab_dir }}/services/wazuh/wazuh_indexer_ssl_certs/wazuh.indexer.pem"
 
-    - name: Run student-lab to update the stack
-      ansible.builtin.command: /usr/local/bin/student-lab update
+    - name: Run newpush-lab to update the stack
+      ansible.builtin.command: /usr/local/bin/newpush-lab update
       args:
         creates: "{{ lab_dir }}/services/.env"
 
-    - name: Run student-lab to update the stack
-      ansible.builtin.command: /usr/local/bin/student-lab reconfig
+    - name: Run newpush-lab to update the stack
+      ansible.builtin.command: /usr/local/bin/newpush-lab reconfig

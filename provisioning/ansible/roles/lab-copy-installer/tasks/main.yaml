@@ -10,6 +10,12 @@
     dest: /usr/local/bin/lab
     state: link
 
+- name: Create symlink for student-lab installer
+  ansible.builtin.file:
+    src: /usr/local/bin/student-lab
+    dest: /usr/local/bin/newpush-lab
+    state: link
+
 - name: Copy casdoor utils
   ansible.builtin.copy:
     src: "../../utils/casdoor"

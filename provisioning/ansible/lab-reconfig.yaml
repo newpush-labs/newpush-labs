@@ -8,5 +8,5 @@
     - lab-set-permissions
 
   tasks:
-    - name: Run student-lab to reconfig
-      ansible.builtin.command: /usr/local/bin/student-lab reconfig
+    - name: Run newpush-lab to reconfig
+      ansible.builtin.command: /usr/local/bin/newpush-lab reconfig
