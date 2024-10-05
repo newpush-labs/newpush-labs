@@ -31,7 +31,7 @@
         creates: "{{ lab_dir }}/services/wazuh/wazuh_indexer_ssl_certs/wazuh.indexer.pem"
 
     - name: Run newpush-lab to update the stack
-      ansible.builtin.command: /usr/local/bin/newpush-lab update
+      ansible.builtin.command: /usr/local/bin/newpush-lab update_env
       args:
         creates: "{{ lab_dir }}/services/.env"
 
