@@ -1,4 +1,4 @@
-title: NewPush ADHK - Student Lab
+title: newpush labs
 theme: dark
 layout:
   grid:
@@ -7,23 +7,6 @@ layout:
     large: 3
     xlarge: 4
 services:
-  # Home:
-  #   - title: WhoAmI
-  #     description: Who Am I
-  #     link: 'https://whoami.${DOMAIN}'
-  #     icon:
-  #       name: devicon:jekyll 
-  #       wrap: true
-  #       color: '#3dbcf3'
-  #     status:
-  #       enabled: true
-  #       interval: 60
-  #   - type: ip-api
-  #     link: 'https://www.ipaddress.com/what-is-my-ip-address/'
-  #     options:
-  #       flagIcon: false
-  #     icon:
-  #       name: oui:token-ip
   Cloud:
     - title: Traefik
       description: Cloud edge router
@@ -37,15 +20,6 @@ services:
       icon:
         url: https://cdn.jsdelivr.net/gh/selfhst/icons/png/casdoor.png
         wrap: true
-
-
-    # - title: Terminal
-    #   description: Apache Guacamole 
-    #   link: 'https://terminal.DOMAIN'
-    #   icon:
-    #     name: bi:terminal
-    #     wrap: true
-
   Docker:
     - title: Portainer
       description: Docker container management
@@ -53,32 +27,6 @@ services:
       icon:
         name: devicon:portainer
         wrap: true
-
-    # - title: Dozzle
-    #   description: Docker logs
-    #   link: 'https://logs.DOMAIN'
-    #   icon:
-    #     name: simple-icons:drizzle
-    #     color: '#C5F74F'
-    #     wrap: true
-
-    # Security:
-    # - title: OpenVAS
-    #   description: Open Vulnerability Assessment Scanner
-    #   link: 'https://openvas.${DOMAIN}'
-    #   icon:
-    #     name: simple-icons:amazoncloudwatch
-    #     color: '#3dbcf3'
-    #     wrap: true
-    # - title: Wazuh
-    #   description: Open Source XDR and SIEM 
-    #   link: 'https://wazuh.${DOMAIN}'
-    #   icon:
-    #     # name: simple-icons:elasticstack
-    #     url: https://upload.wikimedia.org/wikipedia/commons/1/13/Wazuh-orig.png
-    #     color: '#3dbcf3'
-    #     wrap: true
-
   Monitoring:
     - title: Grafana
       description: Grafana
