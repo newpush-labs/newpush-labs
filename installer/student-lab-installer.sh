@@ -77,9 +77,11 @@ function start_stacks() {
           docker compose -f docker-compose.yaml -p student-lab up -d
           ;;
         "wazuh")
+          cd /opt/student-lab/services/dockge/stacks/lab-security-wazuh
           docker compose -f docker-compose.wazuh.yaml -p student-lab-wazuh up -d
           ;;
         "openvas")
+          cd /opt/student-lab/services/dockge/stacks/lab-security-openvas
           docker compose -f docker-compose.openvas.yaml -p student-lab-openvas up -d
           ;;
         "coder")
@@ -110,9 +112,11 @@ function stop_stacks() {
           docker compose -f docker-compose.yaml -p student-lab stop
           ;;
         "wazuh")
+          cd /opt/student-lab/services/dockge/stacks/lab-security-wazuh
           docker compose -f docker-compose.wazuh.yaml -p student-lab-wazuh stop
           ;;
         "openvas")
+          cd /opt/student-lab/services/dockge/stacks/lab-security-openvas
           docker compose -f docker-compose.openvas.yaml -p student-lab-openvas stop
           ;;
         "coder")
