@@ -43,7 +43,7 @@ data "aws_ami" "debian" {
 
   filter {
     name   = "name"
-    values = ["student-lab-debian-12-*"]
+    values = ["newpush-lab-debian-12-*"]
   }
 
   filter {
