@@ -16,6 +16,8 @@ utils/np-internal-prod.json
 
 provisioning/ansible/inventory/hosts
 provisioning/ansible/inventory/hosts.dev
+provisioning/ansible/inventory/hosts.lab
+
 provisioning/ansible/group_vars/lab.yaml
 
 _temp_/*
