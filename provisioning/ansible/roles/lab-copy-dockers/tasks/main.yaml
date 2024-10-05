@@ -27,6 +27,12 @@
     dest: "{{ lab_dir }}/services/docker-compose.casdoor.yaml"
     mode: '0644'
 
+- name: Render the Jinja2 template for Dockge
+  ansible.builtin.template:
+    src: ../../services/docker-compose.dockge.yaml.j2
+    dest: "{{ lab_dir }}/services/docker-compose.dockge.yaml"
+    mode: '0644'
+
 - name: Cleanup the Jinja2 templates
   ansible.builtin.file:
     path: "{{ item }}"
@@ -36,3 +42,4 @@
     - "{{ lab_dir }}/services/dockge/stacks/lab-llm-perplexica/perplexica/config.toml.j2"
     - "{{ lab_dir }}/services/docker-compose.grafana.yaml.j2"
     - "{{ lab_dir }}/services/docker-compose.casdoor.yaml.j2"
+    - "{{ lab_dir }}/services/docker-compose.dockge.yaml.j2"

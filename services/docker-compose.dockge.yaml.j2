@@ -1,0 +1,43 @@
+services:
+  dockge:
+    image: louislam/dockge:1
+    container_name: dockge
+    restart: unless-stopped
+    # ports:
+    #   - 5001:5001
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./dockge/data:/app/data
+      - {{ lab_dir }}/services/dockge/stacks:{{ lab_dir }}/services/dockge/stacks
+      - {{ lab_dir }}/services/.env:{{ lab_dir }}/services/dockge/stacks/.env
+    env_file:
+      - {{ lab_dir }}/services/.env
+    environment:
+      - DOCKGE_STACKS_DIR={{ lab_dir }}/services/dockge/stacks
+    labels:
+      - "com.centurylinklabs.watchtower.enable"
+      - "traefik.enable=true"
+      - "traefik.http.routers.dockge.rule=Host(`dockge.${DOMAIN}`)"
+      - "traefik.http.routers.dockge.entrypoints=https"
+      - "traefik.http.services.dockge.loadbalancer.server.port=5001"
+      - "traefik.http.routers.dockge.service=dockge"
+      - "traefik.http.routers.dockge.tls=true"
+      - "traefik.http.routers.dockge.tls.certresolver=default"
+      - "traefik.http.routers.dockge.middlewares=traefik-forward-auth"
+      - "mafl.enable=true"
+      - "mafl.title=Dockge"
+      - "mafl.description=Stack-oriented Docker Manager"
+      - "mafl.tag=docker"
+      - "mafl.group=Docker"
+      - "mafl.link=https://dockge.${DOMAIN}"
+      - "mafl.icon.url=https://dockge.kuma.pet/icon.svg"
+      - "mafl.icon.wrap=true"
+      - "mafl.icon.color=#007acc"
+      - "mafl.status.enabled=true"
+      - "mafl.status.interval=60"
+    networks:
+      - web
+
+networks:
+  web:
+    external: True
