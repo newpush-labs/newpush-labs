@@ -25,7 +25,7 @@
         reload: true
 
     - name: Generate wazuh certs
-      ansible.builtin.command: docker compose -f generate-indexer-certs.yml run --rm generator
+      ansible.builtin.command: docker compose -f {{ lab_dir }}/services/dockge/stacks/lab-security-wazuh/generate-indexer-certs.yml run --rm generator
       args:
         chdir: "{{ lab_dir }}/services"
         creates: "{{ lab_dir }}/services/wazuh/wazuh_indexer_ssl_certs/wazuh.indexer.pem"
