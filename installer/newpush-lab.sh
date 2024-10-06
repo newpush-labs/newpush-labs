@@ -62,29 +62,6 @@ function manage_lab() {
   esac
 }
 
-function update_env() {
-  cd $LAB_HOME
-  IP=$(curl ifconfig.me -4 --silent); 
-  DOMAIN="$IP.traefik.me"
-  
-  LAB_USER=$(awk -F':' '$3 == 1000 { print $1 }' /etc/passwd)
-  LAB_USER_HOME=$(eval echo ~$LAB_USER)
-  LAB_IP=$(curl ifconfig.me -4 --silent)
-  LAB_SSH_KEY=$LAB_USER_HOME/.ssh/id_rsa
-
-  echo "DOMAIN=$DOMAIN" > .env
-  echo "CODER_ACCESS_URL=https://coder.$IP.traefik.me" >> .env
-  
-  echo "LAB_USER=$LAB_USER" >> .env
-  echo "LAB_USER_HOME=$LAB_USER_HOME" >> .env
-  echo "LAB_IP=$LAB_IP" >> .env
-  echo "LAB_SSH_KEY=$LAB_SSH_KEY" >> .env
-
-  cat .env 
-  
-  echo "Update complete."
-}
-
 function restart_container() {
   local container_name=$1
 
@@ -103,45 +80,7 @@ function restart_container() {
   fi
 }
 
-function update_sshwifty() {
-  cd /opt/student-lab/services/
-
-  if [ -e ".env" ]; then
-    LAB_USER=$(grep -oP 'LAB_USER=\K[^ ]+' .env)
-    LAB_SSH_KEY=$(grep -oP 'LAB_SSH_KEY=\K[^ ]+' .env)
-    LAB_IP=$(grep -oP 'LAB_IP=\K[^ ]+' .env)
-    LAB_USER_HOME=$(grep -oP 'LAB_USER_HOME=\K[^ ]+' .env)
-    LAB_SSH_KEY=$LAB_USER_HOME/.ssh/id_rsa
-
-    if [ ! -e "$LAB_SSH_KEY" ]; then
-      echo "No SSH key found for $LAB_USER at $LAB_SSH_KEY. Generating..."
-      sudo -u $LAB_USER ssh-keygen -t rsa -b 4096 -f $LAB_SSH_KEY -N "" -q
-    fi
-
-    if [ -e "$LAB_SSH_KEY" ]; then
-      cp $LAB_SSH_KEY sshwifty/id_rsa
-      chown $LAB_USER sshwifty/id_rsa
-      chmod 600 sshwifty/id_rsa
-      echo "SSHWifty config updated."
-      cat $LAB_SSH_KEY.pub >> $LAB_USER_HOME/.ssh/authorized_keys
-    fi
-
-    LAB_SSH_KEY_DATA=$(cat $LAB_SSH_KEY | tr '\n' ' ')
-
-    sed -i "s,environment://LAB_IP,$LAB_IP,g" /opt/student-lab/services/sshwifty/sshwifty.conf.json
-    sed -i "s,environment://LAB_USER,$LAB_USER,g" /opt/student-lab/services/sshwifty/sshwifty.conf.json
-    # sed -i "s,file:///home/sshwifty/.ssh/id_rsa,$LAB_SSH_KEY_DATA,g" /opt/student-lab/services/sshwifty/sshwifty.conf.json
-  else
-    echo "No .env file found. Cannot update SSHWifty config."
-  fi
-}
-
-
 case $1 in
-  "update_env")
-    update_env
-    update_sshwifty
-    ;;
   "status")
     manage_lab status $2
     ;;
