@@ -4,8 +4,6 @@ services:
   whoami:
     restart: unless-stopped
     image: "containous/whoami:latest"
-    env_file:
-      - .env
     container_name: "whoami"
     labels:
       - "traefik.enable=true"
