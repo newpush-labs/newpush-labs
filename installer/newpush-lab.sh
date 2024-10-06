@@ -24,7 +24,7 @@ function manage_lab() {
 
   local project_name=${stack}
   if [ "$stack" == "core" ]; then
-    stack="lab-core"
+    local project_name="lab-core"
     local compose_file=$LAB_HOME/services/docker-compose.yaml
   else
     # Check if the stack directory exists
@@ -140,6 +140,7 @@ function update_sshwifty() {
 case $1 in
   "update_env")
     update_env
+    update_sshwifty
     ;;
   "status")
     manage_lab status $2
