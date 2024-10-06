@@ -6,7 +6,7 @@ The newpush labs is an out-of-the-box solution that allows you to easily try out
 
 ## Build your lab in seconds, not months! 🚀
 
-Supercharge your skills by spinning up a pre-configured LLM lab loaded with the latest and greatest tools. Jump in and start your tech adventure with ease!
+We do the heavy lifting for you by providing a pre-configured stack in the lab, equipped with the newest and most advanced tools. Evaluate, play around, and experience cutting-edge technology as you dive in and embark on your tech journey effortlessly!
 
 ![Lab Demo](docs/images/lab-demo.gif)
 
