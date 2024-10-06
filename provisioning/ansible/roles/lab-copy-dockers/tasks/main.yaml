@@ -1,3 +1,61 @@
+# pre_tasks:
+- name: Get client secret from casdoor
+  ansible.builtin.command: python3 {{ lab_dir }}/utils/casdoor/casdoor-rotate-secrets.py --db {{ lab_dir }}/services/casdoor/casdoor.db
+  register: cmd_casdoor_rotate_secrets
+  changed_when: false
+  failed_when: false
+
+- name: Extract Client Secret
+  ansible.builtin.set_fact:
+    generic_oauth_client_secret: "{{ cmd_casdoor_rotate_secrets.stdout_lines \
+                                          | select('search', 'Client Secret: ') \
+                                          | map('regex_replace', '^.*Client Secret: ', '') \
+                                          | first }}"
+
+- name: Get lab external ip
+  ansible.builtin.command: "curl -s -4 https://ifconfig.me"
+  register: cmd_get_lab_external_ip
+  changed_when: false
+  failed_when: false
+  when: lab_external_ip is not defined or lab_external_ip == ""
+
+- name: Extract lab external ip
+  ansible.builtin.set_fact:
+    lab_external_ip: "{{ cmd_get_lab_external_ip.stdout }}"
+  when: lab_external_ip is not defined or lab_external_ip == ""
+
+- name: Get lab user
+  ansible.builtin.shell: "getent passwd 1000 | cut -d':' -f1"
+  register: cmd_get_lab_user
+  changed_when: false
+  failed_when: false
+  when: lab_user is not defined or lab_user == ""
+
+- name: Set lab user fact
+  ansible.builtin.set_fact:
+    lab_user: "{{ cmd_get_lab_user.stdout }}"
+  when: lab_user is not defined or lab_user == ""
+
+- name: Debug lab user
+  ansible.builtin.debug:
+    msg: "The lab user is {{ lab_user }}"
+
+- name: Get lab ssh fingerprint
+  ansible.builtin.shell: "ssh-keygen -lf {{ lab_dir }}/services/sshwifty/id_rsa | awk '{print $2}'"
+  register: cmd_get_lab_ssh_fingerprint
+  changed_when: false
+  failed_when: false
+  when: lab_ssh_fingerprint is not defined or lab_ssh_fingerprint == ""
+
+- name: Set lab ssh fingerprint fact
+  ansible.builtin.set_fact:
+    lab_ssh_fingerprint: "{{ cmd_get_lab_ssh_fingerprint.stdout }}"
+  when: lab_ssh_fingerprint is not defined or lab_ssh_fingerprint == ""
+
+- name: Debug lab external ip
+  ansible.builtin.debug:
+    msg: "The lab external IP is {{ lab_external_ip }} {{ lab_user }} {{ lab_ssh_fingerprint }}"
+
 - name: Synchronize dockerfiles from local directory
   ansible.posix.synchronize:
     src: ../../services
@@ -33,6 +91,12 @@
     dest: "{{ lab_dir }}/services/docker-compose.dockge.yaml"
     mode: '0644'
 
+- name: Render the Jinja2 template for Sshwifty
+  ansible.builtin.template:
+    src: ../../services/sshwifty/sshwifty.conf.json.j2
+    dest: "{{ lab_dir }}/services/sshwifty/sshwifty.conf.json"
+    mode: '0644'
+
 - name: Cleanup the Jinja2 templates
   ansible.builtin.file:
     path: "{{ item }}"
@@ -43,3 +107,4 @@
     - "{{ lab_dir }}/services/docker-compose.grafana.yaml.j2"
     - "{{ lab_dir }}/services/docker-compose.casdoor.yaml.j2"
     - "{{ lab_dir }}/services/docker-compose.dockge.yaml.j2"
+    - "{{ lab_dir }}/services/sshwifty/sshwifty.conf.json.j2"

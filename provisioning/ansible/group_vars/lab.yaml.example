@@ -17,3 +17,7 @@ groq_api_key:
 generic_oauth_application_name: application 
 generic_oauth_client_id: 5e7c01af6d262109e111 
 generic_oauth_client_secret:  
+
+# used for configuring sshwiftly and ssh key, defaults to 1000 userid if empty
+lab_external_ip:
+lab_user: 

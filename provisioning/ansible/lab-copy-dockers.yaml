@@ -1,20 +1,6 @@
 - name: Copy Docker images to hosts
   hosts: lab
   remote_user: root
-  pre_tasks:
-    - name: Get client secret from casdoor
-      ansible.builtin.command: python3 {{ lab_dir }}/utils/casdoor/casdoor-rotate-secrets.py --db {{ lab_dir }}/services/casdoor/casdoor.db
-      register: cmd_casdoor_rotate_secrets
-      changed_when: false
-      failed_when: false
-
-    - name: Extract Client Secret
-      ansible.builtin.set_fact:
-        generic_oauth_client_secret: "{{ cmd_casdoor_rotate_secrets.stdout_lines \
-                                             | select('search', 'Client Secret: ') \
-                                             | map('regex_replace', '^.*Client Secret: ', '') \
-                                             | first }}"
-
   roles:
     # - common
     - lab-copy-installer
