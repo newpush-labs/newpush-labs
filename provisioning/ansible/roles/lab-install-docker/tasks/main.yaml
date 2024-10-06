@@ -27,7 +27,9 @@
 
 - name: Create Docker network
   ansible.builtin.command: docker network create web
+  register: docker_network_create
   when: docker_network_web.stdout == ""
+  changed_when: docker_network_create.rc == 0
 
 # - name: Install Google Cloud SDK
 #   aansible.builtin.pt_key:
