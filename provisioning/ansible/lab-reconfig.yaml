@@ -9,5 +9,3 @@
     - lab-set-permissions
 
   tasks:
-    - name: Run newpush-lab to reconfig
-      ansible.builtin.command: /usr/local/bin/newpush-lab reconfig

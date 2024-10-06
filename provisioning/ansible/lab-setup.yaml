@@ -29,12 +29,4 @@
       ansible.builtin.command: docker compose -f {{ lab_dir }}/services/dockge/stacks/lab-security-wazuh/generate-indexer-certs.yml run --rm generator
       args:
         chdir: "{{ lab_dir }}/services"
-        creates: "{{ lab_dir }}/services/wazuh/wazuh_indexer_ssl_certs/wazuh.indexer.pem"
-
-    - name: Run newpush-lab to update the stack
-      ansible.builtin.command: /usr/local/bin/newpush-lab update_env
-      args:
-        creates: "{{ lab_dir }}/services/.env"
-
-    - name: Run newpush-lab to update the stack
-      ansible.builtin.command: /usr/local/bin/newpush-lab reconfig
+        creates: "{{ lab_dir }}/services/dockge/stacks/lab-security-wazuh/wazuh_indexer_ssl_certs/wazuh.indexer.pem"
