@@ -5,4 +5,5 @@
     # - common
     - lab-copy-installer
     - lab-copy-dockers
+    - lab-configure-env
     - lab-set-permissions

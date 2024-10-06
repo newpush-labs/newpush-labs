@@ -1,0 +1,41 @@
+- name: Get lab external ip
+  ansible.builtin.command: "curl -s -4 https://ifconfig.me"
+  register: cmd_get_lab_external_ip
+  changed_when: false
+  failed_when: false
+  when: lab_external_ip is not defined or lab_external_ip == ""
+
+- name: Extract lab external ip
+  ansible.builtin.set_fact:
+    lab_external_ip: "{{ cmd_get_lab_external_ip.stdout }}"
+  when: lab_external_ip is not defined or lab_external_ip == ""
+
+- name: Set domain
+  ansible.builtin.set_fact:
+    lab_domain: "{{ lab_external_ip }}.traefik.me"
+  when: lab_domain is not defined or lab_domain == ""
+
+- name: Set coder access url
+  ansible.builtin.set_fact:
+    coder_access_url: "https://coder.{{ lab_external_ip }}.traefik.me"
+
+- name: Add DOMAIN variable to .env file if it doesn't exist
+  ansible.builtin.lineinfile:
+    path: "{{ lab_dir }}/services/.env"
+    line: "DOMAIN={{ lab_domain }}"
+    create: true
+    regexp: '^DOMAIN='
+
+- name: Add LAB_IP variable to .env file if it doesn't exist
+  ansible.builtin.lineinfile:
+    path: "{{ lab_dir }}/services/.env"
+    line: "LAB_IP={{ lab_external_ip }}"
+    create: true
+    regexp: '^LAB_IP='
+
+- name: Add CODER_ACCESS_URL variable to .env file if it doesn't exist
+  ansible.builtin.lineinfile:
+    path: "{{ lab_dir }}/services/.env"
+    line: "CODER_ACCESS_URL={{ coder_access_url }}"
+    create: true
+    regexp: '^CODER_ACCESS_URL='

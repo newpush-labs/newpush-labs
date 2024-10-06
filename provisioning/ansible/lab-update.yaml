@@ -5,6 +5,7 @@
     - common
     - lab-copy-installer
     - lab-copy-dockers
+    - lab-configure-env
     - lab-install-docker
     - lab-set-permissions
   tasks:
