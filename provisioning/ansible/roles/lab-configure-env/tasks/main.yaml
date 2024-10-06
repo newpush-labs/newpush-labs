@@ -25,6 +25,7 @@
     line: "DOMAIN={{ lab_domain }}"
     create: true
     regexp: '^DOMAIN='
+    mode: "0644"
 
 - name: Add LAB_IP variable to .env file if it doesn't exist
   ansible.builtin.lineinfile:
@@ -32,10 +33,11 @@
     line: "LAB_IP={{ lab_external_ip }}"
     create: true
     regexp: '^LAB_IP='
-
+    mode: "0644"
 - name: Add CODER_ACCESS_URL variable to .env file if it doesn't exist
   ansible.builtin.lineinfile:
     path: "{{ lab_dir }}/services/.env"
     line: "CODER_ACCESS_URL={{ coder_access_url }}"
     create: true
     regexp: '^CODER_ACCESS_URL='
+    mode: "0644"
