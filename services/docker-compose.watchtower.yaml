@@ -14,4 +14,4 @@ services:
       - WATCHTOWER_CLEANUP=true
       - WATCHTOWER_REMOVE_VOLUMES=true
       - WATCHTOWER_LABEL_ENABLE=true
-      - WATCHTOWER_SCHEDULE="0 0 0 * * *"
+      # - WATCHTOWER_SCHEDULE="0 0 0 * * *"
