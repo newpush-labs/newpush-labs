@@ -8,7 +8,7 @@
   register: rotate_secrets_output
   when: not casdoor_db_stat.stat.exists
 
-- name: Copy template database to {{ lab_dir }}/services/casdoor/casdoor.db if casdoor.db does not exist
+- name: Copy template database if casdoor.db does not exist
   ansible.builtin.copy:
     src: "{{ lab_dir }}/services/casdoor/casdoor.db_orig"
     dest: "{{ lab_dir }}/services/casdoor/casdoor.db"
