@@ -1,6 +1,8 @@
 # Default target
 .DEFAULT_GOAL := help
 
+HOSTS_FILE = provisioning/ansible/inventory/hosts.dev
+
 # Help target
 help:
 	@echo "Available commands:"
@@ -8,10 +10,13 @@ help:
 
 # Dev target
 dev:
-	ansible-playbook -i provisioning/ansible/inventory/hosts.dev provisioning/ansible/lab-reconfig.yaml
+	ansible-playbook -i $(HOSTS_FILE) provisioning/ansible/lab-reconfig.yaml
 
 copy:
-	ansible-playbook -i provisioning/ansible/inventory/hosts.dev provisioning/ansible/lab-copy-dockers.yaml
+	ansible-playbook -i $(HOSTS_FILE) provisioning/ansible/lab-copy-dockers.yaml
+
+ping:
+	ansible -i $(HOSTS_FILE) -m ping all
 
 # Phony targets
 .PHONY: help dev
