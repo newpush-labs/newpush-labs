@@ -1,0 +1,32 @@
+- name: Setup lab
+  hosts: lab
+  remote_user: root
+  roles:
+    - { role: common, tags: [ always ] }
+    - { role: lab-install-docker, tags: [ setup ] }
+    - { role: lab-copy-installer, tags: [ setup ] }
+    - { role: lab-copy-dockers, tags: [ setup ] }
+    - { role: lab-configure-env, tags: [ setup ] }
+    - { role: lab-set-permissions, tags: [ setup ] }
+
+  tasks:
+    - name: Check and configure dpkg packages
+      ansible.builtin.command: dpkg --configure -a
+      environment:
+        DEBIAN_FRONTEND: noninteractive
+      register: dpkg_result
+      changed_when: dpkg_result.stdout != "" or dpkg_result.stderr != ""
+      failed_when: false
+
+    - name: Ensure sysctl vm.max_map_count is set
+      ansible.posix.sysctl:
+        name: vm.max_map_count
+        value: '262144'
+        state: present
+        reload: true
+
+    - name: Generate wazuh certs
+      ansible.builtin.command: docker compose -f {{ lab_dir }}/services/dockge/stacks/lab-security-wazuh/generate-indexer-certs.yml run --rm generator
+      args:
+        chdir: "{{ lab_dir }}/services"
+        creates: "{{ lab_dir }}/services/dockge/stacks/lab-security-wazuh/wazuh_indexer_ssl_certs/wazuh.indexer.pem"
