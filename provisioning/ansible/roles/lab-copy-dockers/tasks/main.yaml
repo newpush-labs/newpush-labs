@@ -31,6 +31,11 @@
   failed_when: false
   when: lab_user is not defined or lab_user == ""
 
+- name: Set lab domain fact
+  ansible.builtin.set_fact:
+    lab_domain: "{{ lab_external_ip }}.traefik.me"
+  when: lab_domain is not defined or lab_domain == ""
+
 - name: Set lab user fact
   ansible.builtin.set_fact:
     lab_user: "{{ cmd_get_lab_user.stdout }}"
@@ -97,6 +102,12 @@
     dest: "{{ lab_dir }}/services/sshwifty/sshwifty.conf.json"
     mode: '0644'
 
+- name: Render the Jinja2 template for Portainer
+  ansible.builtin.template:
+    src: ../../services/docker-compose.portainer.yaml.j2
+    dest: "{{ lab_dir }}/services/docker-compose.portainer.yaml"
+    mode: '0644'
+
 - name: Cleanup the Jinja2 templates
   ansible.builtin.file:
     path: "{{ item }}"
@@ -108,3 +119,4 @@
     - "{{ lab_dir }}/services/docker-compose.casdoor.yaml.j2"
     - "{{ lab_dir }}/services/docker-compose.dockge.yaml.j2"
     - "{{ lab_dir }}/services/sshwifty/sshwifty.conf.json.j2"
+    - "{{ lab_dir }}/services/docker-compose.portainer.yaml.j2"
