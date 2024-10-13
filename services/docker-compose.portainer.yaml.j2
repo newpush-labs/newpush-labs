@@ -1,5 +1,4 @@
 version: "3.3"
-
 services:
   portainer:
     image: portainer/portainer-ce
@@ -8,7 +7,7 @@ services:
     container_name: portainer
     restart: unless-stopped
     command: ["--logo", "https://storage.googleapis.com/static_newpush/np_labs_logo.png", 
-              "--templates", "https://raw.githubusercontent.com/hdkiller/portainer-templates/refs/heads/traefik/templates_with_labels.json", 
+              "--templates", "https://evening-waters-42512-c3a4aa064399.herokuapp.com/modify?portainer_template_url=https://raw.githubusercontent.com/hdkiller/portainer-templates/refs/heads/traefik/templates_with_labels.json&TRAEFIK_INGRESS_DOMAIN={{ lab_domain }}", 
               "--admin-password", '$$2y$$05$$ED1XWB3MYv3ACwItDZjTuee6S3Flwj.ckwoUstuISY1Wuu.Buiqje']
     labels:
       - "com.centurylinklabs.watchtower.enable"
