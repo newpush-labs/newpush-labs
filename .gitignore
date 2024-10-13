@@ -21,6 +21,7 @@ provisioning/ansible/inventory/hosts.*
 
 provisioning/ansible/group_vars/lab.yaml
 
+provisioning/tests/__pycache__/*
 _temp_/*
 provisioning/scripts/copy.sh
 provisioning/scripts/deploy.sh
