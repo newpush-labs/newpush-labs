@@ -21,5 +21,8 @@ copy:
 ping:
 	ansible $(DEBUG) -i $(HOSTS_FILE) -m ping all
 
+test:
+	py.test -n 5 --ansible-inventory=$(HOSTS_FILE) --hosts='ansible://all' provisioning/tests/test_lab_core.py
+
 # Phony targets
 .PHONY: help dev
