@@ -2,8 +2,17 @@ services:
   dozzle:
     image: amir20/dozzle:latest
     container_name: dozzle
+    healthcheck:
+      test: ["CMD", "/dozzle", "healthcheck"]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 90s
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DOZZLE_NO_ANALYTICS=true
+      - DOZZLE_ENABLE_ACTIONS=true
     labels:
       - "com.centurylinklabs.watchtower.enable"
       - "traefik.enable=true"
@@ -31,6 +40,17 @@ services:
     networks:
       - web
 
+# dozzle-from-file:
+#   container_name: dozzle-from-file
+#   image: alpine
+#   volumes:
+#     - /var/log/system.log:/var/log/stream.log
+#   command:
+#     - tail
+#     - -f
+#     - /var/log/stream.log
+#   network_mode: none
+#   restart: unless-stopped
 networks:
   web:
     external: True
