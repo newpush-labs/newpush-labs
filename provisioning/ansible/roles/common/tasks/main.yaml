@@ -55,3 +55,11 @@
     name: "{{ common_packages }}"
     state: present
   become: true
+
+- name: Update MOTD
+  ansible.builtin.template:
+    src: ../templates/motd.j2
+    dest: /etc/motd
+    mode: '0644'
+    owner: root
+    group: root
