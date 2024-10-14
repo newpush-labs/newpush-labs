@@ -24,3 +24,11 @@ generic_oauth_client_secret:
 # used for configuring sshwiftly and ssh key, defaults to 1000 userid if empty
 lab_external_ip:
 lab_user: 
+
+# Default system locale
+locale_encoding: UTF-8
+locale_language: en_US
+locale_language_all: en_US:en
+locale_origin: en_US
+locale_time: C
+system_timezone: Etc/UTC

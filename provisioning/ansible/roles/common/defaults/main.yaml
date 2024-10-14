@@ -10,3 +10,5 @@ common_packages:
   - curl
   - rsync
   - software-properties-common
+  - ncdu
+  - jq

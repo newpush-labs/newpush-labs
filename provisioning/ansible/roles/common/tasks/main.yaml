@@ -1,3 +1,42 @@
+- name: Check and configure dpkg packages
+  ansible.builtin.command: dpkg --configure -a
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  register: dpkg_result
+  changed_when: dpkg_result.stdout != "" or dpkg_result.stderr != ""
+  failed_when: false
+
+- name: Ensure system timezone
+  ansible.builtin.file:
+    src: "/usr/share/zoneinfo/{{ system_timezone }}"
+    dest: /etc/localtime
+    state: link
+    force: true
+
+- name: Ensure locales generated
+  community.general.locale_gen:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ locale_language }}.{{ locale_encoding }}"
+    - "{{ locale_origin }}.{{ locale_encoding }}"
+    - "{{ locale_time }}.{{ locale_encoding }}"
+
+- name: Ensure locales set
+  ansible.builtin.template:
+    src: ../templates/locale.j2
+    dest: /etc/default/locale
+    mode: '0644'
+    owner: root
+    group: root
+
+- name: Ensure sysctl vm.max_map_count is set
+  ansible.posix.sysctl:
+    name: vm.max_map_count
+    value: '262144'
+    state: present
+    reload: true
+
 - name: Update apt cache
   ansible.builtin.apt:
     update_cache: true
