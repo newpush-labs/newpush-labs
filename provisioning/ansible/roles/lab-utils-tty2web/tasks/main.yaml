@@ -1,0 +1,30 @@
+- name: Copy tty2web binary to /usr/local/bin
+  ansible.builtin.copy:
+    src: files/tty2web_linux_amd64
+    dest: /usr/local/bin/tty2web
+    mode: '0755'
+
+- name: Copy tty2web service to /etc/systemd/system
+  ansible.builtin.copy:
+    src: files/tty2web_service
+    dest: /etc/systemd/system/tty2web.service
+    mode: '0644'
+
+- name: Enable and start tty2web service
+  ansible.builtin.systemd:
+    name: tty2web
+    enabled: true
+    state: started
+    daemon_reload: true
+
+- name: Add traefik configuration for tty2web
+  ansible.builtin.template:
+    src: files/tty2web.yaml.j2
+    dest: "{{ lab_dir }}/services/traefik/conf.d/tty2web.yaml"
+    mode: '0644'
+
+- name: Add mafl configuration for tty2web
+  ansible.builtin.template:
+    src: files/tty2web_mafl.yml.j2
+    dest: "{{ lab_dir }}/services/mafl/conf.d/tty2web.yml"
+    mode: '0644'

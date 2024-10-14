@@ -1,0 +1,12 @@
+[Unit]
+Description=tty2web Service
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/tty2web -p 9942 --url tty -a 172.17.0.1 -w bash
+Restart=always
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target

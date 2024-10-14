@@ -1,0 +1,16 @@
+http:
+  routers:
+    tty2web:
+      service: tty2web
+      rule: "Host(`tty2web.{{ lab_domain }}`)"
+      entryPoints:
+        - https
+      tls:
+        certResolver: default
+      middlewares:
+        - traefik-forward-auth@docker
+  services:
+    tty2web:
+      loadBalancer:
+        servers:
+          - url: http://172.17.0.1:9942
