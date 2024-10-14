@@ -55,3 +55,7 @@ def test_www_url_loads(host, ip_address):
     print(f"Testing URL: {url}")
     response = host.run(f"curl -k -s -o /dev/null -w '%{{http_code}}' {url}")
     assert response.stdout == "307" # Redirects to auth
+
+def check_root_free_space(host):
+    root_partition = host.run("df / --output=avail -B1 | tail -n1").stdout.strip()
+    assert int(root_partition) > 2000000000 # 2GB
