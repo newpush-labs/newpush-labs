@@ -3,6 +3,8 @@ services:
     extends:
       file: docker-compose.traefik.yaml
       service: traefik
+    depends_on:
+      - traefik-forward-auth
   casdoor:
     extends:
       file: docker-compose.casdoor.yaml
@@ -11,10 +13,15 @@ services:
     extends:
       file: docker-compose.casdoor.yaml
       service: traefik-forward-auth
+    depends_on:
+      - casdoor
   mafl:
     extends:
       file: docker-compose.mafl.yaml
       service: mafl
+    depends_on:
+      - mafl-service-discovery
+      - traefik
   mafl-service-discovery:
     extends:
       file: docker-compose.mafl.yaml
@@ -23,10 +30,14 @@ services:
     extends:
       file: docker-compose.dozzle.yaml
       service: dozzle
+    depends_on:
+      - traefik
   grafana:
     extends:
       file: docker-compose.grafana.yaml
       service: grafana
+    depends_on:
+      - traefik
   prometheus:
     extends:
       file: docker-compose.grafana.yaml
@@ -39,26 +50,38 @@ services:
     extends:
       file: docker-compose.grafana.yaml
       service: promtail
+    depends_on:
+      - loki
   node-exporter:
     extends:
       file: docker-compose.grafana.yaml
       service: node-exporter
+    depends_on:
+      - prometheus
   cadvisor:
     extends:
       file: docker-compose.grafana.yaml
       service: cadvisor
+    depends_on:
+      - prometheus
   sshwifty:
     extends:
       file: docker-compose.sshwifty.yaml
       service: sshwifty
+    depends_on:
+      - traefik
   dockge:
     extends:
       file: docker-compose.dockge.yaml
       service: dockge
+    depends_on:
+      - traefik
   portainer:
     extends:
       file: docker-compose.portainer.yaml
       service: portainer
+    depends_on:
+      - traefik
   watchtower:
     extends:
       file: docker-compose.watchtower.yaml
