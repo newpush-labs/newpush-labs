@@ -20,8 +20,8 @@ STACKS_DIR="$SERVICES_DIR/dockge/stacks"
 # The docker compose project name is the stack name
 function manage_lab() {
   local action=$1
-  local stack=$2
-
+  local stack=${2:-core}
+  
   local project_name=${stack}
   if [ "$stack" == "core" ]; then
     local project_name="lab-core"
@@ -80,6 +80,43 @@ function restart_container() {
   fi
 }
 
+function migrate() {
+  # Migrate lab to the latest version by ensuring all containers are stopped first to avoid name conflicts
+  
+  # List all docker compose projects and tear them down
+  docker_compose_projects=$(docker compose ls --format json | jq -r '.[] | .Name')
+
+  if [ -z "$docker_compose_projects" ]; then
+    echo "No docker compose projects found."
+    return 0
+  fi
+
+  for project in $docker_compose_projects; do
+    echo "Tearing down docker compose project: $project"
+    docker compose -p $project down
+  done
+  
+}
+
+function free_up_disk_space() {
+  apt-get clean
+  journalctl --vacuum-size=100M
+  docker container stop kali
+  docker container rm kali
+  docker image rm newpush/kali-linux-ssh
+  docker system prune
+
+  wazuh_manager_container=$(docker ps --filter "name=wazuh.manager" --filter "status=running" --format "{{.ID}}")
+
+  if [ -n "$wazuh_manager_container" ]; then
+    echo "Wazuh manager docker container is running with ID: $wazuh_manager_container"
+    docker exec $wazuh_manager_container sh -c 'rm -rvf /var/ossec/queue/vd_updater/tmp/contents/*'
+  else
+    echo "Wazuh manager docker container is not running."
+  fi
+  
+}
+
 case $1 in
   "status")
     manage_lab status $2
@@ -101,6 +138,12 @@ case $1 in
     ;;
   "restart-container")
     restart_container $2
+    ;;
+  "free-up-disk-space")
+    free_up_disk_space
+    ;;
+  "migrate")
+    migrate
     ;;
   *)
     echo "Invalid argument: $1"
