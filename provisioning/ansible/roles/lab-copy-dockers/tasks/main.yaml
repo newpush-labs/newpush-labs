@@ -46,7 +46,9 @@
     msg: "The lab user is {{ lab_user }}"
 
 - name: Get lab ssh fingerprint
-  ansible.builtin.shell: "ssh-keygen -lf {{ lab_dir }}/services/sshwifty/id_rsa | awk '{print $2}'"
+  ansible.builtin.shell: |
+    set -o pipefail
+    ssh-keygen -lf {{ lab_dir }}/services/sshwifty/id_rsa | awk '{print $2}'
   register: cmd_get_lab_ssh_fingerprint
   changed_when: false
   failed_when: false
@@ -59,7 +61,7 @@
 
 - name: Debug lab external ip
   ansible.builtin.debug:
-    msg: "The lab external IP is {{ lab_external_ip }} {{ lab_user }} {{ lab_ssh_fingerprint }}"
+    msg: "The lab external IP is {{ lab_external_ip }} with user {{ lab_user }} and fingerprint {{ lab_ssh_fingerprint }}"
 
 - name: Synchronize dockerfiles from local directory
   ansible.posix.synchronize:
@@ -107,6 +109,7 @@
     src: ../../services/docker-compose.portainer.yaml.j2
     dest: "{{ lab_dir }}/services/docker-compose.portainer.yaml"
     mode: '0644'
+
 
 - name: Cleanup the Jinja2 templates
   ansible.builtin.file:
