@@ -1,3 +1,6 @@
+- name: Include SSH configuration tasks
+  include_tasks: ssh_config.yaml
+
 - name: Check and configure dpkg packages
   ansible.builtin.command: dpkg --configure -a
   environment:

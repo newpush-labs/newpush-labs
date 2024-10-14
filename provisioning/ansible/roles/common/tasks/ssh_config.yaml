@@ -1,0 +1,19 @@
+# roles/common/tasks/ssh_config.yaml
+
+- name: Ensure the /etc/ssh/sshd_config.d/ directory exists
+  file:
+    path: /etc/ssh/sshd_config.d/
+    state: directory
+    mode: '0755'
+
+- name: Create or update the custom SSH configuration file for MaxSessions
+  copy:
+    dest: /etc/ssh/sshd_config.d/custom_config.conf
+    content: |
+      # Custom SSH configuration to increase MaxSessions
+      MaxSessions 50
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart SSH service
+
