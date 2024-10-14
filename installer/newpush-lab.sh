@@ -82,20 +82,41 @@ function restart_container() {
 
 function migrate() {
   # Migrate lab to the latest version by ensuring all containers are stopped first to avoid name conflicts
-  
+
   # List all docker compose projects and tear them down
   docker_compose_projects=$(docker compose ls --format json | jq -r '.[] | .Name')
 
   if [ -z "$docker_compose_projects" ]; then
     echo "No docker compose projects found."
-    return 0
+  else
+    for project in $docker_compose_projects; do
+      echo "Tearing down docker compose project: $project"
+      docker compose -p $project down
+    done
   fi
-
-  for project in $docker_compose_projects; do
-    echo "Tearing down docker compose project: $project"
-    docker compose -p $project down
-  done
   
+  # Make sure we have the latest version of the docker images just in case
+  
+  # remove all lab related images
+  remove_docker_images=$(docker images --filter=reference="lracz/*" --format "{{.ID}}")
+  for image in $remove_docker_images; do
+    docker image rm $image
+  done
+
+  docker_images=(
+    "lracz/traefik-forward-auth:latest"
+    "lracz/mafl-service-discovery:latest"
+  )
+
+  for image in "${docker_images[@]}"; do
+    docker image rm $image
+    docker image pull $image
+  done
+}
+
+function info() {
+  source $LAB_HOME/services/.env
+  echo "Your lab can be accessed at: https://www.${DOMAIN}"
 }
 
 function free_up_disk_space() {
@@ -144,6 +165,9 @@ case $1 in
     ;;
   "migrate")
     migrate
+    ;;
+  "info")
+    info
     ;;
   *)
     echo "Invalid argument: $1"
