@@ -119,6 +119,11 @@ function info() {
   echo "Your lab can be accessed at: https://www.${DOMAIN}"
 }
 
+function health_check() {
+  source $LAB_HOME/services/.env
+  echo "Your lab can be accessed at: https://www.${DOMAIN}"
+}
+
 function free_up_disk_space() {
   apt-get clean
   journalctl --vacuum-size=100M
