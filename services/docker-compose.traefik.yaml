@@ -21,7 +21,7 @@ services:
       - "traefik.http.routers.traefik-api.rule=Host(`traefik.${DOMAIN}`)"
       - "traefik.http.routers.traefik-api.entrypoints=https"
       - "traefik.http.routers.traefik-api.tls.certresolver=default"
-      - "traefik.http.routers.traefik-api.middlewares=traefik-forward-auth"
+      - "traefik.http.routers.traefik-api.middlewares=traefik-forward-auth"      
     logging:
       driver: journald
     networks:
