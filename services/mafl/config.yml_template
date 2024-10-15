@@ -1,0 +1,33 @@
+title: NewPush ADHK - Student Lab
+services:
+  Home:
+    - title: WhoAmI
+      description: Who Am I
+      link: 'https://whoami.DOMAIN'
+      icon:
+        name: devicon:jekyll 
+        wrap: true
+        color: '#3dbcf3'
+      status:
+        enabled: true
+        interval: 60
+    - type: ip-api
+      link: 'https://www.ipaddress.com/what-is-my-ip-address/'
+      options:
+        flagIcon: false
+      icon:
+        name: oui:token-ip
+
+  Cloud:
+    - title: Traefik
+      description: Cloud edge router
+      link: 'https://traefik.DOMAIN'
+      icon:
+        name: devicon:traefikproxy
+        wrap: true
+    - title: Casdoor
+      description: Casdoor
+      link: 'https://auth.DOMAIN'
+      icon:
+        name: devicon:oauth
+        wrap: true

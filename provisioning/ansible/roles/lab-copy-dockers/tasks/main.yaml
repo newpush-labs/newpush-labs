@@ -1,4 +1,47 @@
 # pre_tasks:
+
+- name: Ensure mafl config directory exists
+  ansible.builtin.file:
+    path: "{{ lab_dir }}/services/mafl/"
+    state: directory
+    mode: '0755'
+    owner: 1000
+    group: 50
+- name: Check if mafl config.yml exists
+  ansible.builtin.stat:
+    path: "{{ lab_dir }}/services/mafl/config.yml"
+  register: mafl_config_stat
+  
+- name: Copy mafl config.yml if not yet present
+  ansible.builtin.copy:
+    src: ../../services/mafl/config.yml_template
+    dest: "{{ lab_dir }}/services/mafl/config.yml"
+    mode: '0644'
+    owner: 1000
+    group: 50
+  when: not mafl_config_stat.stat.exists
+
+- name: Ensure casdoor.db directory exists
+  ansible.builtin.file:
+    path: "{{ lab_dir }}/services/casdoor"
+    state: directory
+    mode: '0755'
+    owner: 1000
+    group: 50
+
+- name: Check if casdoor.db exists
+  ansible.builtin.stat:
+    path: "{{ lab_dir }}/services/casdoor/casdoor.db"
+  register: casdoor_db_stat
+
+- name: Copy casdoor.db if not yet present
+  ansible.builtin.copy:
+    src: ../../services/casdoor/casdoor.db_template
+    dest: "{{ lab_dir }}/services/casdoor/casdoor.db"
+    mode: '0777'
+    backup: true
+  when: not casdoor_db_stat.stat.exists
+
 - name: Get client secret from casdoor
   ansible.builtin.command: python3 {{ lab_dir }}/utils/casdoor/casdoor-rotate-secrets.py --db {{ lab_dir }}/services/casdoor/casdoor.db
   register: cmd_casdoor_rotate_secrets
