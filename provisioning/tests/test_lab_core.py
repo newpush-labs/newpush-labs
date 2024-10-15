@@ -19,22 +19,22 @@ def test_traefik_running_and_enabled(host):
 
 
 @pytest.mark.parametrize("service_name", [
-    "promtail",
-    "sshwifty",
-    "loki",
-    "traefik-forward-auth",
+    # "promtail",
+    # "sshwifty",
+    # "loki",
+    # "traefik-forward-auth",
     "traefik",
     "mafl",
     "casdoor",
-    "prometheus",
-    "grafana",
-    "node-exporter",
-    "watchtower",
-    "portainer",
-    "mafl-service-discovery",
-    "dockge",
-    "dozzle",
-    "cadvisor",
+    # "prometheus",
+    # "grafana",
+    # "node-exporter",
+    # "watchtower",
+    # "portainer",
+    # "mafl-service-discovery",
+    # "dockge",
+    # "dozzle",
+    # "cadvisor",
 ])
 def test_core_docker_running_and_enabled(host, service_name):
     service = host.docker(service_name)

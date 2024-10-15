@@ -3,14 +3,20 @@
   remote_user: root
   roles:
     # - common
-    # - lab-copy-installer
+    - lab-copy-installer
     # - lab-copy-dockers
     # - lab-configure-env
     # - lab-install-docker
-    - lab-set-permissions
+    # - lab-set-permissions
   tasks:
     # - name: Run newpush-lab to reconfig
     #   ansible.builtin.command: /usr/local/bin/newpush-lab reconfig
 
+    - name: Run newpush-lab to free up disk space
+      ansible.builtin.command: /usr/local/bin/newpush-lab free-up-disk-space
+
     # - name: Run newpush-lab to restart lab
     #   ansible.builtin.command: /usr/local/bin/newpush-lab restart core
+
+    # - name: Run newpush-lab to restart mafl
+    #   ansible.builtin.command: /usr/local/bin/newpush-lab restart-container mafl
