@@ -43,7 +43,7 @@ services:
     #  - '3000:3000'
     volumes:
       - ./grafana:/var/lib/grafana
-      - ./grafana/provisioning:/usr/share/grafana/conf/provisioning
+      - ./grafana/provisioning:/etc/grafana/provisioning
     networks:
       - web
 
