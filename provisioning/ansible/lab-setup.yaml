@@ -4,6 +4,7 @@
   roles:
     - common
     - lab-install-docker
+    - lab-user
     - lab-copy-installer
     - lab-copy-dockers
     - lab-configure-env
