@@ -153,6 +153,12 @@
     dest: "{{ lab_dir }}/services/docker-compose.portainer.yaml"
     mode: '0644'
 
+- name: Render the Jinja2 template for lab-llm-lobechat
+  ansible.builtin.template:
+    src: ../../services/dockge/stacks/lab-llm-lobechat/compose.yml.j2
+    dest: "{{ lab_dir }}/services/dockge/stacks/lab-llm-lobechat/compose.yml"
+    mode: '0644'
+
 
 - name: Cleanup the Jinja2 templates
   ansible.builtin.file:
@@ -166,3 +172,4 @@
     - "{{ lab_dir }}/services/docker-compose.dockge.yaml.j2"
     - "{{ lab_dir }}/services/sshwifty/sshwifty.conf.json.j2"
     - "{{ lab_dir }}/services/docker-compose.portainer.yaml.j2"
+    - "{{ lab_dir }}/services/dockge/stacks/lab-llm-lobechat/compose.yml.j2"
