@@ -10,6 +10,7 @@
     state: directory
     mode: "0775"
 
+# TODO: User group should be 1000
 - name: Set Ownership on Appdata Directory
   ansible.builtin.file:
     path: /opt/appdata
@@ -31,4 +32,13 @@
     owner: 1000
     group: 100
     mode: "0777"
+    recurse: true
+
+
+- name: Set Ownership on jupyterlab workspace 
+  ansible.builtin.file:
+    path: "{{ lab_dir }}/services/dockge/stacks/lab-tools-jupyter/workspace"
+    owner: 1000
+    group: 1000
+    mode: "0775"
     recurse: true
