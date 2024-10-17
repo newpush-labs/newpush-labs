@@ -14,12 +14,16 @@ services:
       icon:
         name: devicon:traefikproxy
         wrap: true
+      status:
+        enabled: true
     - title: Casdoor
       description: An Identity Access Management Platform
       link: 'https://auth.${DOMAIN}'
       icon:
         url: https://cdn.jsdelivr.net/gh/selfhst/icons/png/casdoor.png
         wrap: true
+      status:
+        enabled: true
   Docker:
     - title: Portainer
       description: Docker container management
@@ -27,6 +31,8 @@ services:
       icon:
         name: devicon:portainer
         wrap: true
+      status:
+        enabled: true
   Monitoring:
     - title: Grafana
       description: Grafana
@@ -34,3 +40,6 @@ services:
       icon:
         name: devicon:grafana
         wrap: true
+      status:
+        enabled: true
+  
