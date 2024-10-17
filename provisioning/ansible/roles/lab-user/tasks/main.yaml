@@ -1,0 +1,67 @@
+- name: Check if a user with uid 1000 exists
+  ansible.builtin.getent:
+    database: passwd
+    key: 1000
+  register: user_check
+  failed_when: false
+
+- name: Check if group with gid 1000 exists
+  ansible.builtin.getent:
+    database: group
+    key: 1000
+  register: group_check
+  failed_when: false
+
+- name: Debug user_check
+  ansible.builtin.debug:
+    var: ansible_facts.getent_passwd
+
+- name: Debug group_check
+  ansible.builtin.debug:
+    var: ansible_facts.getent_group
+
+- name: Set create_user to true if ansible_facts.getent_passwd is not defined
+  ansible.builtin.set_fact:
+    create_user: true
+  when: ansible_facts.getent_passwd is not defined
+
+- name: Set lab_user to labuser if not defined
+  ansible.builtin.set_fact:
+    lab_user: labuser
+  when: lab_user is not defined
+
+- name: Set lab_user to the username if create_user is false or not defined
+  ansible.builtin.set_fact:
+    lab_user: "{{ ansible_facts.getent_passwd.keys() | list | first }}"
+  when: create_user is not defined or not create_user
+
+
+- name: Debug lab_user variable
+  ansible.builtin.debug:
+    var: lab_user
+
+- name: Ensure the lab group exists
+  ansible.builtin.group:
+    name: "{{ lab_user }}"
+    gid: 1000
+    state: present
+
+- name: Ensure the lab user exists
+  ansible.builtin.user:
+    name: "{{ lab_user }}"
+    uid: 1000
+    group: "{{ lab_user }}"
+    state: present
+
+
+- name: Ensure the user is part of the sudo group
+  ansible.builtin.user:
+    name: "{{ lab_user }}"
+    groups: sudo
+    append: true
+
+- name: Ensure the user is part of the docker group
+  ansible.builtin.user:
+    name: "{{ lab_user }}"
+    groups: docker
+    append: true

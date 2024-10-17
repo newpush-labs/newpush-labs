@@ -4,6 +4,7 @@
   roles:
     - {role: common, tags: [always]}
     - {role: lab-install-docker, tags: [setup]}
+    - {role: lab-user, tags: [setup]}
     - {role: lab-copy-installer, tags: [setup]}
     - {role: lab-copy-dockers, tags: [setup]}
     - {role: lab-configure-env, tags: [setup]}
