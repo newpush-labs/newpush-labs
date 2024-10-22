@@ -41,3 +41,34 @@
     create: true
     regexp: '^CODER_ACCESS_URL='
     mode: "0644"
+
+
+
+- name: Get client secret from casdoor
+  ansible.builtin.command: python3 {{ lab_dir }}/utils/casdoor/casdoor-rotate-secrets.py --db {{ lab_dir }}/services/casdoor/casdoor.db
+  register: cmd_casdoor_rotate_secrets
+  changed_when: false
+  failed_when: false
+
+- name: Extract Client Secret
+  ansible.builtin.set_fact:
+    generic_oauth_client_secret: "{{ cmd_casdoor_rotate_secrets.stdout_lines \
+                                          | select('search', 'Client Secret: ') \
+                                          | map('regex_replace', '^.*Client Secret: ', '') \
+                                          | first }}"
+
+- name: Add LAB_OAUTH_CLIENT_ID if it doesn't exist
+  ansible.builtin.lineinfile:
+    path: "{{ lab_dir }}/services/.env"
+    line: "LAB_OAUTH_CLIENT_ID={{ generic_oauth_client_id }}"
+    create: true
+    regexp: '^LAB_OAUTH_CLIENT_ID='
+    mode: "0644"
+
+- name: Add LAB_OAUTH_CLIENT_SECRET if it doesn't exist
+  ansible.builtin.lineinfile:
+    path: "{{ lab_dir }}/services/.env"
+    line: "LAB_OAUTH_CLIENT_SECRET={{ generic_oauth_client_secret }}"
+    create: true
+    regexp: '^LAB_OAUTH_CLIENT_SECRET='
+    mode: "0644"
