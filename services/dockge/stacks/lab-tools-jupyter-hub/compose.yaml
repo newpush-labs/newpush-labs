@@ -31,7 +31,7 @@ services:
       # Notebook directory inside user image
       DOCKER_NOTEBOOK_DIR: /home/jovyan/work
     env_file:
-      - /opt/student-lab/services/.env
+      - ../.env
     labels:
       - "com.centurylinklabs.watchtower.enable"
       - "traefik.enable=true"
