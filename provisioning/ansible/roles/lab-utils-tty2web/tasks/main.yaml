@@ -17,6 +17,22 @@
     state: started
     daemon_reload: true
 
+- name: Ensure traefik/conf.d directory exists
+  ansible.builtin.file:
+    path: "{{ lab_dir }}/services/traefik/conf.d"
+    state: directory
+    mode: '0755'
+    owner: 1000
+    group: 50
+
+- name: Ensure mafl/conf.d directory exists
+  ansible.builtin.file:
+    path: "{{ lab_dir }}/services/mafl/conf.d"
+    state: directory
+    mode: '0755'
+    owner: 1000
+    group: 50
+
 - name: Add traefik configuration for tty2web
   ansible.builtin.template:
     src: files/tty2web.yaml.j2
