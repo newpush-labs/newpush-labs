@@ -8,9 +8,11 @@ entryPoints:
     address: :80
   https:
     address: :443
-    # http:
-    #   middlewares:
-    #     - crowdsec@file
+    http:
+      middlewares:
+{% if traefik_crowdsec_bouncer %}
+        - crowdsec@file
+{% endif %}
     #     - torblock@file
 
 middlewares:
@@ -19,11 +21,10 @@ middlewares:
       address: http://traefik-forward-auth:4181
       tls:
         insecureSkipVerify: true
-#  traefik-waeb:
-#    plugin:
-#      traefik-plugin-waeb:
-#        root: /var/www/html/
-
+  traefik-waeb:
+    plugin:
+      traefik-plugin-waeb:
+        root: /var/www/html
 providers:
   providersThrottleDuration: 2s
   docker:
@@ -76,14 +77,14 @@ certificatesResolvers:
         hmacEncoded: {{ acme_zerossl_hmac_encoded }}
         kid: {{ acme_zerossl_kid }}
 
-# experimental:
-#   plugins:
-#     bouncer:
-#       moduleName: "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin"
-#       version: "v1.3.1"
+experimental:
+  plugins:
+    traefik-plugin-waeb:
+      moduleName: "github.com/tomMoulard/traefik-plugin-waeb"
+      version: "v1.0.1"
+    bouncer:
+      moduleName: "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin"
+      version: "v1.3.1"
 #     torblock:
 #       moduleName: github.com/jpxd/torblock
 #       version: v0.1.1
-#    traefik-plugin-waeb:
-#      moduleName: "github.com/tomMoulard/traefik-plugin-waeb"
-#      version: "v1.0.1"

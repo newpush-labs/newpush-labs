@@ -8,6 +8,13 @@ acme_email: example@example.com
 acme_zerossl_hmac_encoded: 
 acme_zerossl_kid: 
 
+
+traefik_crowdsec: 
+
+# Required for the CrowdSec plugin for Traefik. 
+# If not present, bots will receive an HTTP error code instead of a CAPTCHA challenge.
+hcaptcha_site_key: 
+
 # bring your own keys 
 openai_api_key: 
 anthropic_api_key: 

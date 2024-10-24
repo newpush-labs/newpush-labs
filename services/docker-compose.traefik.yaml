@@ -16,6 +16,8 @@ services:
       - "./traefik/logs:/var/log/traefik"
       - "./:/app"
       - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./traefik/ban.html:/ban.html"
+      - "./traefik/captcha.html:/captcha.html"
     labels:
       - "traefik.http.routers.traefik-api.service=api@internal"
       - "traefik.http.routers.traefik-api.rule=Host(`traefik.${DOMAIN}`)"

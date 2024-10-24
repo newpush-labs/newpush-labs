@@ -106,16 +106,45 @@
   ansible.builtin.debug:
     msg: "The lab external IP is {{ lab_external_ip }} with user {{ lab_user }} and fingerprint {{ lab_ssh_fingerprint }}"
 
-- name: Synchronize dockerfiles from local directory
+- name: Synchronize docker-compose files and their corresponding folders
   ansible.posix.synchronize:
-    src: ../../services
-    dest: "{{ lab_dir }}/"
+    src: "{{ item }}"
+    dest: "{{ lab_dir }}/services/"
+    rsync_opts:
+      - "--include=docker-compose*.yml"
+      - "--include=docker-compose*.yaml"
+      - "--include=*/"
+      - "--exclude=*"
+  with_items: 
+    - "../../services/"
+
+- name: Synchronize contents of each service folder
+  ansible.posix.synchronize:
+    src: "../../services/{{ item }}/"
+    dest: "{{ lab_dir }}/services/{{ item }}/"
+  with_items:
+    - "casdoor"
+    - "dockge"
+    - "grafana"
+    - "mafl"
+    - "portainer"
+    - "prometheus"
+    - "sshwifty"
+    - "traefik"
+    - "crowdsec"
 
 - name: Render the Jinja2 template for Traefik
   ansible.builtin.template:
     src: ../../services/traefik/traefik.yml.j2
     dest: "{{ lab_dir }}/services/traefik/traefik.yml"
     mode: '0644'
+
+- name: Render the Jinja2 template for Crowdsec
+  ansible.builtin.template:
+    src: ../../services/traefik/conf.d/crowdsec.yml.j2
+    dest: "{{ lab_dir }}/services/traefik/conf.d/crowdsec.yml"
+    mode: '0644'
+
 
 - name: Render the Jinja2 template for Perplexica
   ansible.builtin.template:
@@ -173,3 +202,4 @@
     - "{{ lab_dir }}/services/sshwifty/sshwifty.conf.json.j2"
     - "{{ lab_dir }}/services/docker-compose.portainer.yaml.j2"
     - "{{ lab_dir }}/services/dockge/stacks/lab-llm-lobechat/compose.yml.j2"
+    - "{{ lab_dir }}/services/traefik/conf.d/crowdsec.yml.j2"

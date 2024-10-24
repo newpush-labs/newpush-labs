@@ -1,0 +1,27 @@
+http:
+  middlewares:
+    crowdsec:
+      plugin:
+        bouncer:
+          enabled: true
+          CrowdsecLapiKey: 40796d93c2958f9e58345514e67740e5
+          defaultDecisionSeconds: 60
+          httpTimeoutSeconds: 10
+          crowdsecMode: live
+          crowdsecAppsecEnabled: false
+          crowdsecAppsecHost: crowdsec:7422
+          crowdsecAppsecFailureBlock: false
+          crowdsecAppsecUnreachableBlock: false
+          crowdsecLapiKey: 40796d93c2958f9e58345514e67740e5
+          crowdsecLapiHost: crowdsec:8080
+          crowdsecLapiScheme: http
+          forwardedHeadersTrustedIPs: 
+            - 10.0.10.23/32
+            - 10.0.20.0/24
+          clientTrustedIPs: 
+            - 192.168.1.0/24
+          captchaProvider: hcaptcha
+          captchaSiteKey: {{ hcaptcha_site_key }}
+          captchaHTMLFilePath: /captcha.html
+          captchaGracePeriodSeconds: 1800
+          banHTMLFilePath: /ban.html
