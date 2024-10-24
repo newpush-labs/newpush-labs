@@ -4,6 +4,7 @@ ansible_python_interpreter: /usr/bin/python3
 lab_dir: /opt/student-lab
 
 # create a free account on zerossl.com to get these values
+acme_email: example@example.com
 acme_zerossl_hmac_encoded: 
 acme_zerossl_kid: 
 

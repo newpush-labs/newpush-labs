@@ -19,6 +19,11 @@ middlewares:
       address: http://traefik-forward-auth:4181
       tls:
         insecureSkipVerify: true
+#  traefik-waeb:
+#    plugin:
+#      traefik-plugin-waeb:
+#        root: /var/www/html/
+
 providers:
   providersThrottleDuration: 2s
   docker:
@@ -55,7 +60,7 @@ log:
 certificatesResolvers:
   default:
     acme:
-      email: lracz@newpush.com
+      email: {{ acme_email }}
       # storage: /etc/traefik/google-acme-certs.json
       # httpChallenge: 
       #   entryPoint: http
@@ -79,3 +84,6 @@ certificatesResolvers:
 #     torblock:
 #       moduleName: github.com/jpxd/torblock
 #       version: v0.1.1
+#    traefik-plugin-waeb:
+#      moduleName: "github.com/tomMoulard/traefik-plugin-waeb"
+#      version: "v1.0.1"
