@@ -1,0 +1,51 @@
+services:
+  kali:
+    image: k0st/kali-tty2web:latest
+    container_name: kali
+    hostname: kali
+    privileged: true
+    tty: true
+    stdin_open: true
+    environment:
+      - container=docker
+      - systemd.unified_cgroup_hierarchy=1
+    volumes:
+      - type: tmpfs
+        target: /run
+      - type: tmpfs
+        target: /run/lock
+      - type: tmpfs
+        target: /sys/fs/cgroup
+        tmpfs:
+          size: 65536k
+          mode: 755
+    security_opt:
+      - seccomp:unconfined
+      - apparmor:unconfined
+    cap_add:
+      - SYS_ADMIN
+    networks:
+      - web
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.kali.rule=Host(`kali.${DOMAIN}`)
+      - traefik.http.routers.kali.entrypoints=https
+      - traefik.http.services.kali.loadbalancer.server.port=8080
+      - traefik.http.routers.kali.service=kali
+      - traefik.http.routers.kali.tls=true
+      - traefik.http.routers.kali.tls.certresolver=default
+      - traefik.http.routers.kali.middlewares=traefik-forward-auth
+      - mafl.enable=true
+      - mafl.title=Kali Linux
+      - mafl.description=Kali Linux for penetration testing and security auditing
+      - mafl.tag=Shell
+      - mafl.group=Security
+      - mafl.link=https://kali.${DOMAIN}/
+      - mafl.icon.name=simple-icons:kalilinux
+      - mafl.icon.wrap=true
+      - mafl.icon.color=#557C94
+      - mafl.status.enabled=true
+      - mafl.status.interval=60
+networks:
+  web:
+    external: true

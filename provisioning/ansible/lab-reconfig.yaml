@@ -7,7 +7,7 @@
     #   golang_gopath: '$HOME/workspace-go'
     # - lab-copy-installer
     - lab-copy-dockers
-    # - lab-configure-env
+    - lab-configure-env
     # - lab-set-permissions
-    - lab-utils-tty2web
+    # - lab-utils-tty2web
   tasks:
