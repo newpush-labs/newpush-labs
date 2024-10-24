@@ -1,0 +1,23 @@
+services:
+  crowdsec:
+    image: crowdsecurity/crowdsec:v1.6.1-2
+    container_name: crowdsec
+    restart: unless-stopped
+    environment:
+      COLLECTIONS: crowdsecurity/traefik
+      CUSTOM_HOSTNAME: crowdsec
+      BOUNCER_KEY_TRAEFIK_DEV: 40796d93c2958f9e58345514e67740e5
+    volumes:
+      - ./crowdsec/profiles.yaml:/etc/crowdsec/profiles.yaml:ro
+      - ./crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml:ro
+      - ./crowdsec/data:/var/lib/crowdsec/data/
+      - ./crowdsec/etc:/etc/crowdsec/
+      - ./traefik/logs:/var/log/traefik:ro
+    labels:
+      - traefik.enable=false
+    networks:
+      - web
+
+networks:
+  web:
+    external: True

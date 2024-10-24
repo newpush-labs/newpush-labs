@@ -5,6 +5,7 @@ services:
       service: traefik
     depends_on:
       - traefik-forward-auth
+      - crowdsec
   casdoor:
     extends:
       file: docker-compose.casdoor.yaml
@@ -38,6 +39,8 @@ services:
       service: grafana
     depends_on:
       - traefik
+      - prometheus
+      - loki
   prometheus:
     extends:
       file: docker-compose.grafana.yaml
@@ -86,7 +89,10 @@ services:
     extends:
       file: docker-compose.watchtower.yaml
       service: watchtower
-
+  crowdsec:
+    extends:
+      file: docker-compose.crowdsec.yaml
+      service: crowdsec
 networks:
   web:
     external: True
