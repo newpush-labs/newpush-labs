@@ -1,0 +1,18 @@
+- name: Set logging
+  community.general.ufw:
+    logging: 'on'
+
+- name: Allow OpenSSH
+  community.general.ufw:
+    rule: allow
+    name: OpenSSH
+
+- name: Allow web traffic
+  community.general.ufw:
+    rule: allow
+    name: 'WWW Full'
+
+- name: Allow everything and enable UFW
+  community.general.ufw:
+    state: enabled
+    policy: deny
