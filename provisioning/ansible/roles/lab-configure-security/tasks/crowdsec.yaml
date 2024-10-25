@@ -1,0 +1,11 @@
+- name: Check if crowdsecurity/http-probing scenario is present
+  ansible.builtin.command: docker exec crowdsec cscli scenarios list
+  register: scenario_list
+  changed_when: false
+
+- name: Remove crowdsec http-probing scenario if present
+  ansible.builtin.command: docker exec crowdsec cscli scenarios remove crowdsecurity/http-probing --force
+  register: remove_scenario
+  when: "'crowdsecurity/http-probing' in scenario_list.stdout"
+  changed_when: "'crowdsecurity/http-probing' in scenario_list.stdout"
+  notify: Restart CrowdSec

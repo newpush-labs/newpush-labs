@@ -1,0 +1,5 @@
+
+- name: Configure crowdsec
+  ansible.builtin.include_tasks: crowdsec.yaml
+- name: Configure firewall
+  ansible.builtin.include_tasks: firewall.yaml
