@@ -10,6 +10,7 @@
     - {role: lab-configure-env, tags: [setup]}
     - {role: lab-set-permissions, tags: [setup]}
     - {role: lab-utils-tty2web, tags: [setup]}
+    - {role: lab-configure-security, tags: [setup]}
   tasks:
     - name: Run newpush-lab to migrate
       ansible.builtin.command:
