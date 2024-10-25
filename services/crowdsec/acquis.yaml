@@ -2,3 +2,16 @@ filenames:
  - /var/log/traefik/access.log
 labels:
   type: traefik
+---
+filenames:
+  - /var/log/auth.log
+  - /var/log/syslog
+  - /var/log/kern.log
+  - /var/log/ufw.log
+labels:
+  type: syslog
+---
+filenames:
+  - /var/log/cron.log
+labels:
+  type: cron
