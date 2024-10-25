@@ -4,7 +4,7 @@ services:
     container_name: crowdsec
     restart: unless-stopped
     environment:
-      COLLECTIONS: crowdsecurity/traefik
+      COLLECTIONS: crowdsecurity/traefik, crowdsecurity/linux, crowdsecurity/iptables
       CUSTOM_HOSTNAME: crowdsec
       BOUNCER_KEY_TRAEFIK_DEV: 40796d93c2958f9e58345514e67740e5
     volumes:
@@ -12,6 +12,7 @@ services:
       - ./crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml:ro
       - ./crowdsec/data:/var/lib/crowdsec/data/
       - ./crowdsec/etc:/etc/crowdsec/
+      - /var/log/:/var/log:ro
       - ./traefik/logs:/var/log/traefik:ro
     labels:
       - traefik.enable=false
