@@ -1,6 +1,5 @@
-
 - name: Restart osqueryd
-  service:
+  ansible.builtin.service:
     name: osqueryd
     state: restarted
   become: true
