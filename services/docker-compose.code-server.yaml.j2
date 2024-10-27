@@ -8,7 +8,7 @@ services:
       - PGID=1000
       - TZ=Etc/UTC
       - SUDO_PASSWORD=hacker #optional
-      - DEFAULT_WORKSPACE=/config/workspace #optional
+      - DEFAULT_WORKSPACE=/home/{{ lab_user }}/workspace #optional
     volumes:
       - ./code-server/config:/config
       - /home/{{ lab_user }}:/home/{{ lab_user }}
