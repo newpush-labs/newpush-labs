@@ -1,0 +1,67 @@
+services:
+  jupyter-content:
+    container_name: jupyter-content
+    image: alpine:latest
+    volumes:
+      - /home/{{ lab_user }}/workspace:/home/{{ lab_user }}/workspace
+    command: [
+      "sh", 
+      "-c",
+      "apk add --no-cache git && \
+      git clone https://github.com/anthropics/courses.git /home/{{ lab_user }}/workspace/courses/anthropics && \
+      git clone https://github.com/LearnPythonWithJupyter/Notebooks.git /home/{{ lab_user }}/workspace/courses/learn-python-with-jupyter && \
+      chown -R 1000:1000 /home/{{ lab_user }}/workspace"
+    ]
+    networks:
+      - web
+  jupyter:
+    user: root
+    image: quay.io/jupyter/base-notebook:latest
+    container_name: jupyter
+    restart: unless-stopped
+    privileged: true
+    working_dir: 
+      /home/{{ lab_user }}/workspace
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /home/{{ lab_user }}/workspace:/home/{{ lab_user }}/workspace
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+      - JUPYTER_TOKEN=
+      - JUPYTER_PASSWORD=
+      - JUPYTER_DISABLE_CHECK_XSRF=1
+      - NB_USER={{ lab_user }}
+      - NB_UID=1000
+      - NB_GID=1000
+      # - NB_UMASK=022
+      - CHOWN_HOME=yes
+      - GRANT_SUDO=yes
+      
+    command: ["start-notebook.py", "--IdentityProvider.token=''"]
+    labels:
+      - "com.centurylinklabs.watchtower.enable"
+      - "traefik.enable=true"
+      - "traefik.http.routers.jupyter.rule=Host(`jupyter.${DOMAIN}`)"
+      - "traefik.http.routers.jupyter.entrypoints=https"
+      - "traefik.http.services.jupyter.loadbalancer.server.port=8888"
+      - "traefik.http.routers.jupyter.service=jupyter"
+      - "traefik.http.routers.jupyter.tls=true"
+      - "traefik.http.routers.jupyter.tls.certresolver=default"
+      - "traefik.http.routers.jupyter.middlewares=traefik-forward-auth"
+      - "mafl.enable=true"
+      - "mafl.title=JupyterLab"
+      - "mafl.description=The latest web-based interactive development environment for notebooks, code, and data."
+      - "mafl.tag=development"
+      - "mafl.group=Development"
+      - "mafl.link=https://jupyter.${DOMAIN}"
+      - "mafl.icon.name=simple-icons:jupyter"
+      - "mafl.icon.wrap=true"
+      - "mafl.icon.color=#F37626"
+      - "mafl.status.enabled=true"
+      - "mafl.status.interval=60"
+    networks:
+      - web
+
+networks:
+  web:
+    external: True

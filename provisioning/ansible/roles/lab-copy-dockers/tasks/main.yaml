@@ -201,6 +201,12 @@
     dest: "{{ lab_dir }}/services/docker-compose.code-server.yaml"
     mode: '0644'
 
+- name: Render the Jinja2 template for jupyter
+  ansible.builtin.template:
+    src: ../../services/dockge/stacks/lab-tools-jupyter/compose.yaml.j2
+    dest: "{{ lab_dir }}/services/dockge/stacks/lab-tools-jupyter/compose.yaml"
+    mode: '0644'
+
 - name: Cleanup the Jinja2 templates
   ansible.builtin.file:
     path: "{{ item }}"
@@ -217,5 +223,5 @@
     - "{{ lab_dir }}/services/dockge/stacks/lab-llm-lobechat/compose.yml.j2"
     - "{{ lab_dir }}/services/traefik/conf.d/crowdsec.yml.j2"
     - "{{ lab_dir }}/services/dockge/stacks/lab-llm-skyvern/compose.yaml.j2"
-
+    - "{{ lab_dir }}/services/dockge/stacks/lab-tools-jupyter/compose.yaml.j2"
   
