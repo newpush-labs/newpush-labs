@@ -12,7 +12,7 @@ services:
       service: sablier
   whoami:
     extends:
-      file: docker-compose.whoami.yaml
+      file: docker-compose.traefik.yaml
       service: whoami
   casdoor:
     extends:
