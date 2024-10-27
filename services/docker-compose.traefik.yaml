@@ -29,6 +29,16 @@ services:
     networks:
       - web
 
+  # Ingress configured trough traefik/conf.d/whoami.yml
+  whoami:
+    image: containous/whoami
+    container_name: whoami
+    labels:
+      - sablier.enable=true
+      - sablier.group=default
+    networks:
+      - web
+
 networks:
   web:
     external: True

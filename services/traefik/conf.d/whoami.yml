@@ -1,0 +1,17 @@
+http:
+  services:
+    whoami:
+      loadBalancer:
+        servers:
+          - url: "http://whoami:80"
+  routers:
+    whoami:
+      rule: PathPrefix(`/whoami`)
+      entryPoints:
+        - "https"
+      middlewares:
+        - sablier-dynamic@file
+      service: "whoami"
+      priority: 100
+      tls:
+        certResolver: default

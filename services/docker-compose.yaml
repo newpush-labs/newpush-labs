@@ -6,6 +6,14 @@ services:
     depends_on:
       - traefik-forward-auth
       - crowdsec
+  sablier:
+    extends:
+      file: docker-compose.sablier.yaml
+      service: sablier
+  whoami:
+    extends:
+      file: docker-compose.whoami.yaml
+      service: whoami
   casdoor:
     extends:
       file: docker-compose.casdoor.yaml
