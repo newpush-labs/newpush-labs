@@ -72,3 +72,27 @@
     create: true
     regexp: '^LAB_OAUTH_CLIENT_SECRET='
     mode: "0644"
+
+- name: Add OPENAI_API_KEY and enable OpenAI if it doesn't exist and is set
+  ansible.builtin.lineinfile:
+    path: "{{ lab_dir }}/services/.env"
+    line: "{{ item.line }}"
+    create: true
+    regexp: "{{ item.regexp }}"
+    mode: "0644"
+  loop:
+    - { line: "OPENAI_API_KEY={{ openai_api_key }}", regexp: '^OPENAI_API_KEY=' }
+    - { line: "OPENAI_ENABLED=1", regexp: '^OPENAI_ENABLED=' }
+  when: openai_api_key is defined and openai_api_key | length > 0
+
+- name: Add ANTHROPIC_API_KEY and enable Anthropic if it doesn't exist and is set
+  ansible.builtin.lineinfile:
+    path: "{{ lab_dir }}/services/.env"
+    line: "{{ item.line }}"
+    create: true
+    regexp: "{{ item.regexp }}"
+    mode: "0644"
+  loop:
+    - { line: "ANTHROPIC_API_KEY={{ anthropic_api_key }}", regexp: '^ANTHROPIC_API_KEY=' }
+    - { line: "ANTHROPIC_ENABLED=1", regexp: '^ANTHROPIC_ENABLED=' }
+  when: anthropic_api_key is defined and anthropic_api_key | length > 0
