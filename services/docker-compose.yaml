@@ -101,6 +101,11 @@ services:
     extends:
       file: docker-compose.crowdsec.yaml
       service: crowdsec
+  lab-code-server:
+    extends:
+      file: docker-compose.code-server.yaml
+      service: lab-code-server
+
 networks:
   web:
     external: True

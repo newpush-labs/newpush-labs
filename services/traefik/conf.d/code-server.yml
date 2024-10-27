@@ -1,0 +1,41 @@
+http:
+  middlewares:
+    sablier-dynamic-code-server:
+      plugin:
+        sablier:
+          group: default
+          names: lab-code-server
+          dynamic:
+            displayName: Code Server
+            refreshFrequency: 5s
+            showDetails: "true"
+            theme: ghost
+          sablierUrl: http://sablier:10000
+          sessionDuration: 5m
+    code-server-strip-prefix:
+      stripPrefix:
+        prefixes:
+          - "/labs/code-server/"
+    code-redirect:
+      redirectRegex:
+        regex: "^(.*)/labs/code-server$$"
+        replacement: "${1}/labs/code-server/"
+  services:
+    code-server:
+      loadBalancer:
+        servers:
+          - url: "http://lab-code-server:8443"
+  routers:
+    code-server:
+      rule: PathPrefix(`/labs/code-server`)
+      entryPoints:
+        - "https"
+      middlewares:
+        - sablier-dynamic-code-server@file
+        - code-server-strip-prefix@file
+        - code-redirect@file
+        - traefik-forward-auth@docker
+      service: "code-server"
+      priority: 100
+      tls:
+        certResolver: default
