@@ -1,0 +1,20 @@
+version: "3.3"
+
+services:
+  sablier:
+    container_name: sablier
+    image: sablierapp/sablier:latest
+    restart: unless-stopped
+    command:
+      - start
+      - --provider.name=docker
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock'
+    labels:
+      - traefik.enable=false
+    networks:
+      - web
+
+networks:
+  web:
+    external: True
