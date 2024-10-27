@@ -1,4 +1,17 @@
 http:
+  middlewares:
+    sablier-dynamic-whoami:
+      plugin:
+        sablier:
+          group: default
+          names: whoami
+          dynamic:
+            displayName: Whoami
+            refreshFrequency: 5s
+            showDetails: "true"
+            theme: ghost
+          sablierUrl: http://sablier:10000
+          sessionDuration: 1m
   services:
     whoami:
       loadBalancer:
@@ -10,7 +23,7 @@ http:
       entryPoints:
         - "https"
       middlewares:
-        - sablier-dynamic@file
+        - sablier-dynamic-whoami@file
       service: "whoami"
       priority: 100
       tls:
