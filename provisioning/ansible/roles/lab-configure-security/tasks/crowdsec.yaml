@@ -1,3 +1,54 @@
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Install required packages
+  ansible.builtin.apt:
+    name:
+      - curl
+      - gnupg
+      - apt-transport-https
+    state: present
+
+- name: Create directory for GPG key
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+
+- name: Add CrowdSec GPG key
+  ansible.builtin.shell: |
+    curl -fsSL https://packagecloud.io/crowdsec/crowdsec/gpgkey | gpg --dearmor > /etc/apt/keyrings/crowdsec_crowdsec-archive-keyring.gpg
+  args:
+    creates: /etc/apt/keyrings/crowdsec_crowdsec-archive-keyring.gpg
+
+- name: Add CrowdSec repository
+  ansible.builtin.apt_repository:
+    repo: deb [signed-by=/etc/apt/keyrings/crowdsec_crowdsec-archive-keyring.gpg] https://packagecloud.io/crowdsec/crowdsec/ubuntu focal main
+    state: present
+    filename: crowdsec_crowdsec
+
+- name: Update apt cache again
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Install CrowdSec firewall bouncer for iptables
+  ansible.builtin.apt:
+    name: crowdsec-firewall-bouncer-iptables
+    state: present
+
+- name: Copy crowdsec firewall bouncer configuration
+  ansible.builtin.copy:
+    src: ./files/crowdsec-firewall-bouncer.yaml
+    dest: /etc/crowdsec/bouncers/crowdsec-firewall-bouncer.yaml
+    owner: root
+    group: root
+    mode: '0600'
+
+# Configure scenarios, unfortunatly we need to do this manually
+# We need to remove the http-probing scenario, because it's triggers for 404 and 500 errors
+# And we don't want to block ourself, due our web dashboard are checking for microservices health.
+
 - name: Check if crowdsecurity/http-probing scenario is present
   ansible.builtin.command: docker exec crowdsec cscli scenarios list
   register: scenario_list
