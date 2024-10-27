@@ -1,0 +1,26 @@
+---
+services:
+  lab-code-server:
+    image: lscr.io/linuxserver/code-server:latest
+    container_name: lab-code-server
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - SUDO_PASSWORD=hacker #optional
+      - DEFAULT_WORKSPACE=/config/workspace #optional
+    volumes:
+      - ./code-server/config:/config
+    restart: unless-stopped
+    networks:
+      - web
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8443/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  web:
+    external: True
