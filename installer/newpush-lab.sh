@@ -143,24 +143,32 @@ function free_up_disk_space() {
   
 }
 
+function stop_sablier_containers() {
+  echo "Stopping sablier enabled containers"
+  docker container ls --format '{{.Names}}\t enabled:{{.Label "sablier.enable"}}'|grep enabled:true | awk '{print $1}' | xargs -r docker container stop
+}
+
 case $1 in
   "status")
     manage_lab status $2
     ;;
   "start")
     manage_lab start $2
+    stop_sablier_containers
     ;;
   "stop")
     manage_lab stop $2
     ;;
   "restart")
     manage_lab restart $2
+    stop_sablier_containers
     ;;
   "remove")
     manage_lab remove $2
     ;;
   "recreate")
     manage_lab recreate $2
+    stop_sablier_containers
     ;;
   "restart-container")
     restart_container $2
