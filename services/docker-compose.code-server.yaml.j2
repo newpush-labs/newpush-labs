@@ -11,7 +11,11 @@ services:
       - DEFAULT_WORKSPACE=/config/workspace #optional
     volumes:
       - ./code-server/config:/config
+      - /home/{{ lab_user }}:/home/{{ lab_user }}
     restart: unless-stopped
+    labels:
+      - sablier.enable=true
+      - sablier.group=default
     networks:
       - web
     healthcheck:
