@@ -1,0 +1,110 @@
+
+version: '3.8'
+
+services:
+  skyvern-db:
+    image: postgres:14-alpine
+    container_name: skyvern-db
+    restart: always
+    # comment out if you want to externally connect DB
+    # ports:
+    #   - 5432:5432
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - POSTGRES_USER=skyvern
+      - POSTGRES_PASSWORD=skyvern
+      - POSTGRES_POSTGRES_DB=skyvern
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U skyvern"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - web
+
+  skyvern:
+    container_name: skyvern
+    image: public.ecr.aws/skyvern/skyvern:latest
+    restart: on-failure
+    # comment out if you want to externally call skyvern API
+    # ports:
+      # - 8000:8000
+    volumes:
+      - ./artifacts:/data/artifacts
+      - ./videos:/data/videos
+      - ./har:/data/har
+      - ./.streamlit:/app/.streamlit
+    environment:
+      - DATABASE_STRING=postgresql+psycopg://skyvern:skyvern@skyvern-db:5432/skyvern
+      - BROWSER_TYPE=chromium-headful
+      - ENABLE_OPENAI=true
+      # - OPENAI_API_KEY=<your_openai_key>
+      # If you want to use other LLM provider, like azure and anthropic:
+      - ENABLE_ANTHROPIC=true
+      - LLM_KEY=ANTHROPIC_CLAUDE3_OPUS
+      - OPENAI_API_KEY={{ openai_api_key }}
+      - ANTHROPIC_API_KEY={{ anthropic_api_key }}
+      # - ANTHROPIC_API_KEY=<your_anthropic_key>
+      # - ENABLE_AZURE=true
+      # - LLM_KEY=AZURE_OPENAI
+      # - AZURE_DEPLOYMENT=<your_azure_deployment>
+      # - AZURE_API_KEY=<your_azure_api_key>
+      # - AZURE_API_BASE=<your_azure_api_base>
+      # - AZURE_API_VERSION=<your_azure_api_version>
+    depends_on:
+      skyvern-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "test", "-f", "/app/.streamlit/secrets.toml"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - web
+
+  skyvern-ui:
+    image: public.ecr.aws/skyvern/skyvern-ui:latest
+    container_name: skyvern-ui
+    restart: on-failure
+    ports:
+      - 8080:8080
+      - 9090:9090
+    volumes:
+      - ./artifacts:/data/artifacts
+      - ./videos:/data/videos
+      - ./har:/data/har
+      - ./.streamlit:/app/.streamlit
+    environment:
+      - VITE_WSS_BASE_URL=ws://skyvern.${DOMAIN}/api/v1
+      - VITE_API_BASE_URL=https://skyvern.${DOMAIN}/api/v1
+      # - VITE_SKYVERN_API_KEY=
+    labels:
+      - "mafl.enable=true"
+      - "mafl.title=Skyvern"
+      - "mafl.group=Artificial Intelligence"
+      - "mafl.description=Automate browser-based workflows with LLMs and Computer Vision"
+      - "mafl.link=https://skyvern.${DOMAIN}/"
+      - "mafl.icon.url=https://framerusercontent.com/images/0Bw7GwbNXUBxOAp9pyM0VPOlphg.png"
+      - "mafl.icon.wrap=true"
+      - "mafl.icon.color=#ffffff"
+      - "mafl.status.enabled=true"
+      - "mafl.status.interval=60"
+      - "traefik.enable=true"
+      - "traefik.http.routers.skyvern.rule=Host(`skyvern.${DOMAIN}`)"
+      - "traefik.http.routers.skyvern.entrypoints=https"
+      - "traefik.http.services.skyvern.loadbalancer.server.port=8080"
+      - "traefik.http.routers.skyvern.service=skyvern"
+      - "traefik.http.routers.skyvern.tls=true"
+      - "traefik.http.routers.skyvern.tls.certresolver=default"
+      - "traefik.http.routers.skyvern.middlewares=traefik-forward-auth" 
+    depends_on:
+      skyvern:
+        condition: service_healthy
+    networks:
+      - web
+      
+networks:
+  web:
+    external: true
