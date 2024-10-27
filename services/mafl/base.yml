@@ -25,7 +25,7 @@ services:
       status:
         enabled: true 
     - title: Visual Studio Code
-      description: Access our lab with VSCode
+      description: Access your lab with VSCode
       link: 'https://www.${DOMAIN}/labs/code-server/'
       icon:
         name: devicon:vscode
