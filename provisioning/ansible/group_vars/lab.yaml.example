@@ -8,8 +8,7 @@ acme_email: example@example.com
 acme_zerossl_hmac_encoded: 
 acme_zerossl_kid: 
 
-
-traefik_crowdsec: 
+traefik_crowdsec_bouncer: true
 
 # Required for the CrowdSec plugin for Traefik. 
 # If not present, bots will receive an HTTP error code instead of a CAPTCHA challenge.
