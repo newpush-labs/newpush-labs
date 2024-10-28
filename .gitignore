@@ -1,8 +1,5 @@
 provisioning/variables.pkrvars.hcl
 provisioning/variables.auto.pkrvars.hcl
-provisioning/terraform/.terraform
-provisioning/terraform/.ssh/*
-provisioning/terraform/terraform.tfstate*
 ssh-keys/*
 .aider*ˆ
 
