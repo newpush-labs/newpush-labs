@@ -10,6 +10,8 @@ module "cloudinit" {
   domain            = var.domain
   acme_zerossl_hmac = var.acme_zerossl_hmac
   acme_zerossl_kid  = var.acme_zerossl_kid
+  crowdsec_bouncer  = var.crowdsec_bouncer
+  hcaptcha_site_key = var.hcaptcha_site_key
 }
 
 module "gcp" {

@@ -96,6 +96,19 @@ function configure_ansible() {
         exit 1
     fi
 
+    # Set traefik_crowdsec_bouncer to true in the group_vars/lab.yaml file if CROWDSEC_BOUNCER environment variable is set
+    if [ -n "$CROWDSEC_BOUNCER" ]; then
+        sed -i "s/^traefik_crowdsec_bouncer:.*/traefik_crowdsec_bouncer: true/" provisioning/ansible/group_vars/lab.yaml
+
+        # Set hcaptcha_site_key if it is set and return error if it is not set
+        if [ -n "$HCAPTCHA_SITE_KEY" ]; then
+            sed -i "s/^hcaptcha_site_key:.*/hcaptcha_site_key: $HCAPTCHA_SITE_KEY/" provisioning/ansible/group_vars/lab.yaml
+        else
+            echo "HCAPTCHA_SITE_KEY is not set, exiting"
+            exit 1
+        fi
+    fi
+
     # Add local host to the inventory to a new line
     echo -e "\n127.0.0.1 ansible_connection=local" >> provisioning/ansible/inventory/hosts
 
