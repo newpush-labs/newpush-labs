@@ -10,7 +10,6 @@
     - {role: lab-configure-env, tags: [setup]}
     - {role: lab-set-permissions, tags: [setup]}
     - {role: lab-utils-tty2web, tags: [setup]}
-    - {role: lab-configure-security, tags: [setup]}
   tasks:
     - name: Run newpush-lab to migrate
       ansible.builtin.command:
@@ -35,3 +34,10 @@
     #   args:
     #     chdir: "{{ lab_dir }}/services"
     #     creates: "{{ lab_dir }}/services/dockge/stacks/lab-security-wazuh/wazuh_indexer_ssl_certs/wazuh.indexer.pem"
+
+    # Configure security after CrowdSec is installed and running
+    - name: Configure security
+      include_role:
+        name: lab-configure-security
+      tags:
+        - setup
