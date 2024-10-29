@@ -44,3 +44,14 @@ variable "acme_zerossl_kid" {
   type        = string
   sensitive   = true
 }
+
+variable "crowdsec_bouncer" {
+  description = "CrowdSec bouncer"
+  type        = bool
+}
+
+variable "hcaptcha_site_key" {
+  description = "hCaptcha site key"
+  type        = string
+  sensitive   = true
+}

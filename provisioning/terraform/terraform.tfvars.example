@@ -6,3 +6,5 @@ machine_type       = "e2-medium"
 domain             = "lab.example.com"
 acme_zerossl_hmac  = "your-hmac-here"
 acme_zerossl_kid   = "your-kid-here"
+crowdsec_bouncer   = true
+hcaptcha_site_key   = "your-hcaptcha-site-key-here"
