@@ -126,6 +126,7 @@
     - "casdoor"
     - "dockge"
     - "grafana"
+    - "loki"
     - "mafl"
     - "portainer"
     - "prometheus"
