@@ -130,6 +130,7 @@
     - "mafl"
     - "portainer"
     - "prometheus"
+    - "promtail"
     - "sshwifty"
     - "traefik"
     - "crowdsec"
