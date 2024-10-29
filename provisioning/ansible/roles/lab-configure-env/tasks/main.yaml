@@ -83,7 +83,7 @@
   loop:
     - { line: "OPENAI_API_KEY={{ openai_api_key }}", regexp: '^OPENAI_API_KEY=' }
     - { line: "OPENAI_ENABLED=1", regexp: '^OPENAI_ENABLED=' }
-  when: openai_api_key is defined and openai_api_key | length > 0
+  when: openai_api_key is defined and openai_api_key is not none and openai_api_key | string | length > 0
 
 - name: Add ANTHROPIC_API_KEY and enable Anthropic if it doesn't exist and is set
   ansible.builtin.lineinfile:
@@ -95,4 +95,4 @@
   loop:
     - { line: "ANTHROPIC_API_KEY={{ anthropic_api_key }}", regexp: '^ANTHROPIC_API_KEY=' }
     - { line: "ANTHROPIC_ENABLED=1", regexp: '^ANTHROPIC_ENABLED=' }
-  when: anthropic_api_key is defined and anthropic_api_key | length > 0
+  when: anthropic_api_key is defined and anthropic_api_key is not none and anthropic_api_key | string | length > 0
