@@ -16,3 +16,11 @@
   community.general.ufw:
     state: enabled
     policy: deny
+
+- name: Allow Docker bridge traffic to port 9942
+  community.general.ufw:
+    rule: allow
+    proto: tcp
+    src: any
+    dest: 172.17.0.1
+    port: '9942'
