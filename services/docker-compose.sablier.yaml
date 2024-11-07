@@ -6,7 +6,7 @@ services:
     image: sablierapp/sablier:latest
     restart: unless-stopped
     healthcheck:
-      test: ["sablier", "health"]
+      test: ["CMD", "sablier", "health"]
       interval: 1m30s
     command:
       - start
