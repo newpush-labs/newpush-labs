@@ -41,3 +41,10 @@
         name: lab-configure-security
       tags:
         - setup
+    
+    # Run newpush-lab to restart after security configuration
+    - name: Run newpush-lab to restart
+      ansible.builtin.command:
+        cmd: /usr/local/bin/newpush-lab restart
+      tags:
+        - always
