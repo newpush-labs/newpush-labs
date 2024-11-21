@@ -109,6 +109,11 @@ function configure_ansible() {
         fi
     fi
 
+    # Set is_vagrant to true if VAGRANT_PROVISION environment variable is set
+    if [ -n "$VAGRANT_PROVISION" ]; then
+        sed -i "s/^is_vagrant:.*/is_vagrant: true/" provisioning/ansible/group_vars/lab.yaml
+    fi
+
     # Add local host to the inventory to a new line
     echo -e "\n127.0.0.1 ansible_connection=local" >> provisioning/ansible/inventory/hosts
 

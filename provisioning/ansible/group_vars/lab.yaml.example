@@ -41,3 +41,6 @@ locale_language_all: en_US:en
 locale_origin: en_US
 locale_time: C
 system_timezone: Etc/UTC
+
+# Set to true when provisioning with Vagrant
+is_vagrant: false
