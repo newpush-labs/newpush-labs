@@ -21,12 +21,12 @@ services:
       - "traefik.http.middlewares.traefik-forward-auth.forwardauth.authResponseHeaders=X-Forwarded-User"
       - "traefik.http.middlewares.traefik-forward-auth.forwardauth.tls.insecureSkipVerify=true"
       - "traefik.http.services.traefik-forward-auth.loadbalancer.server.port=4181"
-    {% if is_vagrant | default(false) %}
-    extra_hosts:
-      - "auth.${DOMAIN}:host-gateway"
-    {% endif %}
     networks:
       - web
+{% if is_vagrant | default(false) %}
+    extra_hosts:
+      - "auth.${DOMAIN}:host-gateway"
+{% endif %}
 
   casdoor:
     image: casbin/casdoor:${CASDOOR_VERSION:-latest}
