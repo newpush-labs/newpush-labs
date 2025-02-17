@@ -1,0 +1,4 @@
+ruby
+source 'https://rubygems.org'
+gem 'logger', '~> 1.6.0'
+gem 'vagrant-vmware-desktop'

@@ -1,0 +1,46 @@
+def load_env(file = '.env')
+  return unless File.exist?(file)
+  File.foreach(file) do |line|
+    next if line.strip.empty? || line.start_with?('#')
+    key, value = line.strip.split('=', 2)
+    ENV[key] = value if value
+  end
+end
+
+Vagrant.configure("2") do |config|
+  load_env
+
+  # Network configuration
+  config.vm.network "private_network", ip: ENV['EXTERNAL_IP'] || "192.168.56.10"
+  config.dns.tld = "labs"
+  config.vm.hostname = "newpush"
+  config.dns.patterns = [/^(\w+\.)*newpush\.labs$/,]
+  
+  # VirtualBox configuration
+  config.vm.provider "virtualbox" do |vb|
+    config.vm.box = "generic/debian12"
+    vb.memory = 4096
+    vb.cpus = 4
+  end
+
+  config.vm.provider "vmware_desktop" do |vmware|
+    config.vm.box = "bento/debian-12"
+    vmware.memory = 8192
+    vmware.cpus = 4
+    vmware.gui = false
+    vmware.allowlist_verified = true
+  end
+
+  # Set environment variables and run installation
+  config.vm.provision "shell", env: {
+    'VAGRANT_PROVISION' => 'true',
+    'LAB_HOME' => ENV['LAB_HOME'],
+    'EXTERNAL_IP' => ENV['EXTERNAL_IP'],
+    'DOMAIN' => ENV['DOMAIN'],
+    'ACME_ZEROSSL_HMAC_ENCODED' => ENV['ACME_ZEROSSL_HMAC_ENCODED'],
+    'ACME_ZEROSSL_KID' => ENV['ACME_ZEROSSL_KID'],
+    'CROWDSEC_BOUNCER' => ENV['CROWDSEC_BOUNCER'],
+    'HCAPTCHA_SITE_KEY' => ENV['HCAPTCHA_SITE_KEY']
+  },
+  path: "https://raw.githubusercontent.com/newpush-labs/newpush-labs/refs/heads/main/installer/newpush-lab-unattended.sh"
+end
