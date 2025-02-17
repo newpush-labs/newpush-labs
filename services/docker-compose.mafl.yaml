@@ -33,7 +33,7 @@ services:
     networks:
       - web
   mafl-service-discovery:
-    image: lracz/mafl-service-discovery
+    image: ghcr.io/newpush-labs/mafl-service-discovery:latest
     container_name: mafl-service-discovery
     env_file:
       - .env

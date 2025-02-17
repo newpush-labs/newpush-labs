@@ -104,8 +104,8 @@ function migrate() {
   done
 
   docker_images=(
-    "lracz/traefik-forward-auth:latest"
-    "lracz/mafl-service-discovery:latest"
+    "ghcr.io/newpush-labs/traefik-forward-auth:latest"
+    "ghcr.io/newpush-labs/mafl-service-discovery:latest:latest"
   )
 
   for image in "${docker_images[@]}"; do
