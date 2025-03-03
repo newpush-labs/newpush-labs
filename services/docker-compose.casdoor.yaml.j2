@@ -23,6 +23,10 @@ services:
       - "traefik.http.services.traefik-forward-auth.loadbalancer.server.port=4181"
     networks:
       - web
+{% if is_vagrant | default(false) %}
+    extra_hosts:
+      - "auth.${DOMAIN}:host-gateway"
+{% endif %}
 
   casdoor:
     image: casbin/casdoor:${CASDOOR_VERSION:-latest}
@@ -46,4 +50,4 @@ services:
 
 networks:
   web:
-    external: True
+    external: true

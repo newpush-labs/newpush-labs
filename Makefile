@@ -1,7 +1,7 @@
 # Default target
 .DEFAULT_GOAL := help
 
-HOSTS_FILE ?= provisioning/ansible/inventory/hosts.dev
+HOSTS_FILE ?= provisioning/ansible/inventory/hosts
 
 # Uncomment to enable debug mode
 # DEBUG = "-vvvv"
