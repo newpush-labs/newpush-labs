@@ -8,12 +8,11 @@ entryPoints:
     address: :80
   https:
     address: :443
+{% if traefik_crowdsec_bouncer %}
     http:
       middlewares:
-{% if traefik_crowdsec_bouncer %}
         - crowdsec@file
 {% endif %}
-    #     - torblock@file
 
 middlewares:
   traefik-forward-auth:

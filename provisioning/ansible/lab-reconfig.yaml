@@ -10,6 +10,6 @@
     - lab-copy-dockers
     - lab-configure-env
     # - lab-configure-security
-    # - lab-set-permissions
-    # - lab-utils-tty2web
+    - lab-utils-tty2web
+    - lab-set-permissions
   tasks:
