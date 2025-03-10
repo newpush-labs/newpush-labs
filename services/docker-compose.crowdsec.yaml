@@ -13,8 +13,8 @@ services:
       - ./crowdsec/acquis.yaml:/etc/crowdsec/acquis.yaml:ro
       - ./crowdsec/data:/var/lib/crowdsec/data/
       - ./crowdsec/etc:/etc/crowdsec/
-      - /var/log/:/var/log:ro
-      - ./traefik/logs:/var/log/traefik:ro
+      - /var/log/:/var/log
+      - ./traefik/logs:/var/log/traefik
     labels:
       - traefik.enable=false
     networks:
