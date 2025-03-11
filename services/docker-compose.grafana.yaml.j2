@@ -92,7 +92,7 @@ services:
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
-    user: "1000:100"
+    user: "1000:1000"
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - ./prometheus/data:/prometheus
