@@ -49,6 +49,10 @@ frontend:
 query_range:
   parallelise_shardable_queries: true
 
+# The setting below is required, since we are using v11 schema above!
+# allow_structured_metadata: false
+
 limits_config:
   split_queries_by_interval: 15m
   max_query_parallelism: 32
+  allow_structured_metadata: false
