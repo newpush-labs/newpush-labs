@@ -3,7 +3,6 @@ http:
     sablier-dynamic-whoami:
       plugin:
         sablier:
-          group: default
           names: whoami
           dynamic:
             displayName: Whoami
