@@ -3,7 +3,6 @@ http:
     sablier-dynamic-code-server:
       plugin:
         sablier:
-          group: default
           names: lab-code-server
           dynamic:
             displayName: Code Server
