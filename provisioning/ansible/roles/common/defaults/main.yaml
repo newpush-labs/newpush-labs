@@ -9,7 +9,6 @@ common_packages:
   - gnupg
   - curl
   - rsync
-  - "{{ 'python3-software-properties' if (ansible_distribution == 'Debian' and ansible_distribution_major_version|int >= 13) else 'software-properties-common' }}"
   - ncdu
   - jq
   - ufw
