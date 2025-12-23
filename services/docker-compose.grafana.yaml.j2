@@ -2,9 +2,10 @@ version: "3.3"
 
 services:
   grafana:
-    image: grafana/grafana-oss:latest
+    image: grafana/grafana-oss:${GRAFANA_OSS_VERSION:-latest}
+    container_name: grafana
     env_file:
-      - .env
+      - {{ lab_dir }}/services/.env
     environment:
       - GF_SECURITY_ADMIN_USER=grafana_admin
       - GF_SECURITY_ADMIN_PASSWORD=hacker
@@ -27,7 +28,6 @@ services:
       - GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH=contains(roles[*].name, 'admin') && 'Admin' || contains(roles[*].name, 'editor') && 'Editor' || 'Viewer'
       - GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_STRICT=true
       - GF_AUTH_GENERIC_OAUTH_ALLOW_ASSIGN_GRAFANA_ADMIN=true
-    container_name: grafana
     restart: unless-stopped
     user: "0"
     labels:
@@ -48,7 +48,7 @@ services:
       - web
 
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor
+    image: gcr.io/cadvisor/cadvisor:${CADVISOR_VERSION:-latest}
     container_name: cadvisor
     privileged: true
     volumes:
@@ -74,7 +74,7 @@ services:
       - web
 
   node-exporter:
-    image: prom/node-exporter:latest
+    image: prom/node-exporter:${NODE_EXPORTER_VERSION:-latest}
     container_name: node-exporter
     volumes:
       - /proc:/host/proc:ro
@@ -90,7 +90,7 @@ services:
       - web 
 
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus:${PROMETHEUS_VERSION:-latest}
     container_name: prometheus
     user: "1000:100"
     volumes:
@@ -108,7 +108,7 @@ services:
       - web
 
   loki:
-    image: grafana/loki:latest
+    image: grafana/loki:${LOKI_VERSION:-latest}
     container_name: loki
     # ports:
     #   - "3100:3100"
@@ -119,7 +119,7 @@ services:
       - web
 
   promtail:
-    image: grafana/promtail:latest
+    image: grafana/promtail:${PROMTAIL_VERSION:-latest}
     container_name: promtail
     volumes:
       - /var/log:/var/log

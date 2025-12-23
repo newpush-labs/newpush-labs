@@ -2,11 +2,11 @@ version: "3.3"
 
 services:
   traefik:
-    restart: unless-stopped # this is mine
-    image: "traefik:latest"
+    image: traefik:${TRAEFIK_VERSION:-latest}
+    container_name: traefik
     env_file:
-      - .env
-    container_name: "traefik" 
+      - {{ lab_dir }}/services/.env
+    restart: unless-stopped # this is mine
     ports:
       - "80:80"
       - "443:443"
@@ -23,7 +23,7 @@ services:
       - "traefik.http.routers.traefik-api.rule=Host(`traefik.${DOMAIN}`)"
       - "traefik.http.routers.traefik-api.entrypoints=https"
       - "traefik.http.routers.traefik-api.tls.certresolver=default"
-      - "traefik.http.routers.traefik-api.middlewares=traefik-forward-auth"      
+      - "traefik.http.routers.traefik-api.middlewares=traefik-forward-auth"
     logging:
       driver: journald
     networks:
@@ -31,7 +31,7 @@ services:
 
   # Ingress configured trough traefik/conf.d/whoami.yml
   whoami:
-    image: containous/whoami
+    image: containous/whoami:${WHOAMI_VERSION:-latest}
     container_name: whoami
     labels:
       - sablier.enable=true
@@ -42,3 +42,4 @@ services:
 networks:
   web:
     external: True
+

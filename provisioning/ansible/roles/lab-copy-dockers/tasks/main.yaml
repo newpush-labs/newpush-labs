@@ -113,6 +113,7 @@
     rsync_opts:
       - "--include=docker-compose*.yml"
       - "--include=docker-compose*.yaml"
+      - "--include=.env"
       - "--include=*/"
       - "--exclude=*"
   with_items: 
@@ -136,53 +137,60 @@
     - "crowdsec"
     - "code-server"
 
-- name: Render the Jinja2 template for Traefik
+
+- name: Render the Jinja2 template for traefik
   ansible.builtin.template:
     src: ../../services/traefik/traefik.yml.j2
     dest: "{{ lab_dir }}/services/traefik/traefik.yml"
     mode: '0644'
 
-- name: Render the Jinja2 template for Crowdsec
+- name: Render the Jinja2 template for crowdsec in traefik
   ansible.builtin.template:
     src: ../../services/traefik/conf.d/crowdsec.yml.j2
     dest: "{{ lab_dir }}/services/traefik/conf.d/crowdsec.yml"
     mode: '0644'
 
-
-- name: Render the Jinja2 template for Perplexica
-  ansible.builtin.template:
-    src: ../../services/dockge/stacks/lab-llm-perplexica/perplexica/config.toml.j2
-    dest: "{{ lab_dir }}/services/dockge/stacks/lab-llm-perplexica/perplexica/config.toml"
-    mode: '0644'
-
-- name: Render the Jinja2 template for Grafana
-  ansible.builtin.template:
-    src: ../../services/docker-compose.grafana.yaml.j2
-    dest: "{{ lab_dir }}/services/docker-compose.grafana.yaml"
-    mode: '0644'
-
-- name: Render the Jinja2 template for Casdoor
-  ansible.builtin.template:
-    src: ../../services/docker-compose.casdoor.yaml.j2
-    dest: "{{ lab_dir }}/services/docker-compose.casdoor.yaml"
-    mode: '0644'
-
-- name: Render the Jinja2 template for Dockge
-  ansible.builtin.template:
-    src: ../../services/docker-compose.dockge.yaml.j2
-    dest: "{{ lab_dir }}/services/docker-compose.dockge.yaml"
-    mode: '0644'
-
-- name: Render the Jinja2 template for Sshwifty
+- name: Render the Jinja2 template for sshwifty
   ansible.builtin.template:
     src: ../../services/sshwifty/sshwifty.conf.json.j2
     dest: "{{ lab_dir }}/services/sshwifty/sshwifty.conf.json"
     mode: '0644'
 
-- name: Render the Jinja2 template for Portainer
+
+- name: Render docker-compose templates
   ansible.builtin.template:
-    src: ../../services/docker-compose.portainer.yaml.j2
-    dest: "{{ lab_dir }}/services/docker-compose.portainer.yaml"
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: '0644'
+  loop:
+    - src: ../../services/docker-compose.casdoor.yaml.j2
+      dest: "{{ lab_dir }}/services/docker-compose.casdoor.yaml"
+    - src: ../../services/docker-compose.code-server.yaml.j2
+      dest: "{{ lab_dir }}/services/docker-compose.code-server.yaml"
+    - src: ../../services/docker-compose.crowdsec.yaml.j2
+      dest: "{{ lab_dir }}/services/docker-compose.crowdsec.yaml"
+    - src: ../../services/docker-compose.dockge.yaml.j2
+      dest: "{{ lab_dir }}/services/docker-compose.dockge.yaml"
+    - src: ../../services/docker-compose.dozzle.yaml.j2
+      dest: "{{ lab_dir }}/services/docker-compose.dozzle.yaml"
+    - src: ../../services/docker-compose.grafana.yaml.j2
+      dest: "{{ lab_dir }}/services/docker-compose.grafana.yaml"
+    - src: ../../services/docker-compose.mafl.yaml.j2
+      dest: "{{ lab_dir }}/services/docker-compose.mafl.yaml"
+    - src: ../../services/docker-compose.portainer.yaml.j2
+      dest: "{{ lab_dir }}/services/docker-compose.portainer.yaml"
+    - src: ../../services/docker-compose.sshwifty.yaml.j2
+      dest: "{{ lab_dir }}/services/docker-compose.sshwifty.yaml"
+    - src: ../../services/docker-compose.traefik.yaml.j2
+      dest: "{{ lab_dir }}/services/docker-compose.traefik.yaml"
+    - src: ../../services/docker-compose.watchtower.yaml.j2
+      dest: "{{ lab_dir }}/services/docker-compose.watchtower.yaml"
+
+
+- name: Render the Jinja2 template for lab-llm-perplexica
+  ansible.builtin.template:
+    src: ../../services/dockge/stacks/lab-llm-perplexica/perplexica/config.toml.j2
+    dest: "{{ lab_dir }}/services/dockge/stacks/lab-llm-perplexica/perplexica/config.toml"
     mode: '0644'
 
 - name: Render the Jinja2 template for lab-llm-lobechat
@@ -197,12 +205,6 @@
     dest: "{{ lab_dir }}/services/dockge/stacks/lab-llm-skyvern/compose.yaml"
     mode: '0644'
 
-- name: Render the Jinja2 template for code-server
-  ansible.builtin.template:
-    src: ../../services/docker-compose.code-server.yaml.j2
-    dest: "{{ lab_dir }}/services/docker-compose.code-server.yaml"
-    mode: '0644'
-
 - name: Render the Jinja2 template for jupyter
   ansible.builtin.template:
     src: ../../services/dockge/stacks/lab-tools-jupyter/compose.yaml.j2
@@ -215,15 +217,25 @@
     state: absent
   loop:
     - "{{ lab_dir }}/services/traefik/traefik.yml.j2"
-    - "{{ lab_dir }}/services/dockge/stacks/lab-llm-perplexica/perplexica/config.toml.j2"
-    - "{{ lab_dir }}/services/docker-compose.grafana.yaml.j2"
-    - "{{ lab_dir }}/services/docker-compose.casdoor.yaml.j2"
-    - "{{ lab_dir }}/services/docker-compose.dockge.yaml.j2"
-    - "{{ lab_dir }}/services/docker-compose.code-server.yaml.j2"
-    - "{{ lab_dir }}/services/sshwifty/sshwifty.conf.json.j2"
-    - "{{ lab_dir }}/services/docker-compose.portainer.yaml.j2"
-    - "{{ lab_dir }}/services/dockge/stacks/lab-llm-lobechat/compose.yml.j2"
     - "{{ lab_dir }}/services/traefik/conf.d/crowdsec.yml.j2"
+    - "{{ lab_dir }}/services/sshwifty/sshwifty.conf.json.j2"
+    - "{{ lab_dir }}/services/docker-compose.casdoor.yaml.j2"
+    - "{{ lab_dir }}/services/docker-compose.code-server.yaml.j2"
+    - "{{ lab_dir }}/services/docker-compose.crowdsec.yaml.j2"
+    - "{{ lab_dir }}/services/docker-compose.dockge.yaml.j2"
+    - "{{ lab_dir }}/services/docker-compose.dozzle.yaml.j2"
+    - "{{ lab_dir }}/services/docker-compose.grafana.yaml.j2"
+    - "{{ lab_dir }}/services/docker-compose.mafl.yaml.j2"
+    - "{{ lab_dir }}/services/docker-compose.portainer.yaml.j2"
+    - "{{ lab_dir }}/services/docker-compose.sshwifty.yaml.j2"
+    - "{{ lab_dir }}/services/docker-compose.traefik.yaml.j2"
+    - "{{ lab_dir }}/services/docker-compose.watchtower.yaml.j2"
+    - "{{ lab_dir }}/services/dockge/stacks/lab-llm-perplexica/perplexica/config.toml.j2"
+    - "{{ lab_dir }}/services/dockge/stacks/lab-llm-lobechat/compose.yml.j2"
     - "{{ lab_dir }}/services/dockge/stacks/lab-llm-skyvern/compose.yaml.j2"
     - "{{ lab_dir }}/services/dockge/stacks/lab-tools-jupyter/compose.yaml.j2"
-  
+
+
+
+
+
