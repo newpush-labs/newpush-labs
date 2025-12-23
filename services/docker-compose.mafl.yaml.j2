@@ -2,10 +2,12 @@ version: "3.3"
 
 services:
   mafl:
-    image: hywax/mafl:${MAFL_VERSION:-latest}
+    image: peteri14/mafl:${MAFL_VERSION:-latest}
     container_name: mafl
     env_file:
       - {{ lab_dir }}/services/.env
+    environment:
+      - DISABLE_UPDATE_CHECK=true
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://mafl:3000 || kill 1"]
       interval: 5s
