@@ -7,6 +7,7 @@
     mode: '0755'
     owner: 1000
     group: 50
+
 - name: Check if mafl config.yml exists
   ansible.builtin.stat:
     path: "{{ lab_dir }}/services/mafl/config.yml"
@@ -21,39 +22,13 @@
     group: 50
   when: not mafl_config_stat.stat.exists
 
-- name: Ensure casdoor.db directory exists
+- name: Ensure casdoor directory exists
   ansible.builtin.file:
     path: "{{ lab_dir }}/services/casdoor"
     state: directory
     mode: '0755'
     owner: 1000
     group: 50
-
-- name: Check if casdoor.db exists
-  ansible.builtin.stat:
-    path: "{{ lab_dir }}/services/casdoor/casdoor.db"
-  register: casdoor_db_stat
-
-- name: Copy casdoor.db if not yet present
-  ansible.builtin.copy:
-    src: ../../services/casdoor/casdoor.db_template
-    dest: "{{ lab_dir }}/services/casdoor/casdoor.db"
-    mode: '0777'
-    backup: true
-  when: not casdoor_db_stat.stat.exists
-
-- name: Get client secret from casdoor
-  ansible.builtin.command: python3 {{ lab_dir }}/utils/casdoor/casdoor-rotate-secrets.py --db {{ lab_dir }}/services/casdoor/casdoor.db
-  register: cmd_casdoor_rotate_secrets
-  changed_when: false
-  failed_when: false
-
-- name: Extract Client Secret
-  ansible.builtin.set_fact:
-    generic_oauth_client_secret: "{{ cmd_casdoor_rotate_secrets.stdout_lines \
-                                          | select('search', 'Client Secret: ') \
-                                          | map('regex_replace', '^.*Client Secret: ', '') \
-                                          | first }}"
 
 - name: Get lab external ip
   ansible.builtin.command: "curl -s -4 https://ifconfig.me"
@@ -138,6 +113,36 @@
     - "code-server"
 
 
+- name: Get OAUTH client secret from casdoor
+  ansible.builtin.command: python3 {{ lab_dir }}/utils/casdoor/get_client_credentials.py --file {{ lab_dir }}/services/casdoor/init_data.json --client-secret {{ generic_oauth_application_name }}
+  register: cmd_casdoor_secret
+  changed_when: false
+  failed_when: false
+
+- name: Extract OAUTH Client Secret
+  ansible.builtin.set_fact:
+    generic_oauth_client_secret: "{{ cmd_casdoor_secret.stdout }}"
+
+- name: Get OAUTH client ID from casdoor
+  ansible.builtin.command: python3 {{ lab_dir }}/utils/casdoor/get_client_credentials.py --file {{ lab_dir }}/services/casdoor/init_data.json --client-id {{ generic_oauth_application_name }}
+  register: cmd_casdoor_id
+  changed_when: false
+  failed_when: false
+
+- name: Extract OAUTH Client ID
+  ansible.builtin.set_fact:
+    generic_oauth_client_id: "{{ cmd_casdoor_id.stdout }}"
+
+- name: Debug OAUTH data
+  ansible.builtin.debug:
+    msg: "The OAUTH client ID {{ generic_oauth_client_id }} OAUTH Client Secret {{ generic_oauth_client_secret }}"
+
+- name: Render the Jinja2 template for casdoor
+  ansible.builtin.template:
+    src: ../../services/casdoor/conf/app.conf.j2
+    dest: "{{ lab_dir }}/services/casdoor/conf/app.conf"
+    mode: '0644'
+
 - name: Render the Jinja2 template for traefik
   ansible.builtin.template:
     src: ../../services/traefik/traefik.yml.j2
@@ -211,11 +216,12 @@
     dest: "{{ lab_dir }}/services/dockge/stacks/lab-tools-jupyter/compose.yaml"
     mode: '0644'
 
-- name: Cleanup the Jinja2 templates
+- name: Remove the Jinja2 templates from {{ lab_dir }}
   ansible.builtin.file:
     path: "{{ item }}"
     state: absent
   loop:
+    - "{{ lab_dir }}/services/casdoor/conf/app.conf.j2"
     - "{{ lab_dir }}/services/traefik/traefik.yml.j2"
     - "{{ lab_dir }}/services/traefik/conf.d/crowdsec.yml.j2"
     - "{{ lab_dir }}/services/sshwifty/sshwifty.conf.json.j2"

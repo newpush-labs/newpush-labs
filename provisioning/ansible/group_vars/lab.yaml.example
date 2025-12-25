@@ -22,8 +22,8 @@ groq_api_key:
 # the application name is being used to find the client id and secret in the casdoor database for the generic oauth provider
 # only change the name of the application if there is already an application in the casdoor database with this name 
 generic_oauth_application_name: application 
-generic_oauth_client_id: 5e7c01af6d262109e111 
-generic_oauth_client_secret:  
+# generic_oauth_client_id: 5e7c01af6d262109e111 
+# generic_oauth_client_secret:  
 
 # if lab_domain left unset then the default will be: <EXTERNAL_IP>.traefik.me
 # lab_domain:

@@ -44,18 +44,26 @@
 
 
 
-- name: Get client secret from casdoor
-  ansible.builtin.command: python3 {{ lab_dir }}/utils/casdoor/casdoor-rotate-secrets.py --db {{ lab_dir }}/services/casdoor/casdoor.db
-  register: cmd_casdoor_rotate_secrets
+- name: Get OAUTH client secret from casdoor
+  ansible.builtin.command: python3 {{ lab_dir }}/utils/casdoor/get_client_credentials.py --file {{ lab_dir }}/services/casdoor/init_data.json --client-secret {{ generic_oauth_application_name }}
+  register: cmd_casdoor_secret
   changed_when: false
   failed_when: false
 
-- name: Extract Client Secret
+- name: Extract OAUTH Client Secret
   ansible.builtin.set_fact:
-    generic_oauth_client_secret: "{{ cmd_casdoor_rotate_secrets.stdout_lines \
-                                          | select('search', 'Client Secret: ') \
-                                          | map('regex_replace', '^.*Client Secret: ', '') \
-                                          | first }}"
+    generic_oauth_client_secret: "{{ cmd_casdoor_secret.stdout }}"
+
+- name: Get OAUTH client ID from casdoor
+  ansible.builtin.command: python3 {{ lab_dir }}/utils/casdoor/get_client_credentials.py --file {{ lab_dir }}/services/casdoor/init_data.json --client-id {{ generic_oauth_application_name }}
+  register: cmd_casdoor_id
+  changed_when: false
+  failed_when: false
+
+- name: Extract OAUTH Client ID
+  ansible.builtin.set_fact:
+    generic_oauth_client_id: "{{ cmd_casdoor_id.stdout }}"
+
 
 - name: Add LAB_OAUTH_CLIENT_ID if it doesn't exist
   ansible.builtin.lineinfile:
