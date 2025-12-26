@@ -21,6 +21,7 @@ provisioning/ansible/group_vars/lab.yaml
 provisioning/ansible/bin
 provisioning/ansible/lib
 provisioning/ansible/lib64
+provisioning/ansible/pyvenv.cfg
 
 provisioning/tests/__pycache__/*
 _temp_/*

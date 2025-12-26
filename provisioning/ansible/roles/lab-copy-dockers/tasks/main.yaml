@@ -100,6 +100,8 @@
     dest: "{{ lab_dir }}/services/{{ item }}/"
   with_items:
     - "casdoor"
+    - "code-server"
+    - "crowdsec"
     - "dockge"
     - "grafana"
     - "loki"
@@ -109,33 +111,13 @@
     - "promtail"
     - "sshwifty"
     - "traefik"
-    - "crowdsec"
-    - "code-server"
 
 
-- name: Get OAUTH client secret from casdoor
-  ansible.builtin.command: python3 {{ lab_dir }}/utils/casdoor/get_client_credentials.py --file {{ lab_dir }}/services/casdoor/init_data.json --client-secret {{ generic_oauth_application_name }}
-  register: cmd_casdoor_secret
-  changed_when: false
-  failed_when: false
-
-- name: Extract OAUTH Client Secret
-  ansible.builtin.set_fact:
-    generic_oauth_client_secret: "{{ cmd_casdoor_secret.stdout }}"
-
-- name: Get OAUTH client ID from casdoor
-  ansible.builtin.command: python3 {{ lab_dir }}/utils/casdoor/get_client_credentials.py --file {{ lab_dir }}/services/casdoor/init_data.json --client-id {{ generic_oauth_application_name }}
-  register: cmd_casdoor_id
-  changed_when: false
-  failed_when: false
-
-- name: Extract OAUTH Client ID
-  ansible.builtin.set_fact:
-    generic_oauth_client_id: "{{ cmd_casdoor_id.stdout }}"
-
-- name: Debug OAUTH data
-  ansible.builtin.debug:
-    msg: "The OAUTH client ID {{ generic_oauth_client_id }} OAUTH Client Secret {{ generic_oauth_client_secret }}"
+- name: Render the Jinja2 template for init_data.json
+  ansible.builtin.template:
+    src: ../../services/casdoor/init_data.json.j2
+    dest: "{{ lab_dir }}/services/casdoor/init_data.json"
+    mode: '0644'
 
 - name: Render the Jinja2 template for casdoor
   ansible.builtin.template:
@@ -221,6 +203,7 @@
     path: "{{ item }}"
     state: absent
   loop:
+    - "{{ lab_dir }}/services/casdoor/init_data.json.j2"
     - "{{ lab_dir }}/services/casdoor/conf/app.conf.j2"
     - "{{ lab_dir }}/services/traefik/traefik.yml.j2"
     - "{{ lab_dir }}/services/traefik/conf.d/crowdsec.yml.j2"

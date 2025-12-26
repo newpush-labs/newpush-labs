@@ -1,0 +1,114 @@
+{
+  "organizations": [
+    {
+      "owner": "admin",
+      "name": "built-in",
+      "createdTime": "2023-01-01T00:00:00+08:00",
+      "displayName": "{{ organization_display_name }}",
+      "websiteUrl": "{{ organization_url }}",
+      "logo": "{{ organization_logo }}",
+      "passwordType": "plain",
+      "passwordSalt": "",
+      "phonePrefix": "36",
+      "defaultAvatar": "https://casbin.org/img/casbin.svg",
+      "tags": [],
+      "countryCodes": ["US", "HU"],
+      "languages": ["en", "zh", "es", "fr", "de", "id", "ja", "ko", "ru", "vi", "pt"]
+    }
+  ],
+  "users": [
+    {
+      "owner": "built-in",
+      "name": "admin",
+      "createdTime": "2023-01-01T00:00:00+08:00",
+      "updatedTime": "2023-01-01T00:00:00+08:00",
+      "type": "normal-user",
+      "password": "{{ admin_user_password }}",
+      "displayName": "Admin",
+      "avatar": "https://casbin.org/img/casbin.svg",
+      "email": "admin@example.com",
+      "phone": "",
+      "isAdmin": true,
+      "isGlobalAdmin": true,
+      "isForbidden": false
+    }
+  ],
+  "applications": [
+    {
+      "owner": "admin",
+      "name": "app-built-in",
+      "createdTime": "2023-01-01T00:00:00+08:00",
+      "displayName": "Casdoor",
+      "logo": "{{ organization_logo }}",
+      "homepageUrl": "{{ organization_url }}",
+      "clientId": "{{ generic_oauth_builtin_client_id }}",
+      "clientSecret": "{{ generic_oauth_builtin_client_secret }}",
+      "organization": "built-in",
+      "enablePassword": true,
+      "expireInHours": 168,
+      "refreshExpireInHours": 168,
+      "providers": [],
+      "redirectUris": ["http://localhost:8000/callback"],
+      "cert": "cert-built-in",
+      "signinMethods": [
+        {
+          "name": "Password",
+          "displayName": "Password",
+          "rule": "All"
+        }
+      ],
+      "FormBackgroundUrl": "{{ background_url }}"
+    },
+    {
+      "owner": "admin",
+      "name": "{{ generic_oauth_application_name }}",
+      "displayName": "{{ organization_display_name }}",
+      "logo": "{{ organization_logo }}",
+      "homepageUrl": "{{ organization_url }}",
+      "clientId": "{{ generic_oauth_client_id }}",
+      "clientSecret": "{{ generic_oauth_client_secret }}",
+      "organization": "built-in",
+      "enablePassword": true,
+      "enableSigninSession": true,
+      "enableAutoSignin": true,
+      "expireInHours": 168,
+      "refreshExpireInHours": 168,
+      "providers": [],
+      "redirectUris": [".traefik.me"],
+      "cert": "cert-built-in",
+      "signinMethods": [
+        {
+          "name": "Password",
+          "displayName": "Password",
+          "rule": "All"
+        }
+      ],
+      "grantTypes": [
+        "authorization_code",
+        "password",
+        "client_credentials",
+        "token",
+        "id_token",
+        "refresh_token"
+      ],
+      "FormBackgroundUrl": "{{ background_url }}"
+    }
+  ],
+  "certs": [
+    {
+      "owner": "admin",
+      "name": "cert-built-in",
+      "createdTime": "2024-09-17T17:59:10Z",
+      "displayName": "Built-in Cert",
+      "scope": "JWT",
+      "type": "x509",
+      "cryptoAlgorithm": "RS256",
+      "bitSize": 4096,
+      "expireInYears": 20,
+      "certificate": "-----BEGIN CERTIFICATE-----\nMIIE3TCCAsWgAwIBAgIDAeJAMA0GCSqGSIb3DQEBCwUAMCgxDjAMBgNVBAoTBWFk\nbWluMRYwFAYDVQQDEw1jZXJ0LWJ1aWx0LWluMB4XDTI0MDkxNzE3NTkxM1oXDTQ0\nMDkxNzE3NTkxM1owKDEOMAwGA1UEChMFYWRtaW4xFjAUBgNVBAMTDWNlcnQtYnVp\nbHQtaW4wggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQCzdoC+I1GpKnJi\ncnUNujqzZaE+rUfmrX6Ufuy2BMX7LBsP+sEJJU5qLZTPM0oga/hDZSprTwPDDmG6\nIcF+ZLUJ5PuAwaVhZ5YUiRfXt+LmAY/2wfzvNXeNQ6z8g1QWbL4xbsMdm9bPpXtl\nmYwn4YJiAPS6I1PLuZeyX7pImsc7aDuGrIOwkWqLTILcWSRb9nH2mw2SbDRY4gue\nW7x6v+L7oXIj+a+fn3MO49rQ8md+Y7zzhnSpFJiX+iZL1pyce6qeKs/HZ1/FXkUX\njcFdZm4M/5zhcuITwTob4cX9QdpWPpl7VH8lzCe5Ps7/aGkru1Ic5Uy+Ndh2TysD\nAqEbCZ2xdAz5BabaQbgWCeekSWrqx9oUnmLJF3Lkp6UL8HgFJcUB/Aq5YtGR3fzz\neDHQAvUchwa02exAF9+oNtvQvtdLMCy6I7GDU6d7C2xY28ZxEcY1nTv7FD6LElCE\n0odZrEGc/GyQcbiocXYAtStmn+JXrLHjni4ElOyJBGsmL7xLj1c7rvN1+TxV8Ziu\nKbcsEfdOgts/WWk4NOTQVhCLwnszEQDAZhn5kVyjXMQlGruglu5weZwcbQnBtxV0\n3lcZ08Yy3jqVcUKZVvXhCh76TP61pUaP96yMEjF9gslPxP8kIPr0YKZKKU+UWGod\n3CKt9I5X+DRmAxBs5xPoIetdYjWzrwIDAQABoxAwDjAMBgNVHRMBAf8EAjAAMA0G\nCSqGSIb3DQEBCwUAA4ICAQCKbObIYjlhKfOuPDMNf2VcvfFjMUvFGUIWMUOgRHYk\nOm+L9Gy4GSTImZnGiI/lX2LQkSNdUZWOgZS5EBLNsy7Tq+76Ck+vz987knXBokzw\ni35GgFDmqVV/dZN3uuPf25oXfUNXfgyoZcSYvKk6LHLj4rX9yqpkik3rkLO2S20Q\ntGohSzmwq4rYWg0lqjCwmCV/OrA945pWf+7WFwDlHLCVZhCLbsFcNAGRKRGUqp26\nvWL/YFyoC5Hk78+kLS3bcNi/QGNaQiC8X8R+EvKycr6H4fqWUqs3TReDiqCzbCBL\nLdzpRqepmm9kkYFlLFgtCQP3BS20resVI4Mp0zChtJcV6w9wXI2Ro1AUQefK+FlG\nwHW3C7SNgHP4FXdUE+XZhSjIyYW7t5aUUMj83GC9u3GzZpOTv3qehYKzPxMiJJla\niLwbdCAKUGXpQwwUF4tmQAtj22Ky/KgOsw6vdjlhjk+NG9Vg0xWZ9nViKGZcCymf\nx9qu855MjXWLb3RJ+OPtWvuQCZ6S2+oAPy0YV31BGr1SeyiAUAk8j7nDccBd316Y\nZ/XtnDOlmL5fzJMyHhAHX/qgNBRZ3oS5QbN8GG3NcnNzwm+09+pLrmltrfiM8TXb\n9tM4/jouE2uDN4H9CVlTgQeYFenhC3NkPacdCXtNFfV/0NmbhuAsyt3ZELCGFBCQ\n5A==\n-----END CERTIFICATE-----\n",
+      "privateKey": "-----BEGIN RSA PRIVATE KEY-----\nMIIJJwIBAAKCAgEAs3aAviNRqSpyYnJ1Dbo6s2WhPq1H5q1+lH7stgTF+ywbD/rB\nCSVOai2UzzNKIGv4Q2Uqa08Dww5huiHBfmS1CeT7gMGlYWeWFIkX17fi5gGP9sH8\n7zV3jUOs/INUFmy+MW7DHZvWz6V7ZZmMJ+GCYgD0uiNTy7mXsl+6SJrHO2g7hqyD\nsJFqi0yC3FkkW/Zx9psNkmw0WOILnlu8er/i+6FyI/mvn59zDuPa0PJnfmO884Z0\nqRSYl/omS9acnHuqnirPx2dfxV5FF43BXWZuDP+c4XLiE8E6G+HF/UHaVj6Ze1R/\nJcwnuT7O/2hpK7tSHOVMvjXYdk8rAwKhGwmdsXQM+QWm2kG4FgnnpElq6sfaFJ5i\nyRdy5KelC/B4BSXFAfwKuWLRkd3883gx0AL1HIcGtNnsQBffqDbb0L7XSzAsuiOx\ng1OnewtsWNvGcRHGNZ07+xQ+ixJQhNKHWaxBnPxskHG4qHF2ALUrZp/iV6yx454u\nBJTsiQRrJi+8S49XO67zdfk8VfGYrim3LBH3ToLbP1lpODTk0FYQi8J7MxEAwGYZ\n+ZFco1zEJRq7oJbucHmcHG0JwbcVdN5XGdPGMt46lXFCmVb14Qoe+kz+taVGj/es\njBIxfYLJT8T/JCD69GCmSilPlFhqHdwirfSOV/g0ZgMQbOcT6CHrXWI1s68CAwEA\nAQKCAgBDXEyQkcM6AuOyThHfmDImWhQ+6V2emSp05HtHCt2hHHn/8nf4Tdd0BS3g\n4/iD2OLzsQpOAvd/hGtsKPVu0rAdSaSZPJYtzGrJxHd9kdkJyjZWQZQF2YTJMkjA\n8y5hyGlPNqrn9zGW+R8rEIpKAdwlmwRAxbfTNRNacZIDZI05oDMPprs7UCm0pYBM\n4uzB0+wMy0A54IF5h0cjJn3FeTbiikPEexjPilLumNnuKb5s81Td927cdA2epdcw\nChr4pXZyLdGVoBiThYHbiGq2+xZ9rIgfGzb+gT2lb4YYPFqOmqqTXzDmaA3U+11J\nAtDPCF2W2P6IOr/IEIktdRQxiNd2Pg08lt47Jfe+qEGsr1x9bsJYaxbTRT00z0+B\noGq3Wa3x2g5qFUEQM18hCYplXI367QETXe3buDMZTYOhsmvHk/r27GkOqXYEI3Du\ntm7qFDqtfod+aSpUSbZkLZs60uJWoq3Yyd1b2th87bMtAiD+dRjr20HMHnd0uKqJ\nGLXYlnxIjEa/o27Z7Tvf4yXItOu+988j2jzXFXgMXEpXYu4IVJjrsw/f6Gfz2Q8I\ndLD7IJ61tshgM4P7wv6lb3abtB7439Oh8tbtzDQkqvcyEI8GW4Laxsi30k36qRWw\naKDFbJGoIyYS7JZFiwt598gQnQ+IhDNEYefQ5I+MWA45jPzLaQKCAQEA0Yca2dwF\nzfQUwDzS9zPeY8CajKgURtPYE+0OReX497IKDDmw6vT9aQVk/waYLvbFF2kIeugx\n+lY2o2g3Qh46Fxm+8nxxr+Aqtru1Tiw8EXRbWjWiAv2K63HX3U/lscXn9zQHp9vd\n1R2gFnXq+mnfDzubVw1Q12FPAk8mcuMwS2K2+vsA6xbD6XnyqPbAcWM+DZyRyNpv\nGVHeauOvvm5hWhwi0TV22cdR7xrppSVxK12BzrmyPMI+iuOcEIbq8wl9R0j8j7Hv\nOiM9jDQsHOxzOXsMd8pi4gs4tG9oCwTuQVnAs6SOG0E3x9DH8sTTDfQF2MoT0TCx\n4LMVOyOfaFFU+wKCAQEA20RUKekX0xgeIsCW7XFkS7U+8Wcii35W8zBGWVyW8Rt0\nfKPq59QH9Xfj+Due03Lk5cQHhn9UL0MDxsokMK9YwzYbCJQv/cqbRtkZcww6+9Y9\n8pb76Ht2RSBIMrJNZhbTzcyGwHP8d9rfSoa09uzzJTIWEq4w1t5K8GTkPXJzELPO\nyLqxad5KJnKpvPLf7YBtdXuqhZzk3sPT/sZKyMnmYu1lWmj9uV1Dg6Gek+hsM2bS\niE/KsXK9aPeIS3n1wc+mZclbHxo/c1tlvGwxxjNitUwBSAuNqAS/mMMlMmeLijLJ\nlEcYk3XgwBXoCFZY+rpw42vwQODwmzP95YkwrdhV3QKCAQBVf/M2CXGY7Ev3chqI\nY3MRc4vdb8zuZg3be7WCUmi48r7k5DnMdvJdg6UF6DP7nhkpB2Q9ezjBtaKQJbu+\n0ETWHlxr6NofcbMcZBaE8soEOV35vr8Ax2OD1i3HEo5hb6fLmUCyf6bTC0bDQ5UC\nYGd0eNdXu4hMi1nJUHEZGpofeQW//uMOC3kgcfHSfvZijqPIvCZFNtV1GJJRPd3+\nMF6rfaW7hzybe5l0n5/OEyxODNcme2I/JuiMlnqdx+BiEnI7v43IOUysharc5oFF\nwDr4rryUuVKGeRvHjVqAfJ+YrT5UUAbpGkDf2dNtvmF9ZSFpqHRTvbIoRguY2V14\nHRA3AoIBAHwMYyU21yC5E0uL85cvwJNIXezK8XNDrcN1u0cRJ+AOLU/amKpBfaM1\nCcdFS6zK4o7O4YcJAEKgwkEz2VelzCzcrlyjIaeOeVyStGAvOiuB4JgfLTMwrg+b\nnNz5nOo13ewfWtkEhX/1VsBeB4FvOnv/oxc8bysQpgrsuWe+GTUI1OMhJAAGH6My\n2a6pJWDDeKmvpiBjS+Rvm78WxfZkqy+qqN2Gaoz1I54T0JhTNOu7rz4pDj5n8Jqy\n9+vjetMEPFp3mVK2UdFckukPuPUt2xlAf7UXvDOjRBYTyTaD+CDebMazlkbOuLFT\nc2tMFpj646T2Sv0ZhWX4+xpiDCU+MA0CggEAUMU9xyV61FW4P0DpZKt53Q0Ga2CX\nD/mMhdSVjxcxzIfubI4B9Jqr8ek9gtbHYcZrXVsdJH4yGG8ZuYX+u+e6BaNC3lgg\nDxIfWN5LixuC+SaXew/kpCKTiNtKKZ/GFHvmHvsRxfYtCBy9rnshsDJH/IC4BfuL\nv6+6yW9J0L3NglNVw0BwZgX5BnjcWhWCPoB3dyBVw/OR2UlstjSxDulAvw7gCUy4\n75lbSzLuI0ttkG5gnZFRo3dUZB48g60lOsr65ObV9XJ9dDRC9M0+n+F2fseV/rIw\n/icQFU1JzFmKTrftayzfXkFqVwbQjmb7C2Bdqp5YbPaVWJrNbn6Blxf7dA==\n-----END RSA PRIVATE KEY-----\n"
+    }
+  ]
+}
+
+
