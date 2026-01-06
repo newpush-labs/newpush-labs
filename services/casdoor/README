@@ -1,0 +1,7 @@
+
+To extract the casdoor database inside the container to a JSON file:
+  $ docker exec -it casdoor sh
+  $ ./server -export
+or
+  $ ./server -export -exportPath /path/to/backup.json
+

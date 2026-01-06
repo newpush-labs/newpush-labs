@@ -1,0 +1,46 @@
+# --- Core settings ---
+appname = casdoor
+httpport = 8000
+runmode = dev # should be: prod
+copyrequestbody = true
+
+# --- Database (SQLite for self-contained deployment) ---
+driverName = sqlite
+dataSourceName = "file:/conf/casdoor.db?cache=shared"
+tableNamePrefix =
+showSql = false
+
+# --- Logging ---
+logConfig = {"filename": "logs/casdoor.log", "maxdays":30, "perm":"0640"}
+logPostOnly = true
+log_level = debug
+enableErrorMask = false
+
+# --- Caching / Storage (optional) ---
+redisEndpoint =
+defaultStorageProvider =   # define if enabling logo/avatar uploads
+
+# --- Networking / Proxy ---
+origin = 
+enableGzip = true
+isCloudIntranet = false
+
+# --- Security ---
+authState = "casdoor"
+verificationCodeTimeout = 10
+isUsernameLowered = false
+isDemoMode = false
+
+# --- RADIUS / LDAP (optional, disable if unused) ---
+# ldapServerPort = 389
+# radiusServerPort = 1812
+# radiusSecret = "secret"
+
+# --- Initialization ---
+initDataFile = "/init_data.json"
+staticBaseUrl = "https://cdn.casbin.org"
+batchSize = 100
+initScore = 0
+
+# --- Misc ---
+quota = {"organization": -1, "user": -1, "application": -1, "provider": -1}

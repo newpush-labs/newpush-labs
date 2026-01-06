@@ -4,6 +4,7 @@
   roles:
     # - common
     - lab-copy-installer
+    - lab-configure-casdoor
     - lab-copy-dockers
     - lab-configure-env
     - lab-set-permissions

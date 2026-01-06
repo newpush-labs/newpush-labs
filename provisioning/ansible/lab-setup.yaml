@@ -6,6 +6,7 @@
     - lab-install-docker
     - lab-user
     - lab-copy-installer
+    - lab-configure-casdoor
     - lab-copy-dockers
     - lab-configure-env
     - lab-utils-tty2web

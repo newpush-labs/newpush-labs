@@ -7,6 +7,7 @@
     #   golang_gopath: '$HOME/workspace-go'
     - lab-user
     - lab-copy-installer
+    - lab-configure-casdoor
     - lab-copy-dockers
     - lab-configure-env
     # - lab-configure-security
