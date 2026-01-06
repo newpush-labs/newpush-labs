@@ -1,6 +1,6 @@
 services:
   crowdsec:
-    image: crowdsecurity/crowdsec:v1.6.3
+    image: crowdsecurity/crowdsec:${CROWDSEC_VERSION:-latest}
     container_name: crowdsec
     restart: unless-stopped
     environment:
