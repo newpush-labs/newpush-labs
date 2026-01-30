@@ -2,7 +2,7 @@ version: "3.3"
 
 services:
   mafl:
-    image: peteri14/mafl:${MAFL_VERSION:-latest}
+    image: lracz/mafl:latest
     container_name: mafl
     env_file:
       - {{ lab_dir }}/services/.env
