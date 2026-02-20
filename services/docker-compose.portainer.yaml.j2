@@ -1,12 +1,12 @@
 version: "3.3"
 services:
   portainer:
-    image: portainer/portainer-ce:2.21.5
-    env_file:
-      - .env
+    image: portainer/portainer-ce:${PORTAINER_CE_VERSION:-latest}
     container_name: portainer
+    env_file:
+      - {{ lab_dir }}/services/.env
     restart: unless-stopped
-    command: ["--logo", "https://storage.googleapis.com/static_newpush/np_labs_logo.png", 
+    command: ["--logo", "{{ organization_logo }}", 
               "--templates", "https://evening-waters-42512-c3a4aa064399.herokuapp.com/modify?portainer_template_url=https://raw.githubusercontent.com/hdkiller/portainer-templates/refs/heads/traefik/templates_with_labels.json&TRAEFIK_INGRESS_DOMAIN={{ lab_domain }}", 
               "--admin-password", '$$2y$$05$$ED1XWB3MYv3ACwItDZjTuee6S3Flwj.ckwoUstuISY1Wuu.Buiqje']
     labels:

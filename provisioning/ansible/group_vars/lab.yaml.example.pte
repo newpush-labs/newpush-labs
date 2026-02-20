@@ -4,10 +4,10 @@ ansible_python_interpreter: /usr/bin/python3
 lab_dir: /opt/student-lab
 
 # casdoor settings
-organization_display_name: "Newpush lab"
-organization_url: "https://newpush.com"
-organization_logo: "https://storage.googleapis.com/static_newpush/np_labs_logo.png"
-background_url: "https://images.prismic.io/newpushcom/d0f96d86-fa05-4756-9f97-773950f93cae_main_new.png?auto=compress,format"
+organization_display_name: "PTE-MIK lab"
+organization_url: "https://mik.pte.hu"
+organization_logo: "https://registry.neo.mik.pte.hu:8000/pte.png"
+background_url: "https://registry.neo.mik.pte.hu:8000/background.jpg"
 admin_user_password: "hacker"
 
 

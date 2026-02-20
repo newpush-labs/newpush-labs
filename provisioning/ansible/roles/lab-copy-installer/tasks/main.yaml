@@ -4,7 +4,7 @@
     dest: /usr/local/bin/newpush-lab
     mode: "0755"
 
-- name: Create symlink for student-lab installer
+- name: Create symlink for newpush-lab
   ansible.builtin.file:
     src: /usr/local/bin/newpush-lab
     dest: /usr/local/bin/lab

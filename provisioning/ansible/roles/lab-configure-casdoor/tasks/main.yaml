@@ -1,20 +1,56 @@
-- name: Check if casdoor.db exists
-  ansible.builtin.stat:
-    path: "{{ lab_dir }}/services/casdoor/casdoor.db"
-  register: casdoor_db_stat
 
-- name: Rotate Casdoor secrets if casdoor.db does not exist
-  ansible.builtin.command: python3 {{ lab_dir }}/utils/casdoor/casdoor-rotate-secrets.py --db {{ lab_dir }}/services/casdoor/casdoor.db --rotate
-  register: rotate_secrets_output
-  when: not casdoor_db_stat.stat.exists
+- name: Make OAUTH client ID for casdoor built-in application
+  ansible.builtin.command: python3 ../../utils/casdoor/make_client_credentials.py --client-id
+  register: make_casdoor_builtin_id
+  changed_when: false
+  failed_when: make_casdoor_builtin_id.rc != 0
 
-- name: Copy template database if casdoor.db does not exist
-  ansible.builtin.copy:
-    src: "{{ lab_dir }}/services/casdoor/casdoor.db_orig"
-    dest: "{{ lab_dir }}/services/casdoor/casdoor.db"
-  when: not casdoor_db_stat.stat.exists
-
-- name: Capture the client secret from the output
+- name: Extract OAUTH client ID for casdoor built-in application
   ansible.builtin.set_fact:
-    client_secret: "{{ rotate_secrets_output.stdout_lines | select('search', 'Client Secret: ') | map('regex_replace', '^Client Secret: ', '') | first }}"
-  when: not casdoor_db_stat.stat.exists
+    generic_oauth_builtin_client_id: "{{ make_casdoor_builtin_id.stdout }}"
+
+- name: Make OAUTH client secret for casdoor built-in application
+  ansible.builtin.command: python3 ../../utils/casdoor/make_client_credentials.py --client-secret
+  register: make_casdoor_builtin_secret
+  changed_when: false
+  failed_when: make_casdoor_builtin_secret.rc != 0
+
+- name: Extract OAUTH client secret for casdoor built-in application
+  ansible.builtin.set_fact:
+    generic_oauth_builtin_client_secret: "{{ make_casdoor_builtin_secret.stdout }}"
+
+- name: Debug OAUTH data for casdoor built-in application
+  ansible.builtin.debug:
+    msg: "The OAUTH client ID {{ generic_oauth_builtin_client_id }} OAUTH Client Secret {{ generic_oauth_builtin_client_secret }}"
+
+
+
+- name: Make OAUTH client ID for casdoor default application
+  ansible.builtin.command: python3 ../../utils/casdoor/make_client_credentials.py --client-id
+  register: make_casdoor_id
+  changed_when: false
+  failed_when: make_casdoor_id.rc != 0
+  when: generic_oauth_client_id is not defined or generic_oauth_client_id == ""
+
+- name: Extract OAUTH client ID for casdoor default application
+  ansible.builtin.set_fact:
+    generic_oauth_client_id: "{{ make_casdoor_id.stdout }}"
+  when: generic_oauth_client_id is not defined or generic_oauth_client_id == ""
+
+- name: Make OAUTH client secret for casdoor default application
+  ansible.builtin.command: python3 ../../utils/casdoor/make_client_credentials.py --client-secret
+  register: make_casdoor_secret
+  changed_when: false
+  failed_when: make_casdoor_secret.rc != 0
+  when: generic_oauth_client_secret is not defined or generic_oauth_client_secret == ""
+
+- name: Extract OAUTH client secret for casdoor default application
+  ansible.builtin.set_fact:
+    generic_oauth_client_secret: "{{ make_casdoor_secret.stdout }}"
+  when: generic_oauth_client_secret is not defined or generic_oauth_client_secret == ""
+
+- name: Debug OAUTH data for casdoor default application
+  ansible.builtin.debug:
+    msg: "The OAUTH client ID {{ generic_oauth_client_id }} OAUTH Client Secret {{ generic_oauth_client_secret }}"
+
+

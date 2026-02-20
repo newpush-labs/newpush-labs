@@ -2,10 +2,12 @@ version: "3.3"
 
 services:
   mafl:
-    image:   hywax/mafl
-    env_file:
-      - .env
+    image: lracz/mafl:latest
     container_name: mafl
+    env_file:
+      - {{ lab_dir }}/services/.env
+    environment:
+      - DISABLE_UPDATE_CHECK=true
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://mafl:3000 || kill 1"]
       interval: 5s
@@ -32,11 +34,12 @@ services:
       - ./mafl/config.yml:/app/data/config.yml
     networks:
       - web
+
   mafl-service-discovery:
     image: lracz/mafl-service-discovery:latest
     container_name: mafl-service-discovery
     env_file:
-      - .env
+      - {{ lab_dir }}/services/.env
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -46,7 +49,7 @@ services:
     labels:
       - "com.centurylinklabs.watchtower.enable"
       - "traefik.enable=true"
-      
+
 networks:
   web:
     external: True

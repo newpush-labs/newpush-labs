@@ -31,12 +31,15 @@ services:
   casdoor:
     image: casbin/casdoor:${CASDOOR_VERSION:-latest}
     container_name: casdoor
+    env_file:
+      - {{ lab_dir }}/services/.env
     restart: unless-stopped
     user: "1000:1000"
     ports:
       - "8980:8000"
     volumes:
-      - ./casdoor/:/conf/
+      - ./casdoor/conf:/conf/
+      - ./casdoor/init_data.json:/init_data.json:ro
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.casdoor.rule=Host(`auth.${DOMAIN}`)"
