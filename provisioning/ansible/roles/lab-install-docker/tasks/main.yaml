@@ -32,6 +32,20 @@
       - docker-compose-plugin
     state: present
 
+- name: Configure Docker daemon (log rotation)
+  ansible.builtin.copy:
+    content: |
+      {
+        "log-driver": "json-file",
+        "log-opts": {
+          "max-size": "10m",
+          "max-file": "3"
+        }
+      }
+    dest: /etc/docker/daemon.json
+    mode: '0644'
+  notify: Restart Docker
+
 - name: Check if Docker network 'web' exists
   ansible.builtin.command: docker network ls --filter name=^web$ --format "{{ '{{' }} .Name {{ '}}' }}"
   register: docker_network_web

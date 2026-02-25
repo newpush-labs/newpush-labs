@@ -41,16 +41,16 @@ function manage_lab() {
       docker compose -f $compose_file -p $project_name ps
       ;;
     "start")
-      docker compose -f $LAB_HOME/services/docker-compose.yaml -p $project_name up -d
+      docker compose -f $compose_file -p $project_name up -d
       ;;
     "stop")
-      docker compose -f $LAB_HOME/services/docker-compose.yaml -p $project_name stop
+      docker compose -f $compose_file -p $project_name stop
       ;;
     "restart")
-      docker compose -f $LAB_HOME/services/docker-compose.yaml -p $project_name restart
+      docker compose -f $compose_file -p $project_name restart
       ;;
     "remove")
-      docker compose -f $LAB_HOME/services/docker-compose.yaml -p $project_name down
+      docker compose -f $compose_file -p $project_name down
       ;;
     "recreate")
       docker compose -f $compose_file -p $project_name up -d --force-recreate
