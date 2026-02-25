@@ -190,11 +190,11 @@
   loop: "{{ lab_active_stacks | default([]) }}"
   when: lookup('fileglob', '../../services/dockge/stacks/' + item.name + '/compose.yml.j2')
 
-- name: Link central .env file into active stack directories
-  ansible.builtin.file:
-    src: "{{ lab_dir }}/services/.env"
+- name: Create self-contained .env file for active stacks
+  ansible.builtin.template:
+    src: stack_env.j2
     dest: "{{ lab_dir }}/services/dockge/stacks/{{ item.name }}/.env"
-    state: link
+    mode: '0644'
     force: yes
   loop: "{{ lab_active_stacks | default([]) }}"
 
