@@ -106,21 +106,7 @@ function migrate() {
   
   # Make sure we have the latest version of the docker images just in case
   
-  # remove all lab related images
-  remove_docker_images=$(docker images --filter=reference="lracz/*" --format "{{.ID}}")
-  for image in $remove_docker_images; do
-    docker image rm $image
-  done
 
-  docker_images=(
-    "lracz/traefik-forward-auth:latest"
-    "lracz/mafl-service-discovery:latest"
-  )
-
-  for image in "${docker_images[@]}"; do
-    docker image rm $image
-    docker image pull $image
-  done
 }
 
 function info() {
