@@ -1,0 +1,20 @@
+# SearXNG settings
+
+use_default_settings: true
+
+server:
+  # base_url is defined via environment variable SEARXNG_BASE_URL
+  secret_key: "something-very-secret-and-random"
+  limiter: false
+  image_proxy: true
+
+search:
+  safe_search: 0
+  autocomplete: "duckduckgo"
+
+ui:
+  static_use_hash: true
+
+enabled_plugins:
+  - 'Tracker/Cookie Clicker'
+  - 'Video duration'
