@@ -35,6 +35,16 @@
     recurse: true
 
 
+- name: Set Ownership on n8n data
+  ansible.builtin.file:
+    path: "{{ lab_dir }}/services/dockge/stacks/lab-tools-n8n/n8n_data"
+    owner: 1000
+    group: 1000
+    mode: "0775"
+    state: directory
+    recurse: true
+
+
 - name: Set Ownership on jupyterlab workspace 
   ansible.builtin.file:
     path: "{{ lab_dir }}/services/dockge/stacks/lab-tools-jupyter/workspace"
