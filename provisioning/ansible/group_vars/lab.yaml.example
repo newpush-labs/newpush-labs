@@ -52,3 +52,16 @@ system_timezone: Etc/UTC
 
 # Set to true when provisioning with Vagrant
 is_vagrant: false
+
+# Modular Stack Configuration
+# Define which stacks should be automatically deployed and their custom options.
+lab_active_stacks:
+  - name: "lab-tools-jupyter"
+    options:
+      jupyter_courses:
+        - name: "anthropics"
+          repo: "https://github.com/anthropics/courses.git"
+        - name: "langchain"
+          repo: "https://github.com/pjirsa/langchain-quickstart"
+  - name: "lab-tools-searxng"
+    options: {}

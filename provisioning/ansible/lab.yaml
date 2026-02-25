@@ -17,24 +17,12 @@
         cmd: /usr/local/bin/newpush-lab migrate
       tags:
         - always
-    #     creates: /path/to/some/file/created/by/migrate
       
     - name: Run newpush-lab to recreate
       ansible.builtin.command:
         cmd: /usr/local/bin/newpush-lab recreate
       tags:
         - always
-
-    #     creates: /path/to/some/file/created/by/recreate
-    # - name: Run newpush-lab to reconfig
-
-    # - name: Run newpush-lab to free up disk space
-    #   ansible.builtin.command: /usr/local/bin/newpush-lab free-up-disk-space
-    # - name: Generate wazuh certs
-    #   ansible.builtin.command: docker compose -f {{ lab_dir }}/services/dockge/stacks/lab-security-wazuh/generate-indexer-certs.yml run --rm generator
-    #   args:
-    #     chdir: "{{ lab_dir }}/services"
-    #     creates: "{{ lab_dir }}/services/dockge/stacks/lab-security-wazuh/wazuh_indexer_ssl_certs/wazuh.indexer.pem"
 
     # Configure security after CrowdSec is installed and running
     - name: Configure security
@@ -47,5 +35,13 @@
     - name: Run newpush-lab to restart
       ansible.builtin.command:
         cmd: /usr/local/bin/newpush-lab restart
+      tags:
+        - always
+
+    # Modular Stacks Deployment
+    - name: Start modular stacks
+      ansible.builtin.command:
+        cmd: "/usr/local/bin/newpush-lab start {{ item.name }}"
+      loop: "{{ lab_active_stacks | default([]) }}"
       tags:
         - always

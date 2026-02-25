@@ -173,30 +173,30 @@
     - src: ../../services/docker-compose.watchtower.yaml.j2
       dest: "{{ lab_dir }}/services/docker-compose.watchtower.yaml"
 
-
-- name: Render the Jinja2 template for lab-llm-perplexica
+# Modular Stack Rendering
+- name: Render active stack templates (compose.yaml.j2)
   ansible.builtin.template:
-    src: ../../services/dockge/stacks/lab-llm-perplexica/perplexica/config.toml.j2
+    src: "../../services/dockge/stacks/{{ item.name }}/compose.yaml.j2"
+    dest: "{{ lab_dir }}/services/dockge/stacks/{{ item.name }}/compose.yaml"
+    mode: '0644'
+  loop: "{{ lab_active_stacks | default([]) }}"
+  when: lookup('fileglob', '../../services/dockge/stacks/' + item.name + '/compose.yaml.j2')
+
+- name: Render active stack templates (compose.yml.j2)
+  ansible.builtin.template:
+    src: "../../services/dockge/stacks/{{ item.name }}/compose.yml.j2"
+    dest: "{{ lab_dir }}/services/dockge/stacks/{{ item.name }}/compose.yml"
+    mode: '0644'
+  loop: "{{ lab_active_stacks | default([]) }}"
+  when: lookup('fileglob', '../../services/dockge/stacks/' + item.name + '/compose.yml.j2')
+
+- name: Render Perplexica config template
+  ansible.builtin.template:
+    src: "../../services/dockge/stacks/lab-llm-perplexica/perplexica/config.toml.j2"
     dest: "{{ lab_dir }}/services/dockge/stacks/lab-llm-perplexica/perplexica/config.toml"
     mode: '0644'
-
-- name: Render the Jinja2 template for lab-llm-lobechat
-  ansible.builtin.template:
-    src: ../../services/dockge/stacks/lab-llm-lobechat/compose.yml.j2
-    dest: "{{ lab_dir }}/services/dockge/stacks/lab-llm-lobechat/compose.yml"
-    mode: '0644'
-
-- name: Render the Jinja2 template for lab-llm-skyvern
-  ansible.builtin.template:
-    src: ../../services/dockge/stacks/lab-llm-skyvern/compose.yaml.j2
-    dest: "{{ lab_dir }}/services/dockge/stacks/lab-llm-skyvern/compose.yaml"
-    mode: '0644'
-
-- name: Render the Jinja2 template for jupyter
-  ansible.builtin.template:
-    src: ../../services/dockge/stacks/lab-tools-jupyter/compose.yaml.j2
-    dest: "{{ lab_dir }}/services/dockge/stacks/lab-tools-jupyter/compose.yaml"
-    mode: '0644'
+  loop: "{{ lab_active_stacks | default([]) }}"
+  when: item.name == 'lab-llm-perplexica'
 
 - name: Remove the Jinja2 templates from {{ lab_dir }}
   ansible.builtin.file:
@@ -219,12 +219,3 @@
     - "{{ lab_dir }}/services/docker-compose.sshwifty.yaml.j2"
     - "{{ lab_dir }}/services/docker-compose.traefik.yaml.j2"
     - "{{ lab_dir }}/services/docker-compose.watchtower.yaml.j2"
-    - "{{ lab_dir }}/services/dockge/stacks/lab-llm-perplexica/perplexica/config.toml.j2"
-    - "{{ lab_dir }}/services/dockge/stacks/lab-llm-lobechat/compose.yml.j2"
-    - "{{ lab_dir }}/services/dockge/stacks/lab-llm-skyvern/compose.yaml.j2"
-    - "{{ lab_dir }}/services/dockge/stacks/lab-tools-jupyter/compose.yaml.j2"
-
-
-
-
-
