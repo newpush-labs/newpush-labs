@@ -18,7 +18,7 @@ services:
     labels:
       - "com.centurylinklabs.watchtower.enable"
       - "traefik.enable=true"
-      - "traefik.http.routers.mafl.rule=Host(`www.${DOMAIN}`)"
+      - "traefik.http.routers.mafl.rule=Host(`${DOMAIN}`) || Host(`www.${DOMAIN}`)"
       - "traefik.http.routers.mafl.entrypoints=https"
       - "traefik.http.services.mafl.loadbalancer.server.port=3000"
       - "traefik.http.routers.mafl.service=mafl"

@@ -16,6 +16,7 @@ services:
       - PROVIDERS_GENERIC_OAUTH_SKIP_VERIFY_TLS=true
       - SECRET=something-random
       - INSECURE_COOKIE=true # Example assumes no https, do not use in production
+      - COOKIE_DOMAIN=${DOMAIN}
     labels:
       - "traefik.http.middlewares.traefik-forward-auth.forwardauth.address=http://traefik-forward-auth:4181"
       - "traefik.http.middlewares.traefik-forward-auth.forwardauth.authResponseHeaders=X-Forwarded-User"

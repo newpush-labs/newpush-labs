@@ -1,6 +1,6 @@
 
 - name: Make OAUTH client ID for casdoor built-in application
-  ansible.builtin.command: python3 ../../utils/casdoor/make_client_credentials.py --client-id
+  ansible.builtin.command: python3 {{ lab_dir }}/utils/casdoor/make_client_credentials.py --client-id
   register: make_casdoor_builtin_id
   changed_when: false
   failed_when: make_casdoor_builtin_id.rc != 0
@@ -10,7 +10,7 @@
     generic_oauth_builtin_client_id: "{{ make_casdoor_builtin_id.stdout }}"
 
 - name: Make OAUTH client secret for casdoor built-in application
-  ansible.builtin.command: python3 ../../utils/casdoor/make_client_credentials.py --client-secret
+  ansible.builtin.command: python3 {{ lab_dir }}/utils/casdoor/make_client_credentials.py --client-secret
   register: make_casdoor_builtin_secret
   changed_when: false
   failed_when: make_casdoor_builtin_secret.rc != 0
@@ -26,7 +26,7 @@
 
 
 - name: Make OAUTH client ID for casdoor default application
-  ansible.builtin.command: python3 ../../utils/casdoor/make_client_credentials.py --client-id
+  ansible.builtin.command: python3 {{ lab_dir }}/utils/casdoor/make_client_credentials.py --client-id
   register: make_casdoor_id
   changed_when: false
   failed_when: make_casdoor_id.rc != 0
@@ -38,7 +38,7 @@
   when: generic_oauth_client_id is not defined or generic_oauth_client_id == ""
 
 - name: Make OAUTH client secret for casdoor default application
-  ansible.builtin.command: python3 ../../utils/casdoor/make_client_credentials.py --client-secret
+  ansible.builtin.command: python3 {{ lab_dir }}/utils/casdoor/make_client_credentials.py --client-secret
   register: make_casdoor_secret
   changed_when: false
   failed_when: make_casdoor_secret.rc != 0
