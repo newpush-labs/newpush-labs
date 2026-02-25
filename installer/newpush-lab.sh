@@ -38,22 +38,22 @@ function manage_lab() {
 
   case "$action" in
     "status")
-      docker compose -f $compose_file -p $project_name ps
+      docker compose --env-file $SERVICES_DIR/.env -f $compose_file -p $project_name ps
       ;;
     "start")
-      docker compose -f $compose_file -p $project_name up -d
+      docker compose --env-file $SERVICES_DIR/.env -f $compose_file -p $project_name up -d
       ;;
     "stop")
-      docker compose -f $compose_file -p $project_name stop
+      docker compose --env-file $SERVICES_DIR/.env -f $compose_file -p $project_name stop
       ;;
     "restart")
-      docker compose -f $compose_file -p $project_name restart
+      docker compose --env-file $SERVICES_DIR/.env -f $compose_file -p $project_name restart
       ;;
     "remove")
-      docker compose -f $compose_file -p $project_name down
+      docker compose --env-file $SERVICES_DIR/.env -f $compose_file -p $project_name down
       ;;
     "recreate")
-      docker compose -f $compose_file -p $project_name up -d --force-recreate
+      docker compose --env-file $SERVICES_DIR/.env -f $compose_file -p $project_name up -d --force-recreate
       ;;
     *)
       echo "Invalid action: $action"

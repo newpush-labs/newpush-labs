@@ -1,4 +1,3 @@
-
 - name: Set coder access url
   ansible.builtin.set_fact:
     coder_access_url: "https://coder.{{ lab_external_ip }}.traefik.me"
@@ -66,3 +65,13 @@
     - { line: "ANTHROPIC_API_KEY={{ anthropic_api_key }}", regexp: '^ANTHROPIC_API_KEY=' }
     - { line: "ANTHROPIC_ENABLED=1", regexp: '^ANTHROPIC_ENABLED=' }
   when: anthropic_api_key is defined and anthropic_api_key is not none and anthropic_api_key | string | length > 0
+
+- name: Add global environment variables to /etc/environment
+  ansible.builtin.lineinfile:
+    path: /etc/environment
+    line: "{{ item.line }}"
+    regexp: "{{ item.regexp }}"
+  loop:
+    - { line: 'DOMAIN={{ lab_domain }}', regexp: '^DOMAIN=' }
+    - { line: 'LAB_IP={{ lab_external_ip }}', regexp: '^LAB_IP=' }
+    - { line: 'LAB_USER={{ lab_user }}', regexp: '^LAB_USER=' }

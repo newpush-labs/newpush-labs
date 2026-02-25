@@ -190,14 +190,6 @@
   loop: "{{ lab_active_stacks | default([]) }}"
   when: lookup('fileglob', '../../services/dockge/stacks/' + item.name + '/compose.yml.j2')
 
-- name: Render Perplexica config template
-  ansible.builtin.template:
-    src: "../../services/dockge/stacks/lab-llm-perplexica/perplexica/config.toml.j2"
-    dest: "{{ lab_dir }}/services/dockge/stacks/lab-llm-perplexica/perplexica/config.toml"
-    mode: '0644'
-  loop: "{{ lab_active_stacks | default([]) }}"
-  when: item.name == 'lab-llm-perplexica'
-
 - name: Remove the Jinja2 templates from {{ lab_dir }}
   ansible.builtin.file:
     path: "{{ item }}"
