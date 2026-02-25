@@ -4,6 +4,15 @@ LAB_HOME="/opt/student-lab"
 SERVICES_DIR="$LAB_HOME/services"
 STACKS_DIR="$SERVICES_DIR/dockge/stacks"
 
+# Industry Standard: Export global environment variables so they are available
+# for Docker Compose interpolation (e.g. ${DOMAIN} in labels).
+if [ -f "$SERVICES_DIR/.env" ]; then
+  # Use 'set -a' to automatically export all variables sourced from the file
+  set -a
+  source "$SERVICES_DIR/.env"
+  set +a
+fi
+
 # Manage lab function which takes two arguments:
 #  Action: Status, Start, Stop, Remove, Update
 #  Stack: core, lab-security-wazuh, lab-security-openvas, etc..
@@ -115,12 +124,10 @@ function migrate() {
 }
 
 function info() {
-  source $LAB_HOME/services/.env
   echo "Your lab can be accessed at: https://www.${DOMAIN}"
 }
 
 function health_check() {
-  source $LAB_HOME/services/.env
   echo "Your lab can be accessed at: https://www.${DOMAIN}"
 }
 

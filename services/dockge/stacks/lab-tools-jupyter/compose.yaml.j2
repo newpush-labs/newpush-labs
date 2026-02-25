@@ -2,6 +2,9 @@ services:
   jupyter-content:
     container_name: jupyter-content
     image: alpine:latest
+    env_file:
+      - ../../../.env
+      - stack.env
     volumes:
       - /home/{{ lab_user }}/workspace:/home/{{ lab_user }}/workspace
     command: [
@@ -21,6 +24,9 @@ services:
     container_name: jupyter
     restart: unless-stopped
     privileged: true
+    env_file:
+      - ../../../.env
+      - stack.env
     working_dir: 
       /home/{{ lab_user }}/workspace
     volumes:
