@@ -1,3 +1,20 @@
+# Global Variables (Derived from Ansible)
+DOMAIN={{ lab_domain }}
+LAB_IP={{ lab_external_ip }}
+LAB_USER={{ lab_user }}
+
+# Shared OAuth Credentials
+LAB_OAUTH_CLIENT_ID={{ generic_oauth_client_id }}
+LAB_OAUTH_CLIENT_SECRET={{ generic_oauth_client_secret }}
+
+# API Keys (if provided)
+{% if openai_api_key is defined %}
+OPENAI_API_KEY={{ openai_api_key }}
+{% endif %}
+{% if anthropic_api_key is defined %}
+ANTHROPIC_API_KEY={{ anthropic_api_key }}
+{% endif %}
+
 # Stack Specific Overrides
 {% if item.options.env is defined %}
 {% for key, value in item.options.env.items() %}
