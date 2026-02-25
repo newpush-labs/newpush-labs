@@ -14,9 +14,11 @@ services:
       - PROVIDERS_GENERIC_OAUTH_TOKEN_URL=https://auth.${DOMAIN}/api/login/oauth/access_token
       - PROVIDERS_GENERIC_OAUTH_USER_URL=https://auth.${DOMAIN}/api/userinfo
       - PROVIDERS_GENERIC_OAUTH_SKIP_VERIFY_TLS=true
-      - SECRET=something-random
+      - SECRET=${LAB_FORWARD_AUTH_SECRET:-something-random}
       - INSECURE_COOKIE=true # Example assumes no https, do not use in production
       - COOKIE_DOMAIN=${DOMAIN}
+      - COOKIE_NAME=_labs_auth
+      - CSRF_COOKIE_NAME=_labs_csrf
     labels:
       - "traefik.http.middlewares.traefik-forward-auth.forwardauth.address=http://traefik-forward-auth:4181"
       - "traefik.http.middlewares.traefik-forward-auth.forwardauth.authResponseHeaders=X-Forwarded-User"

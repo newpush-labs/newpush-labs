@@ -42,6 +42,36 @@
     regexp: '^LAB_OAUTH_CLIENT_SECRET='
     mode: "0644"
 
+- name: Check if LAB_FORWARD_AUTH_SECRET already exists in .env
+  ansible.builtin.shell: grep '^LAB_FORWARD_AUTH_SECRET=' {{ lab_dir }}/services/.env | cut -d '=' -f2
+  register: existing_forward_auth_secret
+  changed_when: false
+  failed_when: false
+
+- name: Set lab_forward_auth_secret if it already exists
+  ansible.builtin.set_fact:
+    lab_forward_auth_secret: "{{ existing_forward_auth_secret.stdout }}"
+  when: existing_forward_auth_secret.stdout != ""
+
+- name: Generate lab_forward_auth_secret if it does not exist
+  ansible.builtin.command: python3 {{ lab_dir }}/utils/casdoor/make_client_credentials.py --client-secret
+  register: new_forward_auth_secret
+  changed_when: false
+  when: existing_forward_auth_secret.stdout == ""
+
+- name: Extract generated lab_forward_auth_secret
+  ansible.builtin.set_fact:
+    lab_forward_auth_secret: "{{ new_forward_auth_secret.stdout }}"
+  when: existing_forward_auth_secret.stdout == ""
+
+- name: Add LAB_FORWARD_AUTH_SECRET to .env file
+  ansible.builtin.lineinfile:
+    path: "{{ lab_dir }}/services/.env"
+    line: "LAB_FORWARD_AUTH_SECRET={{ lab_forward_auth_secret }}"
+    create: true
+    regexp: '^LAB_FORWARD_AUTH_SECRET='
+    mode: "0644"
+
 - name: Add OPENAI_API_KEY and enable OpenAI if it doesn't exist and is set
   ansible.builtin.lineinfile:
     path: "{{ lab_dir }}/services/.env"
