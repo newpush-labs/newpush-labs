@@ -6,10 +6,13 @@ Thank you for considering contributing to our project! We welcome contributions 
 
 1. **Fork the Repository**: Start by forking the repository to your GitHub account.
 2. **Clone the Repository**: Clone the forked repository to your local machine.
+
    ```sh
    git clone https://github.com/your-username/repository-name.git
    ```
+
 3. **Create a Branch**: Create a new branch for your feature or bugfix.
+
    ```sh
    git checkout -b feature-or-bugfix-name
    ```
@@ -19,10 +22,13 @@ Thank you for considering contributing to our project! We welcome contributions 
 1. **Code Style**: Ensure your code adheres to the project's coding standards and style guidelines.
 2. **Write Tests**: If applicable, write tests to cover your changes.
 3. **Commit Messages**: Write clear and concise commit messages. Follow the convention:
+
    ```
    [type]: [short description]
    ```
+
    Example:
+
    ```
    feat: add new authentication method
    ```
@@ -30,9 +36,11 @@ Thank you for considering contributing to our project! We welcome contributions 
 ## Submitting Changes
 
 1. **Push to GitHub**: Push your changes to your forked repository.
+
    ```sh
    git push origin feature-or-bugfix-name
    ```
+
 2. **Open a Pull Request**: Open a pull request (PR) to the main repository. Provide a clear description of your changes and reference any related issues.
 
 ## Code Review

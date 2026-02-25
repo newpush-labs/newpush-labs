@@ -1,8 +1,8 @@
 ![newpush labs Logo](docs/images/np_labs_logo.png)
 
-##  Welcome to newpush labs 🧪
+## Welcome to newpush labs 🧪
 
-The newpush labs is an out-of-the-box solution that allows you to easily try out trending open-source stacks without spending hours configuring the self-hosted versions of the latest tools. Our lab environment is designed to ensure production readiness, enabling you to practice and refine your skills in a safe and controlled setting. 
+The newpush labs is an out-of-the-box solution that allows you to easily try out trending open-source stacks without spending hours configuring the self-hosted versions of the latest tools. Our lab environment is designed to ensure production readiness, enabling you to practice and refine your skills in a safe and controlled setting.
 
 ## Build your lab in seconds, not months! 🚀
 
@@ -32,6 +32,7 @@ We are thrilled to have you here! This repository is dedicated to the newpush la
 To get started with the newpush lab, follow these simple steps:
 
 1. **Clone the Repository:**
+
    ```bash
    git clone git@github.com:newpush-labs/newpush-labs.git
    ```
@@ -48,16 +49,12 @@ We welcome contributions from the community! If you have ideas, improvements, or
 
 ## Get in touch 😊
 
-If you have any questions or need assistance, please don't hesitate to contact us at support@newpush.com. We are here to help you make the most of your experience with the newpush lab.
+If you have any questions or need assistance, please don't hesitate to contact us at <support@newpush.com>. We are here to help you make the most of your experience with the newpush lab.
 
-Thank you for being a part of our community. 
+Thank you for being a part of our community.
 
 Happy hacking!
 
-The newpush labs team 
+The newpush labs team
 
 ❤️
-
-
-
-
