@@ -190,6 +190,14 @@
   loop: "{{ lab_active_stacks | default([]) }}"
   when: lookup('fileglob', '../../services/dockge/stacks/' + item.name + '/compose.yml.j2')
 
+- name: Link central .env file into active stack directories
+  ansible.builtin.file:
+    src: "{{ lab_dir }}/services/.env"
+    dest: "{{ lab_dir }}/services/dockge/stacks/{{ item.name }}/.env"
+    state: link
+    force: yes
+  loop: "{{ lab_active_stacks | default([]) }}"
+
 - name: Remove the Jinja2 templates from {{ lab_dir }}
   ansible.builtin.file:
     path: "{{ item }}"

@@ -66,12 +66,12 @@
     - { line: "ANTHROPIC_ENABLED=1", regexp: '^ANTHROPIC_ENABLED=' }
   when: anthropic_api_key is defined and anthropic_api_key is not none and anthropic_api_key | string | length > 0
 
-- name: Add global environment variables to /etc/environment
+- name: Ensure global environment variables are NOT in /etc/environment
   ansible.builtin.lineinfile:
     path: /etc/environment
-    line: "{{ item.line }}"
-    regexp: "{{ item.regexp }}"
+    state: absent
+    regexp: "{{ item }}"
   loop:
-    - { line: 'DOMAIN={{ lab_domain }}', regexp: '^DOMAIN=' }
-    - { line: 'LAB_IP={{ lab_external_ip }}', regexp: '^LAB_IP=' }
-    - { line: 'LAB_USER={{ lab_user }}', regexp: '^LAB_USER=' }
+    - '^DOMAIN='
+    - '^LAB_IP='
+    - '^LAB_USER='
