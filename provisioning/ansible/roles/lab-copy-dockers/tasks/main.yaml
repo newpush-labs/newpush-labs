@@ -190,6 +190,26 @@
   loop: "{{ lab_active_stacks | default([]) }}"
   when: lookup('fileglob', '../../services/dockge/stacks/' + item.name + '/compose.yml.j2')
 
+- name: Ensure searxng config directory exists
+  ansible.builtin.file:
+    path: "{{ lab_dir }}/services/dockge/stacks/lab-tools-searxng/searxng"
+    state: directory
+    mode: "0775"
+    owner: 1000
+    group: 1000
+  when: item.name == "lab-tools-searxng"
+  loop: "{{ lab_active_stacks | default([]) }}"
+
+- name: Copy searxng settings.yml
+  ansible.builtin.copy:
+    src: "../../services/dockge/stacks/lab-tools-searxng/searxng/settings.yml"
+    dest: "{{ lab_dir }}/services/dockge/stacks/lab-tools-searxng/searxng/settings.yml"
+    mode: "0664"
+    owner: 1000
+    group: 1000
+  when: item.name == "lab-tools-searxng"
+  loop: "{{ lab_active_stacks | default([]) }}"
+
 - name: Create self-contained .env file for active stacks
   ansible.builtin.template:
     src: stack_env.j2
