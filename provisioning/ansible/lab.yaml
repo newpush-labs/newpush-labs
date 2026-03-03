@@ -12,15 +12,9 @@
     - {role: lab-set-permissions, tags: [setup]}
     - {role: lab-utils-tty2web, tags: [setup]}
   tasks:
-    - name: Run newpush-lab to migrate
+    - name: Start core lab services
       ansible.builtin.command:
-        cmd: /usr/local/bin/newpush-lab migrate
-      tags:
-        - always
-      
-    - name: Run newpush-lab to recreate
-      ansible.builtin.command:
-        cmd: /usr/local/bin/newpush-lab recreate
+        cmd: /usr/local/bin/newpush-lab start
       tags:
         - always
 
@@ -30,13 +24,6 @@
         name: lab-configure-security
       tags:
         - setup
-    
-    # Run newpush-lab to restart after security configuration
-    - name: Run newpush-lab to restart
-      ansible.builtin.command:
-        cmd: /usr/local/bin/newpush-lab restart
-      tags:
-        - always
 
     # Modular Stacks Deployment
     - name: Start modular stacks
