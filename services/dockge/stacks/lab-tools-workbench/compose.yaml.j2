@@ -1,0 +1,42 @@
+services:
+  workbench:
+    image: ghcr.io/newpush-labs/workbench:latest
+    container_name: workbench
+    restart: unless-stopped
+    environment:
+      - AUTOINSTALL_NPM=${AUTOINSTALL_NPM:-@google/gemini-cli @anthropic-ai/claude-code portless}
+      - AUTOINSTALL_PIP=${AUTOINSTALL_PIP:-}
+      - AUTOINSTALL_BUN=${AUTOINSTALL_BUN:-}
+      - AUTOINSTALL_APT=${AUTOINSTALL_APT:-}
+      - AUTH_SKIP=${AUTH_SKIP:-true}
+    volumes:
+      - workbench_workspace:/workspace
+    user: superuser
+    working_dir: /workspace
+    labels:
+      - "com.centurylinklabs.watchtower.enable"
+      - "traefik.enable=true"
+      - "traefik.http.routers.workbench.rule=Host(`workbench.${DOMAIN}`)"
+      - "traefik.http.routers.workbench.entrypoints=https"
+      - "traefik.http.services.workbench.loadbalancer.server.port=8080"
+      - "traefik.http.routers.workbench.service=workbench"
+      - "traefik.http.routers.workbench.tls=true"
+      - "traefik.http.routers.workbench.tls.certresolver=default"
+      - "traefik.http.routers.workbench.middlewares=traefik-forward-auth"
+      - "mafl.enable=true"
+      - "mafl.title=Workbench"
+      - "mafl.description=AI Assistant Workbench"
+      - "mafl.tag=terminal"
+      - "mafl.group=Tools"
+      - "mafl.link=https://workbench.${DOMAIN}"
+      - "mafl.icon.name=tabler:terminal"
+      - "mafl.status.enabled=true"
+    networks:
+      - web
+
+volumes:
+  workbench_workspace:
+
+networks:
+  web:
+    external: True

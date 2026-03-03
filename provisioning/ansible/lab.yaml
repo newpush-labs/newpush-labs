@@ -45,3 +45,10 @@
       loop: "{{ lab_active_stacks | default([]) }}"
       tags:
         - always
+
+    # Finalize and Refresh the Dashboard
+    - name: Refresh Dashboard
+      include_role:
+        name: lab-refresh-dashboard
+      tags:
+        - always

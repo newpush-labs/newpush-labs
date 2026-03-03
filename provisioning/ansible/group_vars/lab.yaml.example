@@ -65,3 +65,4 @@ lab_active_stacks:
           repo: "https://github.com/pjirsa/langchain-quickstart"
   - name: "lab-tools-searxng"
     options: {}
+  - name: "lab-tools-workbench"

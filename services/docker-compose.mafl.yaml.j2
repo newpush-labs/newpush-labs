@@ -46,6 +46,8 @@ services:
       - ./mafl/base.yml:/app/config/base.yml
       - ./mafl/config.yml:/app/config/config.yml
       - ./mafl/conf.d:/app/config/conf.d
+    networks:
+      - web
     labels:
       - "com.centurylinklabs.watchtower.enable"
       - "traefik.enable=true"

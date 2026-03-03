@@ -1,0 +1,36 @@
+---
+- name: Wait for Mafl to be healthy before processing
+  ansible.builtin.shell:
+    cmd: "docker inspect --format='{% raw %}{{json .State.Health.Status}}{% endraw %}' mafl"
+  register: mafl_health
+  until: mafl_health.stdout == '\"healthy\"'
+  retries: 20
+  delay: 5
+
+- name: Pause to allow discovery sidecar to process events
+  ansible.builtin.pause:
+    seconds: 10
+
+- name: Stop discovery sidecar during sync
+  ansible.builtin.command:
+    cmd: "docker stop mafl-service-discovery"
+  failed_when: false
+
+- name: Copy Mafl formatter script to host
+  ansible.builtin.copy:
+    src: format_mafl_config.py
+    dest: /usr/local/bin/format_mafl_config.py
+    mode: '0755'
+
+- name: Reformat Mafl config with correct indentation
+  ansible.builtin.command:
+    cmd: "python3 /usr/local/bin/format_mafl_config.py {{ lab_dir }}/services/mafl/config.yml"
+
+- name: Restart Mafl UI to pick up new config
+  ansible.builtin.command:
+    cmd: "/usr/local/bin/newpush-lab restart-container mafl"
+
+- name: Start discovery sidecar
+  ansible.builtin.command:
+    cmd: "docker start mafl-service-discovery"
+  failed_when: false
