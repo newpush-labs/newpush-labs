@@ -18,6 +18,7 @@ function install_packages() {
 
   # Based on OS, install packages, select the package manager
   if [ "$OS" == "debian" ]; then
+    export DEBIAN_FRONTEND=noninteractive
     sudo dpkg --configure -a
     
     sudo apt update
