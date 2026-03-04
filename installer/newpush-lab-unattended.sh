@@ -119,6 +119,36 @@ function configure_ansible() {
         sed -i "s/^is_vagrant:.*/is_vagrant: true/" provisioning/ansible/group_vars/lab.yaml
     fi
 
+    # Remove the default lab_active_stacks block from the example file
+    sed -i '/^lab_active_stacks:/,$d' provisioning/ansible/group_vars/lab.yaml
+
+    # Append the new lab_active_stacks block dynamically
+    echo "lab_active_stacks:" >> provisioning/ansible/group_vars/lab.yaml
+    
+    # Check if a base64 JSON payload was provided for advanced stack config
+    if [ -n "$LAB_ACTIVE_STACKS_JSON_B64" ]; then
+        # Decode the JSON and convert it directly to YAML using python.
+        echo "$LAB_ACTIVE_STACKS_JSON_B64" | base64 -d > /tmp/stacks.json
+        python3 -c 'import sys, json, yaml; print(yaml.dump(json.load(open("/tmp/stacks.json")), default_flow_style=False))' >> provisioning/ansible/group_vars/lab.yaml
+    else
+        # Fallback to simple comma-separated list.
+        # If absolutely nothing is set, default to n8n and workbench.
+        if [ -z "$LAB_ACTIVE_STACKS" ]; then
+            export LAB_ACTIVE_STACKS="lab-tools-n8n,lab-tools-workbench"
+        fi
+
+        
+        IFS=',' read -ra STACKS <<< "$LAB_ACTIVE_STACKS"
+        for stack in "${STACKS[@]}"; do
+            # Trim leading/trailing whitespace
+            stack=$(echo "$stack" | xargs)
+            if [ -n "$stack" ]; then
+                echo "  - name: \"$stack\"" >> provisioning/ansible/group_vars/lab.yaml
+                echo "    options: {}" >> provisioning/ansible/group_vars/lab.yaml
+            fi
+        done
+    fi
+
     # Create a fresh inventory with local connection under [lab] group
     echo "[lab]" > provisioning/ansible/inventory/hosts
     echo "127.0.0.1 ansible_connection=local" >> provisioning/ansible/inventory/hosts
