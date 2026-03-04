@@ -70,6 +70,11 @@ function configure_ansible() {
 
     cp provisioning/ansible/group_vars/lab.yaml.example provisioning/ansible/group_vars/lab.yaml
 
+    # Set the lab_user variable in the group_vars/lab.yaml file if LAB_USER environment variable is set
+    if [ -n "$LAB_USER" ]; then
+        sed -i "s/^lab_user:.*/lab_user: $LAB_USER/" provisioning/ansible/group_vars/lab.yaml
+    fi
+
     # Set the lab_external_ip variable by ifconfig.me or already existing EXTERNAL_IP environment variable in the group_vars/lab.yaml file
     if [ -z "$EXTERNAL_IP" ]; then
         EXTERNAL_IP=$(curl ifconfig.me -4 --silent)
@@ -114,8 +119,9 @@ function configure_ansible() {
         sed -i "s/^is_vagrant:.*/is_vagrant: true/" provisioning/ansible/group_vars/lab.yaml
     fi
 
-    # Add local host to the inventory to a new line
-    echo -e "\n127.0.0.1 ansible_connection=local" >> provisioning/ansible/inventory/hosts
+    # Create a fresh inventory with local connection under [lab] group
+    echo "[lab]" > provisioning/ansible/inventory/hosts
+    echo "127.0.0.1 ansible_connection=local" >> provisioning/ansible/inventory/hosts
 
     echo "Ansible configured"
 }
