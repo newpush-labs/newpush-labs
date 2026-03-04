@@ -40,9 +40,13 @@
   ansible.builtin.debug:
     var: lab_user
 
+- name: Set lab_group to the group name with gid 1000 or default to lab_user
+  ansible.builtin.set_fact:
+    lab_group: "{{ ansible_facts.getent_group.keys() | list | first if ansible_facts.getent_group is defined else lab_user }}"
+
 - name: Ensure the lab group exists
   ansible.builtin.group:
-    name: "{{ lab_user }}"
+    name: "{{ lab_group }}"
     gid: 1000
     state: present
 
@@ -50,7 +54,7 @@
   ansible.builtin.user:
     name: "{{ lab_user }}"
     uid: 1000
-    group: "{{ lab_user }}"
+    group: "{{ lab_group }}"
     state: present
 
 
