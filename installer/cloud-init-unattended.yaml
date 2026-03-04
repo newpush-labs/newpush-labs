@@ -1,0 +1,76 @@
+#cloud-config
+# Newpush Lab Cloud-Init Template for WHMCS (ModulesGarden)
+
+{assign var="lab_user" value="labuser"}
+{if $config.ciuser}{assign var="lab_user" value=$config.ciuser}{/if}
+
+{assign var="lab_pass" value="RANDOM"}
+{if $config.password}{assign var="lab_pass" value=$config.password}
+{elseif $cloudInitScript.password}{assign var="lab_pass" value=$cloudInitScript.password}
+{elseif $vm.password}{assign var="lab_pass" value=$vm.password}{/if}
+
+{assign var="lab_ssh" value=""}
+{if $config.sshkeys}{assign var="lab_ssh" value=$config.sshkeys}
+{elseif $vm.sshkeys}{assign var="lab_ssh" value=$vm.sshkeys}
+{elseif $service_customfields.sshkeys}{assign var="lab_ssh" value=$service_customfields.sshkeys}{/if}
+
+# Decode the URL-encoded SSH key string from Proxmox/WHMCS, but ensure 
+# we use rawurldecode so that literal '+' characters in the base64 key 
+# are not incorrectly converted to spaces!
+{assign var="lab_ssh_decoded" value=$lab_ssh|rawurldecode}
+
+hostname: {$vm.name} 
+manage_etc_hosts: true
+
+# Ensure root login is enabled
+disable_root: false
+
+users:
+  - name: root
+    password: {$lab_pass} 
+{if $lab_ssh_decoded}
+    ssh_authorized_keys:
+      - "{$lab_ssh_decoded|trim|replace:"\r\n":"\"\n      - \""|replace:"\n":"\"\n      - \""}" 
+{/if}
+  - name: {$lab_user} 
+    password: {$lab_pass} 
+    groups: [sudo, docker]
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    shell: /bin/bash
+{if $lab_ssh_decoded}
+    ssh_authorized_keys:
+      - "{$lab_ssh_decoded|trim|replace:"\r\n":"\"\n      - \""|replace:"\n":"\"\n      - \""}" 
+{/if}
+
+chpasswd:
+  expire: False
+
+write_files:
+  - path: /etc/sysctl.d/99-newpush-lab.conf
+    content: |
+      net.ipv4.ip_forward=1
+      vm.max_map_count=262144
+
+  - path: /tmp/install.sh
+    permissions: '0755'
+    content: |
+      #!/bin/bash
+      set -e
+
+      export LAB_USER="{$lab_user}" 
+      
+      # Core Lab Configuration
+      export LAB_HOME="/opt/student-lab"
+      export ACME_ZEROSSL_HMAC_ENCODED="replace_with_your_hmac"
+      export ACME_ZEROSSL_KID="replace_with_your_kid"
+      export CROWDSEC_BOUNCER="true"
+      export HCAPTCHA_SITE_KEY="replace_with_your_site_key"
+      
+      echo "Starting Newpush Lab Unattended Installation..."
+      curl -s https://raw.githubusercontent.com/newpush-labs/newpush-labs/refs/heads/main/installer/newpush-lab-unattended.sh | bash
+
+runcmd:
+  - sysctl --system
+  - systemctl enable qemu-guest-agent
+  - systemctl start qemu-guest-agent
+  - /tmp/install.sh
