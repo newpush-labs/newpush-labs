@@ -19,12 +19,20 @@ function install_packages() {
   # Based on OS, install packages, select the package manager
   if [ "$OS" == "debian" ]; then
     export DEBIAN_FRONTEND=noninteractive
+
+    echo "Stopping background apt services to prevent lock contention..."
+    sudo systemctl stop apt-daily.timer apt-daily.service apt-daily-upgrade.timer apt-daily-upgrade.service 2>/dev/null || true
+
+    echo "Waiting for any existing apt/dpkg processes to release locks..."
+    while sudo killall -0 apt apt-get dpkg 2>/dev/null; do
+        sleep 3
+    done
+
     sudo dpkg --configure -a
-    
-    sudo apt update
-    sudo apt install git python3-pip python3-venv -y
-  elif [ "$OS" == "centos" ]; then
-    echo "CentOS not supported yet"
+
+    sudo apt-get update -y
+    sudo apt-get install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" curl git python3 python3-pip python3-venv net-tools qemu-guest-agent
+  elif [ "$OS" == "centos" ]; then    echo "CentOS not supported yet"
     exit 1
   fi
 
