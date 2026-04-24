@@ -45,6 +45,9 @@ users:
 chpasswd:
   expire: False
 
+packages:
+  - qemu-guest-agent
+
 write_files:
   - path: /etc/sysctl.d/99-newpush-lab.conf
     content: |
