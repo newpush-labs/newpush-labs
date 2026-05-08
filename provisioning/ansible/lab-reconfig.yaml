@@ -14,3 +14,16 @@
     - lab-utils-tty2web
     - lab-set-permissions
   tasks:
+    - name: Recreate student lab core services
+      ansible.builtin.shell:
+        cmd: newpush-lab recreate core
+      register: core_recreate
+      changed_when: core_recreate.rc == 0
+
+    - name: Recreate active lab stacks
+      ansible.builtin.shell:
+        cmd: "newpush-lab recreate {{ item.name }}"
+      loop: "{{ lab_active_stacks }}"
+      when: lab_active_stacks is defined
+      register: stacks_recreate
+      changed_when: true

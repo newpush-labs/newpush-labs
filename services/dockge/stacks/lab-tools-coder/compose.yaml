@@ -6,7 +6,7 @@ services:
       - CODER_PG_CONNECTION_URL=postgresql://${POSTGRES_USER:-username}:${POSTGRES_PASSWORD:-password}@database/${POSTGRES_DB:-coder}?sslmode=disable 
       - CODER_HTTP_ADDRESS=0.0.0.0:7080
       - CODER_ACCESS_URL=${CODER_ACCESS_URL}
-      - CODER_EMAIL=admin@example.com
+      - CODER_EMAIL=admin@newpushlabs.com
       - CODER_USERNAME=admin
       - CODER_PASSWORD=hacker
     group_add:
@@ -31,7 +31,7 @@ services:
       - CODER_HTTP_ADDRESS=0.0.0.0:7080
       - CODER_ACCESS_URL=${CODER_ACCESS_URL}
       - CODER_OIDC_ISSUER_URL=https://auth.${DOMAIN}
-      - CODER_OIDC_EMAIL_DOMAIN=newpush.com,gmail.com,example.com
+      - CODER_OIDC_EMAIL_DOMAIN=newpushlabs.com,gmail.com
       - CODER_OIDC_CLIENT_ID=5e7c01af6d262109e111
       - CODER_OIDC_CLIENT_SECRET=4d6ca43445dfa085c8b716aa8e20835dbe7532e7
       - CODER_OIDC_IGNORE_EMAIL_VERIFIED=true

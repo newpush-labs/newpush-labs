@@ -51,7 +51,7 @@
 
 - name: Set lab domain fact
   ansible.builtin.set_fact:
-    lab_domain: "{{ lab_external_ip }}.traefik.me"
+    lab_domain: "{{ lab_external_ip }}.newpushlabs.com"
   when: lab_domain is not defined or lab_domain == ""
 
 - name: Set lab user fact

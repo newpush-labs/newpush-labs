@@ -12,11 +12,11 @@ admin_user_password: "hacker"
 
 
 # create a free account on zerossl.com to get these values
-acme_email: example@example.com
+acme_email: admin@newpushlabs.com
 acme_zerossl_hmac_encoded: 
 acme_zerossl_kid: 
 
-traefik_crowdsec_bouncer: true
+traefik_crowdsec_bouncer: false
 
 # Required for the CrowdSec plugin for Traefik. 
 # If not present, bots will receive an HTTP error code instead of a CAPTCHA challenge.
@@ -33,7 +33,7 @@ generic_oauth_application_name: application
 # generic_oauth_client_id: 5e7c01af6d262109e111 
 # generic_oauth_client_secret:  
 
-# if lab_domain left unset then the default will be: <EXTERNAL_IP>.traefik.me
+# if lab_domain left unset then the default will be: <EXTERNAL_IP>.newpushlabs.com
 # lab_domain:
 
 # used for configuring sshwiftly and ssh key, defaults to 1000 userid if empty
