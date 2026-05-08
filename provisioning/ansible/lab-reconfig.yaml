@@ -14,16 +14,24 @@
     - lab-utils-tty2web
     - lab-set-permissions
   tasks:
+    - name: Get list of currently running Docker Compose projects
+      ansible.builtin.shell:
+        cmd: docker compose ls --format json
+      register: running_projects_json
+      changed_when: false
+
+    - name: Parse running projects and recreate active stacks
+      ansible.builtin.shell:
+        cmd: "newpush-lab recreate {{ item }}"
+      loop: "{{ (running_projects_json.stdout | from_json) | map(attribute='Name') | list }}"
+      when: 
+        - item != 'lab-core'
+        - item != 'services'
+      register: active_stacks_recreate
+      changed_when: true
+
     - name: Recreate student lab core services
       ansible.builtin.shell:
         cmd: newpush-lab recreate core
       register: core_recreate
       changed_when: core_recreate.rc == 0
-
-    - name: Recreate active lab stacks
-      ansible.builtin.shell:
-        cmd: "newpush-lab recreate {{ item.name }}"
-      loop: "{{ lab_active_stacks }}"
-      when: lab_active_stacks is defined
-      register: stacks_recreate
-      changed_when: true
