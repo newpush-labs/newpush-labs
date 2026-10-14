@@ -15,7 +15,7 @@ services:
     environment:
       - DOCKGE_STACKS_DIR={{ lab_dir }}/services/dockge/stacks
     labels:
-      - "com.centurylinklabs.watchtower.enable"
+      - "com.centurylinklabs.watchtower.enable=true"
       - "traefik.enable=true"
       - "traefik.http.routers.dockge.rule=Host(`dockge.${DOMAIN}`)"
       - "traefik.http.routers.dockge.entrypoints=https"

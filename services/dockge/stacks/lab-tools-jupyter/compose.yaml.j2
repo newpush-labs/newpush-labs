@@ -40,7 +40,7 @@ services:
       
     command: ["start-notebook.py", "--IdentityProvider.token=''"]
     labels:
-      - "com.centurylinklabs.watchtower.enable"
+      - "com.centurylinklabs.watchtower.enable=true"
       - "traefik.enable=true"
       - "traefik.http.routers.jupyter.rule=Host(`jupyter.${DOMAIN}`)"
       - "traefik.http.routers.jupyter.entrypoints=https"

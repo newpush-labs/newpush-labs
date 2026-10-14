@@ -45,10 +45,10 @@ function install_packages() {
 
   cd /opt/student-lab/services 
   IP=$(curl ifconfig.me -4 --silent); 
-  DOMAIN="$IP.traefik.me"
+  DOMAIN="$IP.newpushlabs.com"
   echo "DOMAIN=$DOMAIN" > .env
 
-  echo "https://traefik.$IP.traefik.me" # %s"
+  echo "https://traefik.$IP.newpushlabs.com" # %s"
 
   # Wazuh Needs this on the host
   sudo sysctl -w vm.max_map_count=262144
@@ -149,7 +149,7 @@ function update_dockerfiles() {
 function update_env() {
   cd /opt/student-lab/services 
   IP=$(curl ifconfig.me -4 --silent); 
-  DOMAIN="$IP.traefik.me"
+  DOMAIN="$IP.newpushlabs.com"
   
   LAB_USER=$(awk -F':' '$3 == 1000 { print $1 }' /etc/passwd)
   LAB_USER_HOME=$(eval echo ~$LAB_USER)
@@ -157,7 +157,7 @@ function update_env() {
   LAB_SSH_KEY=$LAB_USER_HOME/.ssh/id_rsa
 
   echo "DOMAIN=$DOMAIN" > .env
-  echo "CODER_ACCESS_URL=https://coder.$IP.traefik.me" >> .env
+  echo "CODER_ACCESS_URL=https://coder.$IP.newpushlabs.com" >> .env
   
   echo "LAB_USER=$LAB_USER" >> .env
   echo "LAB_USER_HOME=$LAB_USER_HOME" >> .env

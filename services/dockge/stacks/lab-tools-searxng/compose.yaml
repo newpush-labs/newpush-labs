@@ -57,7 +57,7 @@ services:
       - "mafl.icon.color=#ffffff"
       - "mafl.status.enabled=true"
       - "mafl.status.interval=60"
-      - "com.centurylinklabs.watchtower.enable"
+      - "com.centurylinklabs.watchtower.enable=true"
       - "traefik.enable=true"
       - "traefik.http.routers.searxng.rule=Host(`searxng.${DOMAIN}`)"
       - "traefik.http.routers.searxng.entrypoints=https"

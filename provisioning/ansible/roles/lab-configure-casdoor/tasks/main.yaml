@@ -53,4 +53,36 @@
   ansible.builtin.debug:
     msg: "The OAUTH client ID {{ generic_oauth_client_id }} OAUTH Client Secret {{ generic_oauth_client_secret }}"
 
+- name: Update Casdoor database with new domain and redirect URIs
+  ansible.builtin.shell: |
+    python3 -c "
+    import sqlite3, json, os
+    db_path = '{{ lab_dir }}/services/casdoor/conf/casdoor.db'
+    if not os.path.exists(db_path):
+        print('Database not found, skipping update')
+        exit(0)
+    
+    domain = '{{ lab_domain }}'
+    
+    conn = sqlite3.connect(db_path)
+    cur = conn.cursor()
+    
+    # Universal Wildcard: Allow all subdomains of the specific lab domain
+    uris = json.dumps(['.' + domain])
+    homepage = 'https://' + domain
+    
+    cur.execute(\"UPDATE application SET redirect_uris = ?, homepage_url = ? WHERE name = 'application'\", (uris, homepage))
+    
+    # For organization, we can just use the lab domain as the website URL
+    cur.execute(\"UPDATE organization SET website_url = ? WHERE name = 'built-in'\", (homepage,))
+    
+    conn.commit()
+    conn.close()
+    print(f'Database updated successfully for domain: {domain}')
+    "
+  register: casdoor_db_sync
+  changed_when: "'Database updated successfully' in casdoor_db_sync.stdout"
+  when: lab_domain is defined and lab_domain != ""
+
+
 

@@ -14,7 +14,7 @@ services:
     user: superuser
     working_dir: /workspace
     labels:
-      - "com.centurylinklabs.watchtower.enable"
+      - "com.centurylinklabs.watchtower.enable=true"
       - "traefik.enable=true"
       - "traefik.http.routers.workbench.rule=Host(`workbench.${DOMAIN}`)"
       - "traefik.http.routers.workbench.entrypoints=https"
