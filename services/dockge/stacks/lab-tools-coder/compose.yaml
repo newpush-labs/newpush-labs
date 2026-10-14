@@ -51,7 +51,7 @@ services:
       database:
         condition: service_healthy
     labels:
-      - "com.centurylinklabs.watchtower.enable"
+      - "com.centurylinklabs.watchtower.enable=true"
       - "traefik.enable=true"
       - "traefik.http.routers.coder.rule=Host(`coder.${DOMAIN}`)"
       - "traefik.http.routers.coder.entrypoints=https"

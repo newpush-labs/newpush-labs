@@ -8,7 +8,7 @@ services:
       - ./sshwifty/sshwifty.conf.json:/home/sshwifty/.config/sshwifty.conf.json
       - ./sshwifty/id_rsa:/home/sshwifty/.ssh/id_rsa:ro
     labels:
-      - "com.centurylinklabs.watchtower.enable"
+      - "com.centurylinklabs.watchtower.enable=true"
       - "traefik.enable=true"
       - "traefik.http.routers.webssh.rule=Host(`sshwifty.${DOMAIN}`)"
       - "traefik.http.routers.webssh.entrypoints=https"

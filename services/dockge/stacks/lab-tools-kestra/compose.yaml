@@ -64,7 +64,7 @@ services:
     #   - "8080:8080"
     #   - "8081:8081"
     labels:
-      - "com.centurylinklabs.watchtower.enable"
+      - "com.centurylinklabs.watchtower.enable=true"
       - "traefik.enable=true"
       - "traefik.http.routers.kestra.rule=Host(`kestra.${DOMAIN}`)"
       - "traefik.http.routers.kestra.entrypoints=https"
