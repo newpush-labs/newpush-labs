@@ -33,7 +33,7 @@ services:
     env_file:
       - ../.env
     labels:
-      - "com.centurylinklabs.watchtower.enable"
+      - "com.centurylinklabs.watchtower.enable=true"
       - "traefik.enable=true"
       - "traefik.http.routers.jupyterhub.rule=Host(`jupyter-hub.${DOMAIN}`)"
       - "traefik.http.routers.jupyterhub.entrypoints=https"

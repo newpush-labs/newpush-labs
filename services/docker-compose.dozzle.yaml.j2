@@ -14,7 +14,7 @@ services:
       - DOZZLE_NO_ANALYTICS=true
       - DOZZLE_ENABLE_ACTIONS=true
     labels:
-      - "com.centurylinklabs.watchtower.enable"
+      - "com.centurylinklabs.watchtower.enable=true"
       - "traefik.enable=true"
       - "traefik.http.routers.dozzle.rule=Host(`logs.${DOMAIN}`)"
       - "traefik.http.routers.dozzle.entrypoints=https"

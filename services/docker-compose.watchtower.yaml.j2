@@ -2,7 +2,7 @@ version: "3.3"
 
 services:
   watchtower:
-    image: containrrr/watchtower:${WATCHTOWER_VERSION:-latest}
+    image: nickfedor/watchtower:${WATCHTOWER_VERSION:-latest}
     container_name: watchtower
     env_file:
       - {{ lab_dir }}/services/.env

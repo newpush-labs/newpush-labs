@@ -3,8 +3,6 @@ services:
     image: n8nio/n8n:latest
     container_name: n8n
     restart: unless-stopped
-    ports:
-      - "5678:5678"
     environment:
       - N8N_HOST=n8n.${DOMAIN}
       - N8N_PORT=5678
@@ -15,7 +13,7 @@ services:
     volumes:
       - ./n8n_data:/home/node/.n8n
     labels:
-      - "com.centurylinklabs.watchtower.enable"
+      - "com.centurylinklabs.watchtower.enable=true"
       - "traefik.enable=true"
       - "traefik.http.routers.n8n.rule=Host(`n8n.${DOMAIN}`)"
       - "traefik.http.routers.n8n.entrypoints=https"

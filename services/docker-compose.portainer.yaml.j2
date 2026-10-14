@@ -10,7 +10,7 @@ services:
               "--templates", "https://evening-waters-42512-c3a4aa064399.herokuapp.com/modify?portainer_template_url=https://raw.githubusercontent.com/hdkiller/portainer-templates/refs/heads/traefik/templates_with_labels.json&TRAEFIK_INGRESS_DOMAIN={{ lab_domain }}", 
               "--admin-password", '$$2y$$05$$ED1XWB3MYv3ACwItDZjTuee6S3Flwj.ckwoUstuISY1Wuu.Buiqje']
     labels:
-      - "com.centurylinklabs.watchtower.enable"
+      - "com.centurylinklabs.watchtower.enable=true"
       - "traefik.enable=true"
       - "traefik.http.routers.portainer.rule=Host(`portainer.${DOMAIN}`)"
       - "traefik.http.routers.portainer.entrypoints=https"
